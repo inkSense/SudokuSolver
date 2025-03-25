@@ -5,8 +5,9 @@ import javafx.scene.Scene;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
-// Einstiegspunkt für eine JavaFX-Anwendung, die Sudokus von einer API abruft und darstellt
-public class SudokuSolver extends Application {
+import java.io.IOException;
+
+public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) {
@@ -22,6 +23,8 @@ public class SudokuSolver extends Application {
         // TODO: API-Aufruf zum Abrufen eines Sudokus
         // TODO: Darstellung des abgerufenen Sudokus
     }
+
+
 
     public static void main(String[] args) {
         launch(args);
