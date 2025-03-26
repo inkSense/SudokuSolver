@@ -6,14 +6,10 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 public class Cell {
-    public final int row;
-    public final int col;
     public int content;
     private List<Integer> possibleContent;
 
-    public Cell(int row, int col) {
-        this.row = row;
-        this.col = col;
+    public Cell() {
         this.content = 0;
         initializePossibleContent();
     }

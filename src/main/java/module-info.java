@@ -1,8 +1,12 @@
 module org.sudokusolver {
     requires javafx.controls;
     requires javafx.fxml;
+    requires org.apache.logging.log4j.core;
+    requires org.slf4j;
 
+    opens org.sudokusolver.D_frameworksAndDrivers to javafx.fxml;
 
-    opens org.sudokusolver to javafx.fxml;
     exports org.sudokusolver;
+    exports org.sudokusolver.A_entities.objectsAndDataStructures;
+    exports org.sudokusolver.C_adapters;
 }
