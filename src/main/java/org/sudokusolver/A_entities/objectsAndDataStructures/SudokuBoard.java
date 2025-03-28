@@ -11,48 +11,48 @@ import java.util.stream.IntStream;
 public class SudokuBoard {
 
     private static final Logger log = LoggerFactory.getLogger(SudokuBoard.class);
-    private final int[][] cells;
+    private final Cell[][] cells;
 
-    public SudokuBoard(int[][] cells) {
+    public SudokuBoard(Cell[][] cells) {
         this.cells = cells;
     }
 
-    public int[][] getCells() {
+    public Cell[][] getCells() {
         return cells;
     }
 
     public void print() {
-        for (int[] row : cells) {
-            for (int val : row) {
-                System.out.print((val == 0 ? "." : val) + " ");
+        for (Cell[] row : cells) {
+            for (Cell cell : row) {
+                System.out.print((cell.content == 0 ? "." : cell.content) + " ");
             }
             System.out.println();
         }
     }
 
-    public List<Integer> getRow(int row) {
+    public List<Cell> getRow(int row) {
         validateIndex(row);
-        List<Integer> result = new ArrayList<>();
+        List<Cell> result = new ArrayList<>();
         for (int col = 0; col < 9; col++) {
             result.add(cells[row][col]);
         }
         return result;
     }
 
-    public List<Integer> getColumn(int col) {
+    public List<Cell> getColumn(int col) {
         validateIndex(col);
-        List<Integer> result = new ArrayList<>();
+        List<Cell> result = new ArrayList<>();
         for (int row = 0; row < 9; row++) {
             result.add(cells[row][col]);
         }
         return result;
     }
 
-    public List<Integer> getBlock(int blockNumber) {
+    public List<Cell> getBlock(int blockNumber) {
         validateIndex(blockNumber);
         int startRow = (blockNumber / 3) * 3;
         int startCol = (blockNumber % 3) * 3;
-        List<Integer> result = new ArrayList<>();
+        List<Cell> result = new ArrayList<>();
 
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {

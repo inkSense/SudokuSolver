@@ -3,6 +3,7 @@ package org.sudokusolver.C_adapters;
 import com.google.gson.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.sudokusolver.A_entities.objectsAndDataStructures.Cell;
 import org.sudokusolver.A_entities.objectsAndDataStructures.SudokuBoard;
 
 import java.io.BufferedReader;
@@ -24,11 +25,12 @@ public class ApiGateway implements AdapterOutputPort {
                 .getAsJsonObject()
                 .getAsJsonArray("value");
 
-        int[][] board = new int[9][9];
+        Cell[][] board = new Cell[9][9];
         for (int i = 0; i < 9; i++) {
             JsonArray row = grid.get(i).getAsJsonArray();
             for (int j = 0; j < 9; j++) {
-                board[i][j] = row.get(j).getAsInt();
+                int content = row.get(j).getAsInt();
+                board[i][j] = new Cell(content);
             }
         }
         return new SudokuBoard(board);

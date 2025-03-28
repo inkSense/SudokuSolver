@@ -14,6 +14,11 @@ public class Cell {
         initializePossibleContent();
     }
 
+    public Cell(int content) {
+        this.content = content;
+        initializePossibleContent();
+    }
+
     public boolean isFixed() {
         return content != 0;
     }
