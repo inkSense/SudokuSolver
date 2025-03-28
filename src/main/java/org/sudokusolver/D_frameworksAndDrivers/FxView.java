@@ -5,7 +5,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import org.sudokusolver.C_adapters.AdapterOutputPort;
 
-public class FxView implements AdapterOutputPort {
+public class FxView /*implements AdapterOutputPort*/ {
 
     @FXML
     private GridPane gridPane;
@@ -25,7 +25,6 @@ public class FxView implements AdapterOutputPort {
         }
     }
 
-    @Override
     public void displaySudoku(/* Übergib hier später z. B. eine 2D-Cell-Matrix */) {
         // Logik zur Anzeige von Zellen kommt später hier rein
     }

@@ -5,6 +5,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.Parent;
 import javafx.stage.Stage;
+import org.sudokusolver.A_entities.objectsAndDataStructures.SudokuBoard;
+import org.sudokusolver.B_useCases.SudokuService;
+import org.sudokusolver.C_adapters.ApiGateway;
 
 public class Main extends Application {
 
@@ -19,7 +22,16 @@ public class Main extends Application {
         primaryStage.show();
     }
 
+    public static void downloadSudoku(){
+        var api = new ApiGateway();
+        var service = new SudokuService(api);
+
+        SudokuBoard board = service.getSudoku();
+        board.print();
+    }
+
     public static void main(String[] args) {
-        launch(args);
+        //launch(args);
+        downloadSudoku();
     }
 }
