@@ -11,9 +11,9 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class ApiGateway implements AdapterOutputPort {
+public class RepositoryGateway implements AdapterOutputPort {
 
-    private static final Logger log = LoggerFactory.getLogger(ApiGateway.class);
+    private static final Logger log = LoggerFactory.getLogger(RepositoryGateway.class);
 
     @Override
     public SudokuBoard fetchSudoku() {
@@ -24,7 +24,6 @@ public class ApiGateway implements AdapterOutputPort {
                 .get(0)
                 .getAsJsonObject()
                 .getAsJsonArray("value");
-
         Cell[][] board = new Cell[9][9];
         for (int i = 0; i < 9; i++) {
             JsonArray row = grid.get(i).getAsJsonArray();
@@ -41,7 +40,6 @@ public class ApiGateway implements AdapterOutputPort {
             String url = "https://sudoku-api.vercel.app/api/dosuku";
             HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
             conn.setRequestMethod("GET");
-
             BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             StringBuilder response = new StringBuilder();
             String line;
@@ -53,8 +51,6 @@ public class ApiGateway implements AdapterOutputPort {
             throw new RuntimeException("Fehler beim Abrufen des Sudokus", e);
         }
     }
-
-
 
     public static void main(String[] args){
         String json = fetchSudokuJsonString();
