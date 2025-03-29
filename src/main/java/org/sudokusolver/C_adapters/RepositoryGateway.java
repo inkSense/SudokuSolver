@@ -35,22 +35,32 @@ public class RepositoryGateway implements AdapterOutputPort {
         return new SudokuBoard(board);
     }
 
-    private static String fetchSudokuJsonString(){
+    private static String fetchSudokuJsonString() {
+        HttpURLConnection conn = null;
         try {
-            String url = "https://sudoku-api.vercel.app/api/dosuku";
-            HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
+            URL url = new URL("https://sudoku-api.vercel.app/api/dosuku");
+            conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
-            BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            StringBuilder response = new StringBuilder();
-            String line;
-            while ((line = in.readLine()) != null)
-                response.append(line);
-            in.close();
-            return response.toString();
+            conn.setConnectTimeout(5000);
+            conn.setReadTimeout(5000);
+
+            try (BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
+                StringBuilder response = new StringBuilder();
+                String line;
+                while ((line = in.readLine()) != null) {
+                    response.append(line);
+                }
+                return response.toString();
+            }
         } catch (Exception e) {
             throw new RuntimeException("Fehler beim Abrufen des Sudokus", e);
+        } finally {
+            if (conn != null) {
+                conn.disconnect();
+            }
         }
     }
+
 
     public static void main(String[] args){
         String json = fetchSudokuJsonString();

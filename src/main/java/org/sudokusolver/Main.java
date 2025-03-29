@@ -30,5 +30,6 @@ public class Main extends Application {
         var useCase = new LoadSudokuUseCase(api);
         var controller = new Controller(useCase);
         controller.downloadSudokuAndPrintItOut();
+        log.info("ENDE erreicht.");
     }
 }
