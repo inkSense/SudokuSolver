@@ -7,8 +7,9 @@ import javafx.scene.Parent;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.sudokusolver.B_useCases.LoadSudokuUseCase;
-import org.sudokusolver.C_adapters.RepositoryGateway;
+import org.sudokusolver.B_useCases.DownloadSudokuFromApiUseCase;
+import org.sudokusolver.B_useCases.UseCaseInteractor;
+import org.sudokusolver.C_adapters.HttpGateway;
 import org.sudokusolver.C_adapters.Controller;
 
 public class Main extends Application {
@@ -26,10 +27,9 @@ public class Main extends Application {
 
     public static void main(String[] args) {
         //launch(args);
-        var api = new RepositoryGateway();
-        var useCase = new LoadSudokuUseCase(api);
-        var controller = new Controller(useCase);
+        var api = new HttpGateway();
+        var interactor = new UseCaseInteractor(api);
+        var controller = new Controller(interactor);
         controller.downloadSudokuAndPrintItOut();
-        log.info("ENDE erreicht.");
     }
 }
