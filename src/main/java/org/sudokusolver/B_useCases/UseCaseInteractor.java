@@ -11,6 +11,7 @@ public class UseCaseInteractor implements UseCaseInputPort {
     SaveFileUseCase saveFile = new SaveFileUseCase();
     ParseSudokuFromJsonStringUseCase parse = new ParseSudokuFromJsonStringUseCase();
     DownloadSudokuFromApiUseCase download;
+    SolveUseCase solve = new SolveUseCase();
     private static final Logger log = LoggerFactory.getLogger(UseCaseInteractor.class);
 
     public UseCaseInteractor(UseCaseOutputPort useCaseOutputPort) {
@@ -18,29 +19,30 @@ public class UseCaseInteractor implements UseCaseInputPort {
     }
 
     public List<SudokuBoard> loadSudokus(){
-        String json = loadFile.loadJsonString();
+        List<String> jsons = loadFile.loadJsonStrings();
 
-        if(json == null){
+        if(jsons.isEmpty()){
             log.info("No File. Downloading.");
-            json = download.downloadJsonString();
-            log.info("JSON Antwort: \n" + json);
-            log.info("Safing to File " + Conf.dataPathString);
-            var saveUseCase = new SaveFileUseCase();
-            saveUseCase.save(json);
+            List<String> strings = download.downloadJsonStrings();
+            log.info("Safing to File " + ApplicationConf.dataPathString);
+            saveFile.save(strings);
         }
 
-        SudokuBoard sudoku = parse.parse(json);
-        return List.of(sudoku);
-
+        return parse.parse(jsons);
     }
 
-    @Override
-    public SudokuBoard getSudoku() {
 
-        //Wenn eine Datei mit Sudoku da ist, dann lade die.
+    public void solve(SudokuBoard sudoku){
+        solve.setSudoku(sudoku);
 
-        //Wenn keine Datei mit Sudoku da ist, dann downloade Sudoku und speichere.
-
-        return null;
+        for(int iteration = 0; iteration < 6; iteration++) {
+            System.out.println("---Next Iteration : " + iteration);
+            solve.printOutPossibilities();
+            sudoku.print();
+            solve.reducePossibilitiesFromCurrentState();
+            solve.testForSinglePossibilitiesAndFillIn();
+            solve.testForSinglePossibilitiesInContextAndFillIn();
+            sudoku.print();
+        }
     }
 }

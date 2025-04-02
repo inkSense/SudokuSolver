@@ -6,6 +6,5 @@ import java.util.List;
 
 public interface UseCaseInputPort {
     List<SudokuBoard> loadSudokus();
-
-    SudokuBoard getSudoku();
+    void solve(SudokuBoard sudoku);
 }

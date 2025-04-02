@@ -12,13 +12,19 @@ public class SudokuBoard {
 
     private static final Logger log = LoggerFactory.getLogger(SudokuBoard.class);
     private final Cell[][] cells;
+    private final String difficulty;
 
-    public SudokuBoard(Cell[][] cells) {
+    public SudokuBoard(Cell[][] cells, String difficulty) {
         this.cells = cells;
+        this.difficulty = difficulty;
     }
 
     public Cell[][] getCells() {
         return cells;
+    }
+
+    public String getDifficulty() {
+        return difficulty;
     }
 
     public void print() {
@@ -28,6 +34,7 @@ public class SudokuBoard {
             }
             System.out.println();
         }
+        System.out.println();
     }
 
     public List<Cell> getRow(int row) {

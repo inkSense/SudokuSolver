@@ -19,9 +19,6 @@ public class Cell {
         initializePossibleContent();
     }
 
-    public boolean isFixed() {
-        return content != 0;
-    }
 
     public List<Integer> getPossibleContent() {
         return possibleContent;
@@ -29,7 +26,13 @@ public class Cell {
 
     public void removeFromPossibleContent(int number) {
         int index = possibleContent.indexOf(number);
-        possibleContent.remove(index);
+        if(index != -1) {
+            possibleContent.remove(index);
+        }
+    }
+
+    public void removeAllPossibilities(){
+        possibleContent.clear();
     }
 
     private void initializePossibleContent() {
@@ -37,5 +40,10 @@ public class Cell {
         IntStream.rangeClosed(1, 9).forEach(possibleContent::add);
     }
 
-
+    @Override
+    public String toString() {
+        return "Cell{" +
+                "content=" + content +
+                '}';
+    }
 }

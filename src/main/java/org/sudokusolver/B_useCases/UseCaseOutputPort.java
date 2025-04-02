@@ -2,7 +2,9 @@ package org.sudokusolver.B_useCases;
 
 import org.sudokusolver.A_entities.objectsAndDataStructures.SudokuBoard;
 
+import java.util.List;
+
 public interface UseCaseOutputPort {
-    SudokuBoard getSudoku();
-    String fetchSudokuJsonString();
+    List<SudokuBoard> getSudokus();
+    List<String> getSudokuJsonStrings();
 }

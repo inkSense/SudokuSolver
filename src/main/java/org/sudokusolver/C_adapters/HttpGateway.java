@@ -4,55 +4,77 @@ import com.google.gson.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sudokusolver.A_entities.objectsAndDataStructures.SudokuBoard;
+import org.sudokusolver.B_useCases.ApplicationConf;
 import org.sudokusolver.B_useCases.ParseSudokuFromJsonStringUseCase;
 import org.sudokusolver.B_useCases.UseCaseOutputPort;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class HttpGateway implements UseCaseOutputPort {
 
     private static final Logger log = LoggerFactory.getLogger(HttpGateway.class);
 
     @Override
-    public SudokuBoard getSudoku() {
-        String jsonString = fetchSudokuJsonString();
-        return parseSudoku(jsonString);
+    public List<SudokuBoard> getSudokus() {
+        List<String> jsonStrings = getSudokuJsonStrings();
+        return parseSudokus(jsonStrings);
     }
 
-    public static SudokuBoard parseSudoku(String jsonString){
+    public static List<SudokuBoard> parseSudokus(List<String> jsonStrings){
         var useCase = new ParseSudokuFromJsonStringUseCase();
-        return useCase.parse(jsonString);
+        return useCase.parse(jsonStrings);
     }
 
-    public String fetchSudokuJsonString() {
+    public List<String> getSudokuJsonStrings() {
+        List<String> jsonStrings = new ArrayList<>();
+        for (int i = 0; i < AdapterConf.numberOfGridsToDownload; i++) {
+            HttpURLConnection conn = null;
+            try {
+                conn = getHttpConnection();
+                String json = tryToGetJsonStrings(conn);
+                jsonStrings.add(json);
+            } catch (Exception e) {
+                log.error("Fehler beim Abrufen des Sudokus #" + (i + 1), e);
+            } finally {
+                if (conn != null) conn.disconnect();
+            }
+        }
+        return jsonStrings;
+    }
+
+
+    private HttpURLConnection getHttpConnection() throws IOException {
         HttpURLConnection conn = null;
-        try {
-            URL url = new URL("https://sudoku-api.vercel.app/api/dosuku");
-            conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
-            conn.setConnectTimeout(5000);
-            conn.setReadTimeout(5000);
+        URL url = new URL("https://sudoku-api.vercel.app/api/dosuku");
+        conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+        conn.setConnectTimeout(5000);
+        conn.setReadTimeout(5000);
+        return conn;
+    }
 
-            try (BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
-                StringBuilder response = new StringBuilder();
-                String line;
-                while ((line = in.readLine()) != null) {
-                    response.append(line);
-                }
-
-                // Whitespace entfernen durch kompaktes Re-Serialisieren
-                JsonElement jsonElement = JsonParser.parseString(response.toString());
-                return new Gson().toJson(jsonElement); // kompakter JSON-String
+    private String tryToGetJsonStrings(HttpURLConnection conn) throws IOException {
+        try (BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
+            StringBuilder response = new StringBuilder();
+            String line;
+            while ((line = in.readLine()) != null) {
+                response.append(line);
             }
-        } catch (Exception e) {
-            throw new RuntimeException("Fehler beim Abrufen des Sudokus", e);
-        } finally {
-            if (conn != null) {
-                conn.disconnect();
-            }
+            // Whitespace entfernen durch kompaktes Re-Serialisieren
+            JsonElement jsonElement = JsonParser.parseString(response.toString());
+            String json =  new Gson().toJson(jsonElement); // kompakter JSON-String
+            return json;
         }
     }
 

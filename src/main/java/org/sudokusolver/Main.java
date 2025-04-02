@@ -7,10 +7,11 @@ import javafx.scene.Parent;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.sudokusolver.B_useCases.DownloadSudokuFromApiUseCase;
+import org.sudokusolver.A_entities.objectsAndDataStructures.Cell;
 import org.sudokusolver.B_useCases.UseCaseInteractor;
 import org.sudokusolver.C_adapters.HttpGateway;
 import org.sudokusolver.C_adapters.Controller;
+import org.sudokusolver.D_frameworksAndDrivers.FxView;
 
 public class Main extends Application {
 
@@ -23,13 +24,18 @@ public class Main extends Application {
         primaryStage.setTitle("Sudoku Solver");
         primaryStage.setScene(scene);
         primaryStage.show();
+
     }
 
     public static void main(String[] args) {
-        //launch(args);
+        launch(args);
         var api = new HttpGateway();
         var interactor = new UseCaseInteractor(api);
         var controller = new Controller(interactor);
-        controller.downloadSudokuAndPrintItOut();
+        controller.loadOneSudokuAndSolveIt();
+
     }
+
+
+
 }

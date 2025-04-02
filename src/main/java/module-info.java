@@ -5,8 +5,10 @@ module org.sudokusolver {
     requires org.slf4j;
     requires com.google.gson;
 
+
     opens org.sudokusolver.D_frameworksAndDrivers to javafx.fxml;
 
+    // --- Exportierte Module ---
     exports org.sudokusolver;
     exports org.sudokusolver.A_entities.objectsAndDataStructures;
     exports org.sudokusolver.C_adapters;
