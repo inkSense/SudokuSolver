@@ -1,13 +1,61 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN">
     <Appenders>
-        <Console name="Console" target="SYSTEM_OUT">
-            <PatternLayout pattern="[%d{HH:mm:ss}] %-5level %logger{36} - %msg%n"/>
+        <!-- Nur DEBUG -->
+        <Console name="DebugConsole" target="SYSTEM_OUT">
+            <PatternLayout pattern="[%d{HH:mm:ss}] DEBUG: %msg%n"/>
+            <Filters>
+                <LevelMatchFilter level="DEBUG" onMatch="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+        </Console>
+
+        <!-- Nur INFO -->
+        <Console name="InfoConsole" target="SYSTEM_OUT">
+            <PatternLayout pattern="[%d{HH:mm:ss}] INFO: %msg%n"/>
+            <Filters>
+                <LevelMatchFilter level="INFO" onMatch="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+        </Console>
+
+        <!-- Nur ERROR -->
+        <Console name="ErrorConsole" target="SYSTEM_OUT">
+            <PatternLayout pattern="[%d{HH:mm:ss}] ERROR: %logger{36}.%M - %msg%n"/>
+            <Filters>
+                <LevelMatchFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
+            </Filters>
         </Console>
     </Appenders>
+
     <Loggers>
-        <Root level="info">
-            <AppenderRef ref="Console"/>
+        <Root level="debug">
+            <AppenderRef ref="DebugConsole"/>
+            <AppenderRef ref="InfoConsole"/>
+            <AppenderRef ref="ErrorConsole"/>
         </Root>
     </Loggers>
 </Configuration>
+
+
+
+
+
+
+
+
+
+
+
+
+        <!--<?xml version="1.0" encoding="UTF-8"?>-->
+<!--<Configuration status="WARN">-->
+<!--<Appenders>-->
+<!--    <Console name="Console" target="SYSTEM_OUT" >-->
+<!--        <PatternLayout pattern="[%d{HH:mm:ss}] %-5level %logger{36}.%M - %msg%n"/>-->
+<!--    </Console>-->
+<!--</Appenders>-->
+<!--<Loggers>-->
+<!--    <Root level="all">-->
+<!--        <AppenderRef ref="Console"/>-->
+<!--    </Root>-->
+<!--</Loggers>-->
+<!--</Configuration>-->

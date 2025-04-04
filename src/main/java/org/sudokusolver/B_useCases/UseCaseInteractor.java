@@ -12,6 +12,7 @@ public class UseCaseInteractor implements UseCaseInputPort {
     ParseSudokuFromJsonStringUseCase parse = new ParseSudokuFromJsonStringUseCase();
     DownloadSudokuFromApiUseCase download;
     SolveUseCase solve = new SolveUseCase();
+    SudokuBoard sudoku;
     private static final Logger log = LoggerFactory.getLogger(UseCaseInteractor.class);
 
     public UseCaseInteractor(UseCaseOutputPort useCaseOutputPort) {
@@ -31,18 +32,19 @@ public class UseCaseInteractor implements UseCaseInputPort {
         return parse.parse(jsons);
     }
 
-
-    public void solve(SudokuBoard sudoku){
+    public void setSudoku(SudokuBoard sudoku){
+        this.sudoku = sudoku;
         solve.setSudoku(sudoku);
+    }
 
-        for(int iteration = 0; iteration < 6; iteration++) {
-            System.out.println("---Next Iteration : " + iteration);
-            solve.printOutPossibilities();
-            sudoku.print();
-            solve.reducePossibilitiesFromCurrentState();
-            solve.testForSinglePossibilitiesAndFillIn();
-            solve.testForSinglePossibilitiesInContextAndFillIn();
-            sudoku.print();
-        }
+    public void solveOneStep(){
+        solve.testForSinglePossibilitiesAndFillIn();
+        //solve.testForSinglePossibilitiesInContextAndFillIn();
+        sudoku.print();
+    }
+
+    public void reducePossibilitiesFromCurrentState(){
+        solve.reducePossibilitiesFromCurrentState();
+        solve.printOutPossibilities();
     }
 }

@@ -6,7 +6,7 @@ module org.sudokusolver {
     requires com.google.gson;
 
 
-    opens org.sudokusolver.D_frameworksAndDrivers to javafx.fxml;
+    opens org.sudokusolver.D_frameworksAndDrivers to javafx.fxml, javafx.graphics;
 
     // --- Exportierte Module ---
     exports org.sudokusolver;
