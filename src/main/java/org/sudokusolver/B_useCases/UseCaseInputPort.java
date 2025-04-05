@@ -8,6 +8,6 @@ public interface UseCaseInputPort {
     void setSudoku(SudokuBoard sudoku);
     List<SudokuBoard> loadSudokus();
     void solveOneStep();
-
+    void solveOneStepInContext();
     void reducePossibilitiesFromCurrentState();
 }

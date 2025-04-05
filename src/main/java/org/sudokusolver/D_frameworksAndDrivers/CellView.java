@@ -21,7 +21,7 @@ public class CellView extends StackPane {
         // Optional: Größe festlegen, Ausrichtung etc.
 
         // 2) GridPane (3×3) für mögliche Kandidaten
-        smallGrid.setPrefSize(60, 60); // Beispielwerte, je nach Layout
+        smallGrid.setPrefSize(50, 50); // Beispielwerte, je nach Layout
         smallGrid.setAlignment(Pos.CENTER);
 
         // 3) Kleine Labels in der 3×3-Matrix anlegen

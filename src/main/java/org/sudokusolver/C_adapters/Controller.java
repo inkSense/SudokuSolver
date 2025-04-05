@@ -5,7 +5,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sudokusolver.A_entities.objectsAndDataStructures.SudokuBoard;
 import org.sudokusolver.B_useCases.UseCaseInputPort;
-import org.sudokusolver.Main;
 
 import java.util.List;
 
@@ -46,6 +45,10 @@ public class Controller {
 
     public void solveSudokuOneStep(){
         useCaseInputPort.solveOneStep();
+    }
+
+    public void solveOneStepInContext(){
+        useCaseInputPort.solveOneStepInContext();
     }
 
     public void reducePossibilitiesFromCurrentState(){

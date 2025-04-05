@@ -109,6 +109,10 @@ public class FxView extends Application {
     private void setSceneEvent(Scene scene){
         scene.setOnKeyPressed(event -> {
             switch (event.getCode()) {
+                case C:
+                    controller.solveOneStepInContext();
+                    refreshBoard();
+                    break;
                 case R:
                     controller.reducePossibilitiesFromCurrentState();
                     refreshBoard();
@@ -117,8 +121,9 @@ public class FxView extends Application {
                     controller.solveSudokuOneStep();
                     refreshBoard();
                     break;
+
                 default:
-                    log.info("Andere Taste: " + event.getCode() + ". Drück F für weiter.");
+                    log.info("Andere Taste: " + event.getCode() + ". Funktionstasten: C R S ");
             }
         });
     }
