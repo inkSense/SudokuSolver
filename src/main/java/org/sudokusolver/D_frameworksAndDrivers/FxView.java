@@ -119,11 +119,11 @@ public class FxView extends Application {
                     break;
                 case S:
                     controller.solveSudokuOneStep();
+                    controller.reducePossibilitiesFromCurrentState();
                     refreshBoard();
                     break;
-
                 default:
-                    log.info("Andere Taste: " + event.getCode() + ". Funktionstasten: C R S ");
+                    log.info("Andere Taste: " + event.getCode() + ". Funktionstasten: C S ");
             }
         });
     }

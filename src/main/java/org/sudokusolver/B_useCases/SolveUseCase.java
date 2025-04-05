@@ -76,6 +76,7 @@ public class SolveUseCase {
                 if(cell.getPossibleContent().size() == 1){
                     nothingFound = false;
                     cell.content = cell.getPossibleContent().get(0);
+                    cell.removeAllPossibilities();
                     log.info("Found " + cell.content + " in " + row + "," +col);
                 }
             }
@@ -98,14 +99,16 @@ public class SolveUseCase {
                         isSinglePossibilityInBox(blockIndex, cell, i)
                     ){
                         cell.content = i;
+                        cell.removeAllPossibilities();
                         nothingFound = false;
+                        break;
                     }
                 }
             }
         }
         if(nothingFound){
             go2 = false;
-            log.info("Found nothing to fill in");
+            log.info("Found nothing to fill in with Context");
         }
     }
 
