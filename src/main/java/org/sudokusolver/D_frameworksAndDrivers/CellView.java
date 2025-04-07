@@ -16,20 +16,22 @@ public class CellView extends StackPane {
 
     public CellView() {
         // 1) Big Label für festen Wert
-        bigLabel.setFont(Font.font(39));
+        bigLabel.setFont(Font.font(45));
         bigLabel.setAlignment(Pos.CENTER);
         // Optional: Größe festlegen, Ausrichtung etc.
 
         // 2) GridPane (3×3) für mögliche Kandidaten
-        smallGrid.setPrefSize(60, 60); // Beispielwerte, je nach Layout
+
+        smallGrid.setPrefSize(65, 65); // Beispielwerte, je nach Layout
         smallGrid.setAlignment(Pos.CENTER);
+        smallGrid.setHgap(12);
 
         // 3) Kleine Labels in der 3×3-Matrix anlegen
         //    Für jeden der 9 Plätze ein Label (Font: 1/3 des großen)
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 3; col++) {
                 Label candidateLabel = new Label();
-                candidateLabel.setFont(Font.font(13)); // z.B. 1/3 von bigLabel
+                candidateLabel.setFont(Font.font(15)); // z.B. 1/3 von bigLabel
                 candidateLabel.setAlignment(Pos.CENTER);
                 smallGrid.add(candidateLabel, col, row);
                 smallLabels[row][col] = candidateLabel;

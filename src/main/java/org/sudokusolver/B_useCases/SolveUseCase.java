@@ -2,8 +2,7 @@ package org.sudokusolver.B_useCases;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.sudokusolver.A_entities.objectsAndDataStructures.Cell;
-import org.sudokusolver.A_entities.objectsAndDataStructures.SudokuBoard;
+import org.sudokusolver.A_entities.objectsAndDataStructures.*;
 
 import java.util.List;
 
@@ -101,6 +100,7 @@ public class SolveUseCase {
                         cell.content = i;
                         cell.removeAllPossibilities();
                         nothingFound = false;
+                        reducePossibilitiesFromCurrentState();
                         break;
                     }
                 }
@@ -136,7 +136,6 @@ public class SolveUseCase {
         List<Cell> cells = sudoku.getBlock(boxIndex);
         cells.remove(selfCell);
         for (Cell cell : cells) {
-            // hier stimmt was nicht
             if(cell.getPossibleContent().contains(possibilityValue)){
                 cell.getPossibleContent().toString();
                 return false;

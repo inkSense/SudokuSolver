@@ -6,6 +6,8 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.RowConstraints;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,28 +41,74 @@ public class FxView extends Application {
         var api = new HttpGateway();
         var interactor = new UseCaseInteractor(api);
         controller = new Controller(interactor);
-        controller.loadOneEasySudoku();
-        sudoku = controller.getSudoku(0);
+        controller.loadSudokus();
+        int sudokuIndex = 3;  // bitte nicht zu hoch
+        controller.setSudokuToUseCaseInputPort(sudokuIndex);
+        sudoku = controller.getSudoku(sudokuIndex);
     }
 
 
     @Override
     public void start(Stage primaryStage) {
         grid = new GridPane();
-        grid.setHgap(1);
-        grid.setVgap(1);
-        grid.setPadding(new Insets(1, 1, 1, 1));
+
+        // 9 Spalten & 9 Zeilen, jede ~ 66 breit/hoch
+        for (int i = 0; i < 9; i++) {
+            ColumnConstraints colCon = new ColumnConstraints(66); // 66 oder 65, 70,  ...
+            RowConstraints rowCon = new RowConstraints(66);
+            grid.getColumnConstraints().add(colCon);
+            grid.getRowConstraints().add(rowCon);
+        }
+
+        //grid.setPadding(new Insets(1, 1, 1, 1));
+        //grid.setHgap(3);
+        //grid.setVgap(3);
 
         for(int col = 0; col < 9; col++){
             for(int row = 0; row < 9; row++){
                 CellView cellView = new CellView();
-                cellView.setStyle("-fx-border-color: lightgray; "
-                        + "-fx-border-width: 1; "
-                        + "-fx-border-style: solid;");
-                grid.add(cellView, col, row); // absichtlich anders rum
+
+                int top = 1, right = 1, bottom = 1, left = 1;
+                String topColor = "lightgray", rightColor = "lightgray",
+                        bottomColor = "lightgray", leftColor = "lightgray";
+
+                // Dickere Linien an 3x3-Grenzen
+                if (row % 3 == 0) {
+                    top = 3;
+                    topColor = "black";
+                }
+                if (row == 8) {
+                    bottom = 3;
+                    bottomColor = "black";
+                }
+                if (col % 3 == 0) {
+                    left = 3;
+                    leftColor = "black";
+                }
+                if (col == 8) {
+                    right = 3;
+                    rightColor = "black";
+                }
+
+                // Nun vier Werte im richtigen Format zusammenbauen:
+                String style = String.format(
+                        "-fx-border-width: %dpx %dpx %dpx %dpx; "
+                                + "-fx-border-color: %s %s %s %s; "
+                                + "-fx-border-style: solid solid solid solid;",
+                        top, right, bottom, left,
+                        topColor, rightColor, bottomColor, leftColor
+                );
+
+                // final setzen
+                cellView.setStyle(style);
+
+
+                cellView.setStyle(style);
+                grid.add(cellView, col, row);
 
             }
         }
+
 
         refreshBoard();
 
@@ -111,9 +159,6 @@ public class FxView extends Application {
             switch (event.getCode()) {
                 case C:
                     controller.solveOneStepInContext();
-                    refreshBoard();
-                    break;
-                case R:
                     controller.reducePossibilitiesFromCurrentState();
                     refreshBoard();
                     break;

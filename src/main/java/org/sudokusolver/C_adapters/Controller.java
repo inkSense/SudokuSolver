@@ -32,16 +32,28 @@ public class Controller {
         }
     }
 
-    public void loadOneEasySudoku(){
-        List<SudokuBoard> sudokuList = useCaseInputPort.loadSudokus();
-        sudokuList = sudokuList.stream().filter(s->s.getDifficulty().equals("Easy")).toList();
-        sudokus = sudokuList;
+    public void setFirstEasyOneToUseCaseInputPort(){
+        List<SudokuBoard> sudokuList = sudokus.stream().filter(s->s.getDifficulty().equals("Easy")).toList();
         if(!sudokuList.isEmpty()) {
             useCaseInputPort.setSudoku(sudokuList.get(0));
         } else {
-            log.error("Found no Easy Sudoku.");
+            log.error("Didnt find any Easy Sudoku.");
         }
     }
+
+    public void setSudokuToUseCaseInputPort(int sudokuNumber){
+        if(sudokuNumber < sudokus.size()) {
+            useCaseInputPort.setSudoku(sudokus.get(sudokuNumber));
+        } else {
+            log.error("Index " + sudokuNumber + " too high.");
+        }
+    }
+
+    public void loadSudokus(){
+        this.sudokus = useCaseInputPort.loadSudokus();
+    }
+
+
 
     public void solveSudokuOneStep(){
         useCaseInputPort.solveOneStep();

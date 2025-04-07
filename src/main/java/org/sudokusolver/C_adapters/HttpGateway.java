@@ -12,14 +12,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class HttpGateway implements UseCaseOutputPort {
 
@@ -45,7 +40,7 @@ public class HttpGateway implements UseCaseOutputPort {
                 String json = tryToGetJsonStrings(conn);
                 jsonStrings.add(json);
             } catch (Exception e) {
-                log.error("Fehler beim Abrufen des Sudokus #" + (i + 1), e);
+                log.error("Fehler beim Abrufen des Sudokus Nr." + (i + 1), e);
             } finally {
                 if (conn != null) conn.disconnect();
             }
@@ -59,8 +54,8 @@ public class HttpGateway implements UseCaseOutputPort {
         URL url = new URL("https://sudoku-api.vercel.app/api/dosuku");
         conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
-        conn.setConnectTimeout(5000);
-        conn.setReadTimeout(5000);
+        conn.setConnectTimeout(12000);
+        conn.setReadTimeout(12000);
         return conn;
     }
 

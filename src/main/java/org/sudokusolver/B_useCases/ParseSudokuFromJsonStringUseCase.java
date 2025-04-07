@@ -3,7 +3,6 @@ package org.sudokusolver.B_useCases;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.gson.JsonPrimitive;
 import org.sudokusolver.A_entities.objectsAndDataStructures.Cell;
 import org.sudokusolver.A_entities.objectsAndDataStructures.SudokuBoard;
 
