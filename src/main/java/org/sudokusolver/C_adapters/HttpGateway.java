@@ -3,9 +3,6 @@ package org.sudokusolver.C_adapters;
 import com.google.gson.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.sudokusolver.A_entities.objectsAndDataStructures.SudokuBoard;
-import org.sudokusolver.B_useCases.ApplicationConf;
-import org.sudokusolver.B_useCases.ParseSudokuFromJsonStringUseCase;
 import org.sudokusolver.B_useCases.UseCaseOutputPort;
 
 import java.io.BufferedReader;
@@ -19,17 +16,6 @@ import java.util.List;
 public class HttpGateway implements UseCaseOutputPort {
 
     private static final Logger log = LoggerFactory.getLogger(HttpGateway.class);
-
-    @Override
-    public List<SudokuBoard> getSudokus() {
-        List<String> jsonStrings = getSudokuJsonStrings();
-        return parseSudokus(jsonStrings);
-    }
-
-    public static List<SudokuBoard> parseSudokus(List<String> jsonStrings){
-        var useCase = new ParseSudokuFromJsonStringUseCase();
-        return useCase.parse(jsonStrings);
-    }
 
     public List<String> getSudokuJsonStrings() {
         List<String> jsonStrings = new ArrayList<>();
@@ -47,7 +33,6 @@ public class HttpGateway implements UseCaseOutputPort {
         }
         return jsonStrings;
     }
-
 
     private HttpURLConnection getHttpConnection() throws IOException {
         HttpURLConnection conn = null;

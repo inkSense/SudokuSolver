@@ -2,16 +2,18 @@ package org.sudokusolver;
 
 
 import javafx.application.Application;
-import javafx.scene.layout.GridPane;
+import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.sudokusolver.A_entities.objectsAndDataStructures.*;
+import org.sudokusolver.B_useCases.UseCaseInteractor;
 import org.sudokusolver.C_adapters.Controller;
+import org.sudokusolver.C_adapters.HttpGateway;
 import org.sudokusolver.D_frameworksAndDrivers.FxView;
 
 
-public class Main /* extends Application */ {
+public class Main  extends Application {
 
+    FxView fxView;
 
     private static final Logger log = LoggerFactory.getLogger(Main.class);
 //    @Override
@@ -46,9 +48,26 @@ public class Main /* extends Application */ {
 //        primaryStage.show();
 //    }
 
+    @Override
+    public void init() {
+        var api = new HttpGateway();
+        var interactor = new UseCaseInteractor(api);
+        var controller = new Controller(interactor);
+        controller.loadSudokus();
+        int sudokuIndex = 3;  // bitte nicht zu hoch
+        controller.setSudokuToUseCaseInputPort(sudokuIndex);
+        fxView = new FxView();
+        fxView.setController(controller);
+        fxView.setCellList(controller.getSudoku(sudokuIndex).getCells());
+    }
+
+    @Override
+    public void start(Stage primaryStage){
+        fxView.start(primaryStage);
+    }
 
     public static void main(String[] args) {
-        FxView.main();
+        launch(args);
     }
 
 

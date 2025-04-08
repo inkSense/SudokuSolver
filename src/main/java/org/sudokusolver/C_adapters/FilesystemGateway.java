@@ -8,7 +8,6 @@ import java.util.List;
 
 public class FilesystemGateway implements UseCaseOutputPort {
 
-    @Override
     public List<SudokuBoard> getSudokus() {
         return loadSudokusFromDisk();
     }

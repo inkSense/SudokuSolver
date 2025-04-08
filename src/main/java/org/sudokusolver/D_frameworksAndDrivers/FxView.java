@@ -1,6 +1,5 @@
 package org.sudokusolver.D_frameworksAndDrivers;
 
-import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -12,43 +11,30 @@ import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sudokusolver.A_entities.objectsAndDataStructures.Cell;
-import org.sudokusolver.A_entities.objectsAndDataStructures.SudokuBoard;
-import org.sudokusolver.B_useCases.UseCaseInteractor;
 import org.sudokusolver.C_adapters.Controller;
-import org.sudokusolver.C_adapters.HttpGateway;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 
 
-public class FxView extends Application {
-
+public class FxView {
 
     //@FXML
     GridPane grid;
     Controller controller;
-    SudokuBoard sudoku;
+    List<Cell> cellList;
 
     private static final Logger log = LoggerFactory.getLogger(FxView.class);
 
-    public static void main(String... args){
-        launch(args);
+    public void setCellList(List<Cell> cells){
+        this.cellList = cells;
     }
 
-    @Override
-    public void init() {
-        var api = new HttpGateway();
-        var interactor = new UseCaseInteractor(api);
-        controller = new Controller(interactor);
-        controller.loadSudokus();
-        int sudokuIndex = 3;  // bitte nicht zu hoch
-        controller.setSudokuToUseCaseInputPort(sudokuIndex);
-        sudoku = controller.getSudoku(sudokuIndex);
+    public void setController(Controller controller) {
+        this.controller = controller;
     }
 
-
-    @Override
     public void start(Stage primaryStage) {
         grid = new GridPane();
 
@@ -68,48 +54,16 @@ public class FxView extends Application {
             for(int row = 0; row < 9; row++){
                 CellView cellView = new CellView();
 
-                int top = 1, right = 1, bottom = 1, left = 1;
-                String topColor = "lightgray", rightColor = "lightgray",
-                        bottomColor = "lightgray", leftColor = "lightgray";
-
-                // Dickere Linien an 3x3-Grenzen
-                if (row % 3 == 0) {
-                    top = 3;
-                    topColor = "black";
-                }
-                if (row == 8) {
-                    bottom = 3;
-                    bottomColor = "black";
-                }
-                if (col % 3 == 0) {
-                    left = 3;
-                    leftColor = "black";
-                }
-                if (col == 8) {
-                    right = 3;
-                    rightColor = "black";
-                }
-
-                // Nun vier Werte im richtigen Format zusammenbauen:
-                String style = String.format(
-                        "-fx-border-width: %dpx %dpx %dpx %dpx; "
-                                + "-fx-border-color: %s %s %s %s; "
-                                + "-fx-border-style: solid solid solid solid;",
-                        top, right, bottom, left,
-                        topColor, rightColor, bottomColor, leftColor
-                );
+                String style = getStyleFromRowAndCol(row, col);
 
                 // final setzen
                 cellView.setStyle(style);
-
 
                 cellView.setStyle(style);
                 grid.add(cellView, col, row);
 
             }
         }
-
-
         refreshBoard();
 
         // Container, in den wir das Grid legen
@@ -122,8 +76,42 @@ public class FxView extends Application {
         primaryStage.show();
     }
 
+    private String getStyleFromRowAndCol(int row, int col){
+        int top = 1, right = 1, bottom = 1, left = 1;
+        String topColor = "lightgray", rightColor = "lightgray",
+                bottomColor = "lightgray", leftColor = "lightgray";
+
+        // Dickere Linien an 3x3-Grenzen
+        if (row % 3 == 0) {
+            top = 3;
+            topColor = "black";
+        }
+        if (row == 8) {
+            bottom = 3;
+            bottomColor = "black";
+        }
+        if (col % 3 == 0) {
+            left = 3;
+            leftColor = "black";
+        }
+        if (col == 8) {
+            right = 3;
+            rightColor = "black";
+        }
+
+        // Nun vier Werte im richtigen Format zusammenbauen:
+        String style = String.format(
+                "-fx-border-width: %dpx %dpx %dpx %dpx; "
+                        + "-fx-border-color: %s %s %s %s; "
+                        + "-fx-border-style: solid solid solid solid;",
+                top, right, bottom, left,
+                topColor, rightColor, bottomColor, leftColor
+        );
+        return style;
+    }
+
     private void refreshBoard() {
-        for(Cell cell: sudoku.getCells()){
+        for(Cell cell: cellList){
             CellView cellView = (CellView) getNodeByRowColumnIndex(cell.position.y, cell.position.x, grid);
             if (cell.content == 0) {
                 cellView.setValue(null);
