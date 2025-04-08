@@ -28,11 +28,11 @@ public class ParseSudokuFromJsonStringUseCase {
         JsonArray jsonArray = firstGrid.getAsJsonArray("value");
         String difficulty = firstGrid.get("difficulty").getAsString();
         Cell[][] board = new Cell[9][9];
-        for (int i = 0; i < 9; i++) {
-            JsonArray row = jsonArray.get(i).getAsJsonArray();
-            for (int j = 0; j < 9; j++) {
-                int content = row.get(j).getAsInt();
-                board[i][j] = new Cell(content);
+        for (int row = 0; row < 9; row++) {
+            JsonArray rowArray = jsonArray.get(row).getAsJsonArray();
+            for (int col = 0; col < 9; col++) {
+                int content = rowArray.get(col).getAsInt();
+                board[row][col] = new Cell(content, row, col);
             }
         }
         return new SudokuBoard(board, difficulty);

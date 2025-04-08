@@ -4,6 +4,7 @@ module org.sudokusolver {
     requires org.apache.logging.log4j.core;
     requires org.slf4j;
     requires com.google.gson;
+    requires java.desktop;
 
 
     opens org.sudokusolver.D_frameworksAndDrivers to javafx.fxml, javafx.graphics;

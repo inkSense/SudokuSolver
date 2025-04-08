@@ -69,15 +69,9 @@ public class SudokuBoard {
         return result;
     }
 
-    public int getBlockIndexFromCell(int row, int col) {
-        validateIndex(row);
-        validateIndex(col);
-        int blockRow = row / 3;
-        int blockCol = col / 3;
-        return blockRow * 3 + blockCol;
-    }
 
-    private void validateIndex(int index) {
+
+    static void validateIndex(int index) {
         if (index < 0 || index > 8) {
             throw new IllegalArgumentException("Invalid index: " + index);
         }
