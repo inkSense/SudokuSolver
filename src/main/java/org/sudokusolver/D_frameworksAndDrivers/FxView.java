@@ -123,18 +123,15 @@ public class FxView extends Application {
     }
 
     private void refreshBoard() {
-        for (int row = 0; row < 9; row++) {
-            for (int col = 0; col < 9; col++) {
-                Cell cell = sudoku.getCells()[row][col];
-                CellView cellView = (CellView) getNodeByRowColumnIndex(row, col, grid);
-                if (cell.content == 0) {
-                    cellView.setValue(null);
-                    List<Integer> possibleContents = cell.getPossibleContent();
-                    Set<Integer> possibles = new HashSet<>(possibleContents);
-                    cellView.setPossibles(possibles);
-                } else {
-                    cellView.setValue(cell.content);
-                }
+        for(Cell cell: sudoku.getCells()){
+            CellView cellView = (CellView) getNodeByRowColumnIndex(cell.position.y, cell.position.x, grid);
+            if (cell.content == 0) {
+                cellView.setValue(null);
+                List<Integer> possibleContents = cell.possibleContent;
+                Set<Integer> possibles = new HashSet<>(possibleContents);
+                cellView.setPossibles(possibles);
+            } else {
+                cellView.setValue(cell.content);
             }
         }
     }

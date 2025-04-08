@@ -8,76 +8,70 @@ import java.util.List;
 
 public class SolveUseCase {
     SudokuBoard sudoku;
-    Cell[][] grid;
     boolean go1 = true;
     boolean go2 = true;
     private static final Logger log = LoggerFactory.getLogger(SolveUseCase.class);
 
     public void setSudoku(SudokuBoard sudoku) {
         this.sudoku = sudoku;
-        grid = sudoku.getCells();
     }
 
     public void reducePossibilitiesFromCurrentState(){
-        for(int row = 0; row < 9; row++ ){
-            for(int col = 0; col < 9; col++){
-                Cell cell = grid[row][col];
-                int content = cell.content;
-                if(content != 0){
-                    cell.removeAllPossibilities();
-                    resolvePossibilitiesInRow(row, content);
-                    resolvePossibilitiesInColumn(col, content);
-                    int box = sudoku.getBlockIndexFromCell(row, col);
-                    resolvePossibilitiesInBox(box, content);
-                }
+        for(Cell cell: sudoku.getCells()){
+            int content = cell.content;
+
+            if(content != 0){
+                int row = cell.position.y;
+                int col = cell.position.x;
+                int box = cell.boxIndex;
+
+                cell.removeAllPossibilities();
+                resolvePossibilitiesInRow(row, content);
+                resolvePossibilitiesInColumn(col, content);
+                resolvePossibilitiesInBox(box, content);
             }
         }
     }
 
     private void resolvePossibilitiesInRow(int row, int contentValue){
-        for(int col = 0; col < 9; col++) {
-            Cell cell = grid[row][col];
+        for(Cell cell : sudoku.getRow(row)){
             cell.removeFromPossibleContent(contentValue);
         }
     }
 
     private void resolvePossibilitiesInColumn(int col, int contentValue){
-        for(int row = 0; row < 9; row++ ){
-            Cell cell = grid[row][col];
+        for(Cell cell : sudoku.getColumn(col)){
             cell.removeFromPossibleContent(contentValue);
         }
     }
 
     private void resolvePossibilitiesInBox(int boxIndex, int contentValue){
-        List<Cell> cells = sudoku.getBlock(boxIndex);
-        for(Cell cell : cells){
+        for(Cell cell : sudoku.getBlock(boxIndex)){
             cell.removeFromPossibleContent(contentValue);
         }
     }
 
     public void printOutPossibilities(){
-        for(int row = 0; row < 9; row++ ){
-            for(int col = 0; col < 9; col++) {
-                Cell cell = grid[row][col];
-                List<Integer> possibilities = cell.getPossibleContent();
-                if(!possibilities.isEmpty()){
-                    System.out.println("Möglichkeiten in der Zelle " + row + ", " + col + ": " + possibilities);
-                }
+        for(Cell cell : sudoku.getCells()){
+            if(!cell.possibleContent.isEmpty()){
+                System.out.println(
+                        "Möglichkeiten in der Zelle "
+                                + cell.position.y + ", "
+                                + cell.position.x + ": "
+                                + cell.possibleContent
+                );
             }
         }
     }
 
     public void testForSinglePossibilitiesAndFillIn(){
         boolean nothingFound = true;
-        for(int row = 0; row < 9; row++ ){
-            for(int col = 0; col < 9; col++) {
-                Cell cell = grid[row][col];
-                if(cell.getPossibleContent().size() == 1){
-                    nothingFound = false;
-                    cell.content = cell.getPossibleContent().get(0);
-                    cell.removeAllPossibilities();
-                    log.info("Found " + cell.content + " in " + row + "," +col);
-                }
+        for(Cell cell: sudoku.getCells()){
+            if(cell.possibleContent.size() == 1){
+                nothingFound = false;
+                cell.content = cell.possibleContent.get(0);
+                cell.removeAllPossibilities();
+                log.info("Found " + cell.content + " in " + cell.position.y + "," + cell.position.x);
             }
         }
         if(nothingFound){
@@ -88,14 +82,15 @@ public class SolveUseCase {
 
     public void testForSinglePossibilitiesInContextAndFillIn(){
         boolean nothingFound = true;
-        for(int row = 0; row < 9; row++ ){
-            for(int col = 0; col < 9; col++) {
-                Cell cell = grid[row][col];
-                for(Integer i : cell.getPossibleContent() ){
-                    int blockIndex = sudoku.getBlockIndexFromCell(row, col);
+        for(Cell cell: sudoku.getCells()){
+                for(Integer i : cell.possibleContent ){
+                    int row = cell.position.y;
+                    int col = cell.position.x;
+                    int box = cell.boxIndex;
+
                     if( isSinglePossibilityInRow(row, cell, i) ||
                         isSinglePossibilityInColumn(col, cell, i) ||
-                        isSinglePossibilityInBox(blockIndex, cell, i)
+                        isSinglePossibilityInBox(box, cell, i)
                     ){
                         cell.content = i;
                         cell.removeAllPossibilities();
@@ -103,7 +98,7 @@ public class SolveUseCase {
                         reducePossibilitiesFromCurrentState();
                         break;
                     }
-                }
+
             }
         }
         if(nothingFound){
@@ -113,9 +108,10 @@ public class SolveUseCase {
     }
 
     private boolean isSinglePossibilityInRow(int row, Cell selfCell, int possibilityValue){
-        for(int col = 0; col < 9; col++) {
-            Cell cell = grid[row][col];
-            if (cell.getPossibleContent().contains(possibilityValue) && cell != selfCell) {
+        List<Cell> rowWithoutItsself = sudoku.getRow(row);
+        rowWithoutItsself.remove(selfCell);
+        for(Cell cell : rowWithoutItsself){
+            if (cell.possibleContent.contains(possibilityValue) && cell != selfCell) {
                 return false;
             }
         }
@@ -123,9 +119,10 @@ public class SolveUseCase {
     }
 
     private boolean isSinglePossibilityInColumn(int col, Cell selfCell, int possibilityValue){
-        for(int row = 0; row < 9; row++){
-            Cell cell = grid[row][col];
-            if (cell.getPossibleContent().contains(possibilityValue) && cell != selfCell) {
+        List<Cell> colWithoutItsself = sudoku.getColumn(col);
+        colWithoutItsself.remove(selfCell);
+        for(Cell cell : colWithoutItsself){
+            if (cell.possibleContent.contains(possibilityValue) && cell != selfCell) {
                 return false;
             }
         }
@@ -136,8 +133,7 @@ public class SolveUseCase {
         List<Cell> cells = sudoku.getBlock(boxIndex);
         cells.remove(selfCell);
         for (Cell cell : cells) {
-            if(cell.getPossibleContent().contains(possibilityValue)){
-                cell.getPossibleContent().toString();
+            if(cell.possibleContent.contains(possibilityValue)){
                 return false;
             }
         }

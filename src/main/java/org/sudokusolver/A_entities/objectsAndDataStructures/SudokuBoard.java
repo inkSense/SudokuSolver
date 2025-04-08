@@ -11,15 +11,15 @@ import java.util.stream.IntStream;
 public class SudokuBoard {
 
     private static final Logger log = LoggerFactory.getLogger(SudokuBoard.class);
-    private final Cell[][] cells;
+    private final List<Cell> cells;
     private final String difficulty;
 
-    public SudokuBoard(Cell[][] cells, String difficulty) {
+    public SudokuBoard(List<Cell> cells, String difficulty) {
         this.cells = cells;
         this.difficulty = difficulty;
     }
 
-    public Cell[][] getCells() {
+    public List<Cell> getCells() {
         return cells;
     }
 
@@ -28,7 +28,8 @@ public class SudokuBoard {
     }
 
     public void print() {
-        for (Cell[] row : cells) {
+        for (int r = 0; r < 9; r++) {
+            List<Cell> row = getRow(r);
             for (Cell cell : row) {
                 System.out.print((cell.content == 0 ? "." : cell.content) + " ");
             }
@@ -39,37 +40,18 @@ public class SudokuBoard {
 
     public List<Cell> getRow(int row) {
         validateIndex(row);
-        List<Cell> result = new ArrayList<>();
-        for (int col = 0; col < 9; col++) {
-            result.add(cells[row][col]);
-        }
-        return result;
+        return cells.stream().filter(c->c.position.y == row).toList();
     }
 
     public List<Cell> getColumn(int col) {
         validateIndex(col);
-        List<Cell> result = new ArrayList<>();
-        for (int row = 0; row < 9; row++) {
-            result.add(cells[row][col]);
-        }
-        return result;
+        return cells.stream().filter(c->c.position.x == col).toList();
     }
 
     public List<Cell> getBlock(int blockNumber) {
         validateIndex(blockNumber);
-        int startRow = (blockNumber / 3) * 3;
-        int startCol = (blockNumber % 3) * 3;
-        List<Cell> result = new ArrayList<>();
-
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                result.add(cells[startRow + i][startCol + j]);
-            }
-        }
-        return result;
+        return cells.stream().filter(c->c.boxIndex == blockNumber).toList();
     }
-
-
 
     static void validateIndex(int index) {
         if (index < 0 || index > 8) {
