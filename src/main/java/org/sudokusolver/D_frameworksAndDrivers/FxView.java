@@ -70,15 +70,35 @@ public class FxView implements Presenter2ViewOutputPort {
                 CellView cellView = new CellView();
                 String style = getStyleFromRowAndCol(row, col);
                 cellView.setStyle(style);
-                cellView.setStyle(style);
+                int finalCol = col;
+                int finalRow = row;
+                cellView.setOnMouseClicked(evt -> {
+                    // Presenter/Controller benachrichtigen: (row, col) ausgewählt
+                    //cellView.toggleClicked();
+                    presenter.cellClicked(finalRow, finalCol);
+                    //log.info("Col " + finalCol + ", row " + finalRow);
+                });
                 grid.add(cellView, col, row);
             }
         }
     }
 
+    public void highlightCell(int row, int col) {
+        // 1) Alles „unhighlighten“
+        for (Node node : grid.getChildren()) {
+            if (node instanceof CellView) {
+                ((CellView) node).setHighlight(false);
+            }
+        }
+        // 2) Gesuchte Zelle markieren
+        CellView cellNode = getCellByRowColumnIndex(row, col);
+        cellNode.setHighlight(true);
+    }
+
+
     public void refreshBoard(List<Cell> cellList) {
         for(Cell cell: cellList){
-            CellView cellView = (CellView) getNodeByRowColumnIndex(cell.position.y, cell.position.x);
+            CellView cellView = getCellByRowColumnIndex(cell.position.y, cell.position.x);
             if (cell.content == 0) {
                 cellView.setValue(null);
                 List<Integer> possibleContents = cell.possibleContent;
@@ -90,7 +110,7 @@ public class FxView implements Presenter2ViewOutputPort {
         }
     }
 
-    public Node getNodeByRowColumnIndex(int row, int column) {
+    public CellView getCellByRowColumnIndex(int row, int column) {
         for (Node node : grid.getChildren()) {
             Integer rowIndex = GridPane.getRowIndex(node);
             Integer colIndex = GridPane.getColumnIndex(node);
@@ -98,7 +118,7 @@ public class FxView implements Presenter2ViewOutputPort {
             if (rowIndex == null) rowIndex = 0;
             if (colIndex == null) colIndex = 0;
             if (rowIndex == row && colIndex == column) {
-                return node;
+                return (CellView) node;
             }
         }
         log.error("Something went wrong in getNodeByRowColumnIndex()");
@@ -110,6 +130,11 @@ public class FxView implements Presenter2ViewOutputPort {
             String character = event.getText();
             presenter.handleKeyPressed(character);
         });
+
+
+
+
+
     }
 
     String getStyleFromRowAndCol(int row, int col){

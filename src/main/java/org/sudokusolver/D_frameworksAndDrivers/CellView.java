@@ -13,6 +13,7 @@ public class CellView extends StackPane {
     private final Label bigLabel = new Label();
     private final GridPane smallGrid = new GridPane();
     private final Label[][] smallLabels = new Label[3][3];
+    private boolean clicked;
 
     public CellView() {
         // 1) Big Label für festen Wert
@@ -74,6 +75,24 @@ public class CellView extends StackPane {
                 smallLabels[row][col].setText("");
             }
         }
+    }
+
+    public void setHighlight(boolean highlight) {
+        if (highlight) {
+            setStyle(getStyle() + "; -fx-background-color: #ADD8E6;");
+        } else {
+            // Hintergrund zurücksetzen – am besten ein Basis-Style merken
+            setStyle(getStyle().replaceAll("-fx-background-color:\\s?#[0-9A-Fa-f]+;", ""));
+        }
+    }
+
+
+    public boolean isClicked() {
+        return clicked;
+    }
+
+    public void toggleClicked() {
+        clicked = !clicked;
     }
 }
 

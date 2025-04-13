@@ -37,5 +37,7 @@ public class Presenter {
         }
     }
 
-
+    public void cellClicked(int row, int col){
+        presenter2ViewOutputPort.highlightCell(row, col);
+    }
 }
