@@ -2,21 +2,26 @@ package org.sudokusolver.B_useCases;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.sudokusolver.A_entities.objectsAndDataStructures.SolvingSudokus;
 import org.sudokusolver.A_entities.objectsAndDataStructures.SudokuBoard;
 
 import java.util.List;
 
 public class UseCaseInteractor implements UseCaseInputPort {
     LoadFileUseCase loadFile = new LoadFileUseCase();
-    SaveFileUseCase saveFile = new SaveFileUseCase();
+    SaveFileUseCase saveFile;
     ParseSudokuFromJsonStringUseCase parse = new ParseSudokuFromJsonStringUseCase();
     DownloadSudokuFromApiUseCase download;
-    SolveUseCase solve = new SolveUseCase();
+    SolvingSudokus solve = new SolvingSudokus();
     SudokuBoard sudoku;
     private static final Logger log = LoggerFactory.getLogger(UseCaseInteractor.class);
 
-    public UseCaseInteractor(UseCaseOutputPort useCaseOutputPort) {
-        this.download = new DownloadSudokuFromApiUseCase(useCaseOutputPort);
+    public UseCaseInteractor(
+            UseCase2HttpGatewayOutputPort useCase2HttpGatewayOutputPort,
+            UseCase2FilesystemOutputPort useCase2FilesystemOutputPort
+            ) {
+        this.download = new DownloadSudokuFromApiUseCase(useCase2HttpGatewayOutputPort);
+        this.saveFile = new SaveFileUseCase(useCase2FilesystemOutputPort);
     }
 
     public List<SudokuBoard> loadSudokus(){

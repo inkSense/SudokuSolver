@@ -28,6 +28,7 @@ public class ParseSudokuFromJsonStringUseCase {
         JsonArray jsonArray = firstGrid.getAsJsonArray("value");
         String difficulty = firstGrid.get("difficulty").getAsString();
         List<Cell> cells = new ArrayList<>();
+
         for (int row = 0; row < 9; row++) {
             JsonArray rowArray = jsonArray.get(row).getAsJsonArray();
             for (int col = 0; col < 9; col++) {
@@ -37,6 +38,7 @@ public class ParseSudokuFromJsonStringUseCase {
         }
         return new SudokuBoard(cells, difficulty);
     }
+
     public String parseDifficulty(String jsonString){
         JsonObject root = JsonParser.parseString(jsonString).getAsJsonObject();
         JsonArray grids = root.getAsJsonObject("newboard")

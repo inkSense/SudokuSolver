@@ -13,4 +13,6 @@ module org.sudokusolver {
     exports org.sudokusolver;
     exports org.sudokusolver.A_entities.objectsAndDataStructures;
     exports org.sudokusolver.C_adapters;
+    opens org.sudokusolver.C_adapters to javafx.fxml, javafx.graphics;
+    exports org.sudokusolver.D_frameworksAndDrivers;
 }

@@ -1,23 +1,22 @@
 package org.sudokusolver.C_adapters;
 
-import org.sudokusolver.A_entities.objectsAndDataStructures.SudokuBoard;
-import org.sudokusolver.B_useCases.UseCaseOutputPort;
+import org.sudokusolver.B_useCases.UseCase2FilesystemOutputPort;
 
-import java.util.Collections;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.List;
 
-public class FilesystemGateway implements UseCaseOutputPort {
+public class FilesystemGateway implements UseCase2FilesystemOutputPort {
 
-    public List<SudokuBoard> getSudokus() {
-        return loadSudokusFromDisk();
+    public void save(List<String> content, Path path){
+        try {
+            Files.createDirectories(path.getParent()); // falls übergeordnete Ordner fehlen
+            String joined = String.join(System.lineSeparator(), content);
+            Files.writeString(path, joined, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+        } catch (Exception e) {
+            throw new RuntimeException("Fehler beim Schreiben der Datei", e);
+        }
     }
 
-    @Override
-    public List<String> getSudokuJsonStrings() {
-        return Collections.EMPTY_LIST;
-    }
-
-    private List<SudokuBoard> loadSudokusFromDisk(){
-        return Collections.EMPTY_LIST;
-    }
 }

@@ -1,18 +1,16 @@
 package org.sudokusolver.B_useCases;
 
-import org.sudokusolver.A_entities.objectsAndDataStructures.SudokuBoard;
-
 import java.util.List;
 
 public class DownloadSudokuFromApiUseCase {
-    private final UseCaseOutputPort provider;
+    private final UseCase2HttpGatewayOutputPort useCase2HttpGatewayOutputPort;
 
-    public DownloadSudokuFromApiUseCase(UseCaseOutputPort provider) {
-        this.provider = provider;
+    public DownloadSudokuFromApiUseCase(UseCase2HttpGatewayOutputPort useCase2HttpGatewayOutputPort) {
+        this.useCase2HttpGatewayOutputPort = useCase2HttpGatewayOutputPort;
     }
 
 
     public List<String> downloadJsonStrings(){
-        return provider.getSudokuJsonStrings();
+        return useCase2HttpGatewayOutputPort.getSudokuJsonStrings();
     }
 }

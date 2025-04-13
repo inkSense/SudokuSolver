@@ -1,16 +1,14 @@
-package org.sudokusolver.B_useCases;
+package org.sudokusolver.A_entities.objectsAndDataStructures;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.sudokusolver.A_entities.objectsAndDataStructures.*;
-
 import java.util.List;
 
-public class SolveUseCase {
+public class SolvingSudokus {
     SudokuBoard sudoku;
     boolean go1 = true;
     boolean go2 = true;
-    private static final Logger log = LoggerFactory.getLogger(SolveUseCase.class);
+    private static final Logger log = LoggerFactory.getLogger(SolvingSudokus.class);
 
     public void setSudoku(SudokuBoard sudoku) {
         this.sudoku = sudoku;
@@ -30,24 +28,6 @@ public class SolveUseCase {
                 resolvePossibilitiesInColumn(col, content);
                 resolvePossibilitiesInBox(box, content);
             }
-        }
-    }
-
-    private void resolvePossibilitiesInRow(int row, int contentValue){
-        for(Cell cell : sudoku.getRow(row)){
-            cell.removeFromPossibleContent(contentValue);
-        }
-    }
-
-    private void resolvePossibilitiesInColumn(int col, int contentValue){
-        for(Cell cell : sudoku.getColumn(col)){
-            cell.removeFromPossibleContent(contentValue);
-        }
-    }
-
-    private void resolvePossibilitiesInBox(int boxIndex, int contentValue){
-        for(Cell cell : sudoku.getBlock(boxIndex)){
-            cell.removeFromPossibleContent(contentValue);
         }
     }
 
@@ -104,6 +84,24 @@ public class SolveUseCase {
         if(nothingFound){
             go2 = false;
             log.info("Found nothing to fill in with Context");
+        }
+    }
+
+    private void resolvePossibilitiesInRow(int row, int contentValue){
+        for(Cell cell : sudoku.getRow(row)){
+            cell.removeFromPossibleContent(contentValue);
+        }
+    }
+
+    private void resolvePossibilitiesInColumn(int col, int contentValue){
+        for(Cell cell : sudoku.getColumn(col)){
+            cell.removeFromPossibleContent(contentValue);
+        }
+    }
+
+    private void resolvePossibilitiesInBox(int boxIndex, int contentValue){
+        for(Cell cell : sudoku.getBlock(boxIndex)){
+            cell.removeFromPossibleContent(contentValue);
         }
     }
 

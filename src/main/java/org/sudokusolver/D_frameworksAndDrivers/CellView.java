@@ -18,10 +18,8 @@ public class CellView extends StackPane {
         // 1) Big Label für festen Wert
         bigLabel.setFont(Font.font(45));
         bigLabel.setAlignment(Pos.CENTER);
-        // Optional: Größe festlegen, Ausrichtung etc.
 
         // 2) GridPane (3×3) für mögliche Kandidaten
-
         smallGrid.setPrefSize(65, 65); // Beispielwerte, je nach Layout
         smallGrid.setAlignment(Pos.CENTER);
         smallGrid.setHgap(12);
@@ -51,43 +49,25 @@ public class CellView extends StackPane {
         showCandidates(true);
     }
 
-    /**
-     * Zeigt oder versteckt das Grid der Kandidaten und den großen Label.
-     */
     private void showCandidates(boolean show) {
         smallGrid.setVisible(show);
         bigLabel.setVisible(!show);
     }
 
-    /**
-     * Setzt einen festen Wert (1–9). Ist value null, dann kein Wert.
-     */
     public void setValue(Integer value) {
         if (value == null) {
-            // Kein Wert -> nur Kandidaten
             bigLabel.setText("");
             showCandidates(true);
         } else {
-            // Fester Wert -> nur den großen Label anzeigen
             bigLabel.setText(value.toString());
             showCandidates(false);
         }
     }
-
-    /**
-     * Setzt die möglichen Kandidaten. Am besten als Set<Integer> (z.B. {1, 2, 5}).
-     */
     public void setPossibles(Set<Integer> possibles) {
-        // Z.B. Mapping: (row, col) -> Zahl
-        //    1 -> (0,0), 2 -> (0,1), 3 -> (0,2),
-        //    4 -> (1,0), 5 -> (1,1), 6 -> (1,2),
-        //    7 -> (2,0), 8 -> (2,1), 9 -> (2,2)
-        // Dann setzen wir das Label entweder mit der Zahl oder leer:
         for (int num = 1; num <= 9; num++) {
             int index = num - 1;
             int row = index / 3;
             int col = index % 3;
-
             if (possibles.contains(num)) {
                 smallLabels[row][col].setText(Integer.toString(num));
             } else {

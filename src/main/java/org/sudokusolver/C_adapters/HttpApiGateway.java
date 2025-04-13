@@ -1,9 +1,11 @@
 package org.sudokusolver.C_adapters;
 
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.sudokusolver.B_useCases.UseCaseOutputPort;
+import org.sudokusolver.B_useCases.UseCase2HttpGatewayOutputPort;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,25 +15,35 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HttpGateway implements UseCaseOutputPort {
+public class HttpApiGateway implements UseCase2HttpGatewayOutputPort {
+    /**
+     * "DOSUKU-Api auf https://sudoku-api.vercel.app/"
+     */
 
-    private static final Logger log = LoggerFactory.getLogger(HttpGateway.class);
+    private static final Logger log = LoggerFactory.getLogger(HttpApiGateway.class);
 
     public List<String> getSudokuJsonStrings() {
+
         List<String> jsonStrings = new ArrayList<>();
         for (int i = 0; i < AdapterConf.numberOfGridsToDownload; i++) {
-            HttpURLConnection conn = null;
-            try {
-                conn = getHttpConnection();
-                String json = tryToGetJsonStrings(conn);
-                jsonStrings.add(json);
-            } catch (Exception e) {
-                log.error("Fehler beim Abrufen des Sudokus Nr." + (i + 1), e);
-            } finally {
-                if (conn != null) conn.disconnect();
-            }
+            String json = getSudokuJsonString();
+            jsonStrings.add(json);
         }
         return jsonStrings;
+    }
+
+    private String getSudokuJsonString() {
+        HttpURLConnection conn = null;
+        String json = null;
+        try {
+            conn = getHttpConnection();
+            json = tryToGetJsonStrings(conn);
+        } catch (Exception e) {
+            log.error("Fehler beim Abrufen des Sudokus.", e);
+        } finally {
+            if (conn != null) conn.disconnect();
+        }
+        return json;
     }
 
     private HttpURLConnection getHttpConnection() throws IOException {
@@ -39,8 +51,8 @@ public class HttpGateway implements UseCaseOutputPort {
         URL url = new URL("https://sudoku-api.vercel.app/api/dosuku");
         conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
-        conn.setConnectTimeout(12000);
-        conn.setReadTimeout(12000);
+        conn.setConnectTimeout(AdapterConf.connectionTimeOut);
+        conn.setReadTimeout(AdapterConf.readTimeOut);
         return conn;
     }
 
@@ -57,5 +69,7 @@ public class HttpGateway implements UseCaseOutputPort {
             return json;
         }
     }
+
+
 
 }
