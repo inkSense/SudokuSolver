@@ -41,7 +41,8 @@ public class Main  extends Application {
         // MVP
         ViewModel model = new ViewModel(controller);
         FxView fxView = new FxView(gridPane, scene);
-        new Presenter(model, fxView);
+        var presenter = new Presenter(model, fxView);
+        fxView.setPresenter(presenter);
 
     }
 

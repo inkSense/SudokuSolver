@@ -8,6 +8,7 @@ import javafx.scene.layout.RowConstraints;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sudokusolver.A_entities.objectsAndDataStructures.Cell;
+import org.sudokusolver.C_adapters.Presenter;
 import org.sudokusolver.C_adapters.Presenter2ViewOutputPort;
 
 import java.util.HashSet;
@@ -19,6 +20,7 @@ public class FxView implements Presenter2ViewOutputPort {
 
     private GridPane grid;
     private Scene scene;
+    private Presenter presenter;
 
     private static final Logger log = LoggerFactory.getLogger(FxView.class);
 
@@ -27,6 +29,10 @@ public class FxView implements Presenter2ViewOutputPort {
         this.scene = scene;
         addConstraints();
         makeCellViews();
+    }
+
+    public void setPresenter(Presenter presenter) {
+        this.presenter = presenter;
     }
 
     public GridPane getGrid() {
@@ -99,6 +105,13 @@ public class FxView implements Presenter2ViewOutputPort {
         return null;
     }
 
+    public void setKeyToPressable(){
+        scene.setOnKeyPressed(event -> {
+            String character = event.getText();
+            presenter.handleKeyPressed(character);
+        });
+    }
+
     String getStyleFromRowAndCol(int row, int col){
         int top = 1, right = 1, bottom = 1, left = 1;
         String topColor = "lightgray", rightColor = "lightgray",
@@ -132,5 +145,7 @@ public class FxView implements Presenter2ViewOutputPort {
         );
         return style;
     }
+
+
 
 }

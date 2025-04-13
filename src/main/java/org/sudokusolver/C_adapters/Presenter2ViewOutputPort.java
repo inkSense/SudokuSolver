@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface Presenter2ViewOutputPort {
     void refreshBoard(List<Cell> cellList);
-    Scene getScene();
+    void setKeyToPressable();
 }

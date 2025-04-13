@@ -12,33 +12,30 @@ public class Presenter {
     public Presenter(ViewModel model, Presenter2ViewOutputPort presenter2ViewOutputPort) {
         this.model = model;
         this.presenter2ViewOutputPort = presenter2ViewOutputPort;
-
-        setKeyToPressable(presenter2ViewOutputPort.getScene());
+        presenter2ViewOutputPort.setKeyToPressable();
         presenter2ViewOutputPort.refreshBoard(model.getCellList());
     }
 
-    private void setKeyToPressable(Scene scene){
-        scene.setOnKeyPressed(event -> {
-            switch (event.getCode()) {
-                case C:
-                    model.solveOneStepInContext();
-                    model.reducePossibilitiesFromCurrentState();
-                    presenter2ViewOutputPort.refreshBoard(model.getCellList());
-                    break;
-                case S:
-                    model.solveSudokuOneStep();
-                    model.reducePossibilitiesFromCurrentState();
-                    presenter2ViewOutputPort.refreshBoard(model.getCellList());
-                    break;
-                default:
-                    log.info("Andere Taste: " + event.getCode() + ". Funktionstasten: C S ");
-            }
-        });
+    public void setPresenter2ViewOutputPort(Presenter2ViewOutputPort presenter2ViewOutputPort) {
+        this.presenter2ViewOutputPort = presenter2ViewOutputPort;
     }
 
-
-
-
+    public void handleKeyPressed(String key) {
+        switch(key.toUpperCase()) {
+            case "C":
+                model.solveOneStepInContext();
+                model.reducePossibilitiesFromCurrentState();
+                presenter2ViewOutputPort.refreshBoard(model.getCellList());
+                break;
+            case "S":
+                model.solveSudokuOneStep();
+                model.reducePossibilitiesFromCurrentState();
+                presenter2ViewOutputPort.refreshBoard(model.getCellList());
+                break;
+            default:
+                log.info("Andere Taste: " + key + ". Funktionstasten: C S ");
+        }
+    }
 
 
 }
