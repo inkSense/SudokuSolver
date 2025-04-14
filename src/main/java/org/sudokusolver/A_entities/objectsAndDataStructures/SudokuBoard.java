@@ -40,17 +40,17 @@ public class SudokuBoard {
 
     public List<Cell> getRow(int row) {
         validateIndex(row);
-        return cells.stream().filter(c->c.position.y == row).toList();
+        return cells.stream().filter(c->c.position.y == row).collect(Collectors.toList());
     }
 
     public List<Cell> getColumn(int col) {
         validateIndex(col);
-        return cells.stream().filter(c->c.position.x == col).toList();
+        return cells.stream().filter(c->c.position.x == col).collect(Collectors.toList());
     }
 
     public List<Cell> getBlock(int blockNumber) {
         validateIndex(blockNumber);
-        return cells.stream().filter(c->c.boxIndex == blockNumber).toList();
+        return cells.stream().filter(c->c.boxIndex == blockNumber).collect(Collectors.toList());
     }
 
     static void validateIndex(int index) {

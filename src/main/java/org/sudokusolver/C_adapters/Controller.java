@@ -7,6 +7,7 @@ import org.sudokusolver.A_entities.objectsAndDataStructures.SudokuBoard;
 import org.sudokusolver.B_useCases.UseCaseInputPort;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Controller {
 

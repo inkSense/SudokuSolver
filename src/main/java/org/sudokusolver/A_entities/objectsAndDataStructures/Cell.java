@@ -12,8 +12,6 @@ public class Cell {
     public int boxIndex;
     public List<Integer> possibleContent;
 
-
-
     public Cell() {
         this.content = 0;
         initializePossibleContent();
@@ -37,9 +35,10 @@ public class Cell {
         possibleContent.clear();
     }
 
-    private void initializePossibleContent() {
-        possibleContent = new ArrayList<>();
-        IntStream.rangeClosed(1, 9).forEach(possibleContent::add);
+    public void initializePossibleContent() {
+        List<Integer> possibles = new ArrayList<>();
+        IntStream.rangeClosed(1, 9).forEach(possibles::add);
+        possibleContent = possibles;
     }
 
     int getBlockIndexFromCell(int row, int col) {

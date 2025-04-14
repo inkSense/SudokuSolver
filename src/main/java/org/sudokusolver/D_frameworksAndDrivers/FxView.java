@@ -11,9 +11,12 @@ import org.sudokusolver.A_entities.objectsAndDataStructures.Cell;
 import org.sudokusolver.C_adapters.Presenter;
 import org.sudokusolver.C_adapters.Presenter2ViewOutputPort;
 
+import java.awt.*;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 
 public class FxView implements Presenter2ViewOutputPort {
@@ -67,14 +70,12 @@ public class FxView implements Presenter2ViewOutputPort {
     void makeCellViews(){
         for(int col = 0; col < 9; col++){
             for(int row = 0; row < 9; row++){
-                CellView cellView = new CellView();
+                CellView cellView = new CellView(new Point(col, row));
                 String style = getStyleFromRowAndCol(row, col);
                 cellView.setStyle(style);
                 int finalCol = col;
                 int finalRow = row;
                 cellView.setOnMouseClicked(evt -> {
-                    // Presenter/Controller benachrichtigen: (row, col) ausgewählt
-                    //cellView.toggleClicked();
                     presenter.cellClicked(finalRow, finalCol);
                     //log.info("Col " + finalCol + ", row " + finalRow);
                 });
@@ -83,16 +84,46 @@ public class FxView implements Presenter2ViewOutputPort {
         }
     }
 
+
+
+
     public void highlightCell(int row, int col) {
-        // 1) Alles „unhighlighten“
+        CellView selfCell = getCellByRowColumnIndex(row, col);
+        boolean alreadyHighlighted = selfCell.isHighlighted();
+        // Alles „unhighlighten“
         for (Node node : grid.getChildren()) {
             if (node instanceof CellView) {
                 ((CellView) node).setHighlight(false);
             }
         }
-        // 2) Gesuchte Zelle markieren
-        CellView cellNode = getCellByRowColumnIndex(row, col);
-        cellNode.setHighlight(true);
+        if(!alreadyHighlighted){
+            // Wenn sie nicht schon an war, dann markieren.
+            selfCell.setHighlight(true);
+        }
+
+    }
+
+    private List<CellView> getHighlightedCells(){
+        List<CellView> cells = new ArrayList<>();
+        for(Node node: grid.getChildren()){
+            CellView cell = (CellView) node;
+            if(cell.isHighlighted()){
+                cells.add(cell);
+            }
+        }
+        return cells;
+    }
+
+
+
+    public List<Point> getPositionOfClickedCells(){
+        List<CellView> cells = getHighlightedCells();
+        if(cells.isEmpty()){
+            log.info("No Cells highlighted.");
+        } else if (cells.size() > 1){
+            log.error("More than one Cell highlighted!");
+        }
+        return cells.stream().map(CellView::getPosition).collect(Collectors.toList());
     }
 
 
@@ -124,6 +155,8 @@ public class FxView implements Presenter2ViewOutputPort {
         log.error("Something went wrong in getNodeByRowColumnIndex()");
         return null;
     }
+
+
 
     public void setKeyToPressable(){
         scene.setOnKeyPressed(event -> {
