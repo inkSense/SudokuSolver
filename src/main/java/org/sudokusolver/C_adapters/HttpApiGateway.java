@@ -47,7 +47,7 @@ public class HttpApiGateway implements UseCase2HttpGatewayOutputPort {
     }
 
     private HttpURLConnection getHttpConnection() throws IOException {
-        HttpURLConnection conn = null;
+        HttpURLConnection conn;
         URL url = new URL("https://sudoku-api.vercel.app/api/dosuku");
         conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
@@ -65,8 +65,8 @@ public class HttpApiGateway implements UseCase2HttpGatewayOutputPort {
             }
             // Whitespace entfernen durch kompaktes Re-Serialisieren
             JsonElement jsonElement = JsonParser.parseString(response.toString());
-            String json =  new Gson().toJson(jsonElement); // kompakter JSON-String
-            return json;
+            // kompakter JSON-String
+            return new Gson().toJson(jsonElement);
         }
     }
 

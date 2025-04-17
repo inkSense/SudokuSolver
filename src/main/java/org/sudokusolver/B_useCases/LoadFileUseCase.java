@@ -12,6 +12,7 @@ public class LoadFileUseCase {
     private static final Logger log = LoggerFactory.getLogger(LoadFileUseCase.class);
 
     public List<String> loadJsonStrings() {
+        // Läd Dateien mit mehreren Sudoku-Strings
         Path filePath = Paths.get(ApplicationConf.dataPathString);
         if (!Files.exists(filePath)) {
             log.error("File doesn't exist: " + filePath);

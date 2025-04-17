@@ -4,18 +4,13 @@ package org.sudokusolver.C_adapters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sudokusolver.A_entities.objectsAndDataStructures.Cell;
-import org.sudokusolver.A_entities.objectsAndDataStructures.SudokuBoard;
 import org.sudokusolver.B_useCases.UseCaseInputPort;
-
-import java.awt.*;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class Controller {
 
     UseCaseInputPort useCaseInputPort;
-    //List<SudokuBoard> sudokus;
     Presenter presenter;
     private static final Logger log = LoggerFactory.getLogger(Controller.class);
 

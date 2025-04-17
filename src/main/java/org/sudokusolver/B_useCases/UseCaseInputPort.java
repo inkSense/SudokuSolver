@@ -1,7 +1,6 @@
 package org.sudokusolver.B_useCases;
 
 import org.sudokusolver.A_entities.objectsAndDataStructures.Cell;
-import org.sudokusolver.A_entities.objectsAndDataStructures.SudokuBoard;
 
 import java.nio.file.Path;
 import java.util.List;

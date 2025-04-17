@@ -106,9 +106,9 @@ public class SolvingSudokus {
     }
 
     private boolean isSinglePossibilityInRow(int row, Cell selfCell, int possibilityValue){
-        List<Cell> rowWithoutItsself = sudoku.getRow(row);
-        rowWithoutItsself.remove(selfCell);
-        for(Cell cell : rowWithoutItsself){
+        List<Cell> rowWithoutItself = sudoku.getRow(row);
+        rowWithoutItself.remove(selfCell);
+        for(Cell cell : rowWithoutItself){
             if (cell.possibleContent.contains(possibilityValue) && cell != selfCell) {
                 return false;
             }
@@ -117,9 +117,9 @@ public class SolvingSudokus {
     }
 
     private boolean isSinglePossibilityInColumn(int col, Cell selfCell, int possibilityValue){
-        List<Cell> colWithoutItsself = sudoku.getColumn(col);
-        colWithoutItsself.remove(selfCell);
-        for(Cell cell : colWithoutItsself){
+        List<Cell> colWithoutItself = sudoku.getColumn(col);
+        colWithoutItself.remove(selfCell);
+        for(Cell cell : colWithoutItself){
             if (cell.possibleContent.contains(possibilityValue) && cell != selfCell) {
                 return false;
             }

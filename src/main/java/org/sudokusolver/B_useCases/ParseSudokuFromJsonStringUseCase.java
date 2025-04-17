@@ -44,7 +44,6 @@ public class ParseSudokuFromJsonStringUseCase {
         JsonArray grids = root.getAsJsonObject("newboard")
                 .getAsJsonArray("grids");
         JsonObject firstGrid = grids.get(0).getAsJsonObject();
-        String difficulty = firstGrid.get("difficulty").getAsString();
-        return difficulty;
+        return firstGrid.get("difficulty").getAsString();
     }
 }

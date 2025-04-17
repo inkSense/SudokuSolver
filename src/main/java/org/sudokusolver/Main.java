@@ -1,12 +1,10 @@
 package org.sudokusolver;
 
-
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +15,7 @@ import org.sudokusolver.C_adapters.HttpApiGateway;
 import org.sudokusolver.C_adapters.ViewModel;
 import org.sudokusolver.C_adapters.Presenter;
 import org.sudokusolver.D_frameworksAndDrivers.FxView;
-import org.sudokusolver.D_frameworksAndDrivers.SudokuListWindow;
+
 
 
 public class Main  extends Application {
@@ -52,8 +50,7 @@ public class Main  extends Application {
         Das View hat den Controller.
         Der Controller hat den Presenter und den UseCaseInteractor.
         Der Presenter hat das Model und das View.
-        Das Model hat nichts.
-         */
+        Das Model hat nichts. */
 
         Button load = fxView.onButtonClickOpenList();
         mainPane.setLeft(load);

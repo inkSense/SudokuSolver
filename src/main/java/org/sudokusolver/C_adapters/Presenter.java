@@ -9,17 +9,13 @@ import java.util.List;
 
 public class Presenter {
     private final ViewModel viewModel;
-    private Presenter2ViewOutputPort presenter2ViewOutputPort;
+    private final Presenter2ViewOutputPort presenter2ViewOutputPort;
     private static final Logger log = LoggerFactory.getLogger(Presenter.class);
 
     public Presenter(ViewModel viewModel, Presenter2ViewOutputPort presenter2ViewOutputPort) {
         this.viewModel = viewModel;
         this.presenter2ViewOutputPort = presenter2ViewOutputPort;
         presenter2ViewOutputPort.setKeyToPressable();
-    }
-
-    public void setPresenter2ViewOutputPort(Presenter2ViewOutputPort presenter2ViewOutputPort) {
-        this.presenter2ViewOutputPort = presenter2ViewOutputPort;
     }
 
     public void cellClicked(int row, int col){

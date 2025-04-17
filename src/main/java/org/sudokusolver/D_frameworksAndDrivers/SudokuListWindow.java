@@ -22,8 +22,8 @@ import java.util.stream.Collectors;
 public class SudokuListWindow {
 
     private Stage stage;
-    private ListView<String> listView = new ListView<>();
-    private Button loadButton = new Button("Load");
+    private final ListView<String> listView = new ListView<>();
+    private final Button loadButton = new Button("Load");
 
     private static final Logger log = LoggerFactory.getLogger(SudokuListWindow.class);
 

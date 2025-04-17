@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sudokusolver.A_entities.objectsAndDataStructures.Cell;
 import org.sudokusolver.C_adapters.Controller;
-import org.sudokusolver.C_adapters.Presenter;
 import org.sudokusolver.C_adapters.Presenter2ViewOutputPort;
 
 import java.awt.Point;
@@ -18,13 +17,12 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 
 public class FxView implements Presenter2ViewOutputPort {
 
-    private GridPane grid;
-    private Scene scene;
+    private final GridPane grid;
+    private final Scene scene;
     private final Controller controller;
 
     private static final Logger log = LoggerFactory.getLogger(FxView.class);
@@ -35,22 +33,6 @@ public class FxView implements Presenter2ViewOutputPort {
         this.controller = controller;
         addConstraints();
         makeCellViews();
-    }
-
-    public GridPane getGrid() {
-        return grid;
-    }
-
-    public void setGrid(GridPane grid) {
-        this.grid = grid;
-    }
-
-    public Scene getScene() {
-        return scene;
-    }
-
-    public void setScene(Scene scene) {
-        this.scene = scene;
     }
 
     void addConstraints() {
@@ -99,30 +81,6 @@ public class FxView implements Presenter2ViewOutputPort {
         return highlightedCells;
 
     }
-
-    private List<CellView> getHighlightedCells(){
-        List<CellView> cells = new ArrayList<>();
-        for(Node node: grid.getChildren()){
-            CellView cell = (CellView) node;
-            if(cell.isHighlighted()){
-                cells.add(cell);
-            }
-        }
-        return cells;
-    }
-
-
-
-    public List<Point> getPositionOfClickedCells(){
-        List<CellView> cells = getHighlightedCells();
-        if(cells.isEmpty()){
-            log.info("No Cells highlighted.");
-        } else if (cells.size() > 1){
-            log.error("More than one Cell highlighted!");
-        }
-        return cells.stream().map(CellView::getPosition).collect(Collectors.toList());
-    }
-
 
     public void refreshBoard(List<Cell> cellList) {
         for(Cell cell: cellList){
