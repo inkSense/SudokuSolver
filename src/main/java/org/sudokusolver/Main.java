@@ -3,6 +3,8 @@ package org.sudokusolver;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
@@ -15,6 +17,7 @@ import org.sudokusolver.C_adapters.HttpApiGateway;
 import org.sudokusolver.C_adapters.ViewModel;
 import org.sudokusolver.C_adapters.Presenter;
 import org.sudokusolver.D_frameworksAndDrivers.FxView;
+import org.sudokusolver.D_frameworksAndDrivers.SudokuListWindow;
 
 
 public class Main  extends Application {
@@ -25,10 +28,12 @@ public class Main  extends Application {
 
     @Override
     public void start(Stage primaryStage){
-        // Container, in den wir das Grid legen
+        BorderPane mainPane = new BorderPane();
         GridPane gridPane = new GridPane();
-        StackPane rootPane = new StackPane(gridPane);
-        Scene scene = new Scene(rootPane, 600, 600);
+
+        mainPane.setCenter(gridPane);
+
+        Scene scene = new Scene(mainPane, 800, 600);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Sudoku Solver");
         primaryStage.show();
@@ -39,11 +44,19 @@ public class Main  extends Application {
         var controller = new Controller(interactor);
 
         // MVP
-        ViewModel model = new ViewModel(controller);
-        FxView fxView = new FxView(gridPane, scene);
+        ViewModel model = new ViewModel();
+        FxView fxView = new FxView(gridPane, scene, controller);
         var presenter = new Presenter(model, fxView);
-        fxView.setPresenter(presenter);
+        controller.setPresenter(presenter);
+        /*
+        Das View hat den Controller.
+        Der Controller hat den Presenter und den UseCaseInteractor.
+        Der Presenter hat das Model und das View.
+        Das Model hat nichts.
+         */
 
+        Button load = fxView.onButtonClickOpenList();
+        mainPane.setLeft(load);
     }
 
     public static void main(String[] args) {

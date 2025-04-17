@@ -19,7 +19,7 @@ public class ParseSudokuFromJsonStringUseCase {
     }
 
 
-    private SudokuBoard parse(String jsonString){
+    public SudokuBoard parse(String jsonString){
         JsonObject root = JsonParser.parseString(jsonString).getAsJsonObject();
         JsonObject firstGrid = root
                 .getAsJsonObject("newboard")

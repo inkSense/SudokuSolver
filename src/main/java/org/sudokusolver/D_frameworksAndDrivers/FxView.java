@@ -2,16 +2,18 @@ package org.sudokusolver.D_frameworksAndDrivers;
 
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.RowConstraints;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sudokusolver.A_entities.objectsAndDataStructures.Cell;
+import org.sudokusolver.C_adapters.Controller;
 import org.sudokusolver.C_adapters.Presenter;
 import org.sudokusolver.C_adapters.Presenter2ViewOutputPort;
 
-import java.awt.*;
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -23,19 +25,16 @@ public class FxView implements Presenter2ViewOutputPort {
 
     private GridPane grid;
     private Scene scene;
-    private Presenter presenter;
+    private final Controller controller;
 
     private static final Logger log = LoggerFactory.getLogger(FxView.class);
 
-    public FxView(GridPane grid, Scene scene) {
+    public FxView(GridPane grid, Scene scene, Controller controller) {
         this.grid = grid;
         this.scene = scene;
+        this.controller = controller;
         addConstraints();
         makeCellViews();
-    }
-
-    public void setPresenter(Presenter presenter) {
-        this.presenter = presenter;
     }
 
     public GridPane getGrid() {
@@ -62,9 +61,6 @@ public class FxView implements Presenter2ViewOutputPort {
             grid.getColumnConstraints().add(colCon);
             grid.getRowConstraints().add(rowCon);
         }
-        //grid.setPadding(new Insets(1, 1, 1, 1));
-        //grid.setHgap(3);
-        //grid.setVgap(3);
     }
 
     void makeCellViews(){
@@ -76,7 +72,7 @@ public class FxView implements Presenter2ViewOutputPort {
                 int finalCol = col;
                 int finalRow = row;
                 cellView.setOnMouseClicked(evt -> {
-                    presenter.cellClicked(finalRow, finalCol);
+                    controller.cellClicked(finalRow, finalCol);
                     //log.info("Col " + finalCol + ", row " + finalRow);
                 });
                 grid.add(cellView, col, row);
@@ -85,9 +81,8 @@ public class FxView implements Presenter2ViewOutputPort {
     }
 
 
-
-
-    public void highlightCell(int row, int col) {
+    public List<Point> highlightCellBasedOnStatus(int row, int col) {
+        List<Point> highlightedCells = new ArrayList<>();
         CellView selfCell = getCellByRowColumnIndex(row, col);
         boolean alreadyHighlighted = selfCell.isHighlighted();
         // Alles „unhighlighten“
@@ -99,7 +94,9 @@ public class FxView implements Presenter2ViewOutputPort {
         if(!alreadyHighlighted){
             // Wenn sie nicht schon an war, dann markieren.
             selfCell.setHighlight(true);
+            highlightedCells.add(new Point(col, row));
         }
+        return highlightedCells;
 
     }
 
@@ -161,13 +158,8 @@ public class FxView implements Presenter2ViewOutputPort {
     public void setKeyToPressable(){
         scene.setOnKeyPressed(event -> {
             String character = event.getText();
-            presenter.handleKeyPressed(character);
+            controller.handleKeyPressed(character);
         });
-
-
-
-
-
     }
 
     String getStyleFromRowAndCol(int row, int col){
@@ -202,6 +194,16 @@ public class FxView implements Presenter2ViewOutputPort {
                 topColor, rightColor, bottomColor, leftColor
         );
         return style;
+    }
+
+    public Button onButtonClickOpenList(){
+        // Erweiterung ListView
+        Button openList = new Button("Load Sudoku File");
+        openList.setOnAction(e -> {
+            SudokuListWindow listWindow = new SudokuListWindow(controller);
+            listWindow.show();
+        });
+        return openList;
     }
 
 

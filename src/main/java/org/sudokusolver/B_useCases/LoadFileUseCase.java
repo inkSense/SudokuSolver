@@ -24,6 +24,18 @@ public class LoadFileUseCase {
         }
     }
 
+    public String loadJsonFile(Path filePath){
+        if (!Files.exists(filePath)) {
+            log.error("File doesn't exist: " + filePath);
+            return "";
+        }
+        try {
+            return Files.readString(filePath);
+        } catch (Exception e) {
+            throw new RuntimeException("Error reading file " + filePath, e);
+        }
+    }
+
 
 
 }

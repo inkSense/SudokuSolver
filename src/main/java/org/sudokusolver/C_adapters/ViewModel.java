@@ -4,43 +4,29 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sudokusolver.A_entities.objectsAndDataStructures.Cell;
 
+import java.awt.*;
 import java.util.List;
 
 public class ViewModel {
-    List<Cell> cellList;
-    Controller controller;
+    private List<Cell> cellList;
+    private List<Point> clickedCells;
 
     private static final Logger log = LoggerFactory.getLogger(ViewModel.class);
-    public ViewModel(Controller controller) {
-        this.controller = controller;
-        // ToDo - Das kanns irgendwie nicht sein:
-        loadSudoku(3); // bitte nicht zu hoch
-    }
 
-    public void loadSudoku(int index) {
-        controller.loadSudokus();
-        controller.setSudokuToUseCaseInputPort(index);
-        this.cellList = controller.getSudoku(index).getCells();
+    public void setCellList(List<Cell> cellList) {
+        this.cellList = cellList;
     }
 
     public List<Cell> getCellList() {
         return cellList;
     }
 
-    public Controller getController() {
-        return controller;
+    public List<Point> getClickedCells() {
+        return clickedCells;
     }
 
-    void solveOneStepInContext(){
-        controller.solveOneStepInContext();
-    }
-
-    void reducePossibilitiesFromCurrentState(){
-        controller.reducePossibilitiesFromCurrentState();
-    }
-
-    void solveSudokuOneStep(){
-        controller.solveSudokuOneStep();
+    public void setClickedCells(List<Point> clickedCells) {
+        this.clickedCells = clickedCells;
     }
 
 }
