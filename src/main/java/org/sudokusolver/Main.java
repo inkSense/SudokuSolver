@@ -5,6 +5,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,8 +53,12 @@ public class Main  extends Application {
         Der Presenter hat das Model und das View.
         Das Model hat nichts. */
 
-        Button load = fxView.onButtonClickOpenList();
-        mainPane.setLeft(load);
+        Button loadBtn     = fxView.onButtonClickOpenList();
+        Button downloadBtn = fxView.onButtonClickDownload();
+
+        VBox leftBar = new VBox(10, loadBtn, downloadBtn);
+        mainPane.setLeft(leftBar);
+
     }
 
     public static void main(String[] args) {

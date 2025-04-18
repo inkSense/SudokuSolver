@@ -10,7 +10,7 @@ public class DownloadSudokuFromApiUseCase {
     }
 
 
-    public List<String> downloadJsonStrings(){
-        return useCase2HttpGatewayOutputPort.getSudokuJsonStrings();
+    public String downloadJsonStrings(){
+        return useCase2HttpGatewayOutputPort.getSudokuJsonString();
     }
 }

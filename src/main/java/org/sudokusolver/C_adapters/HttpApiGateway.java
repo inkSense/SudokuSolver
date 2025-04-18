@@ -32,7 +32,7 @@ public class HttpApiGateway implements UseCase2HttpGatewayOutputPort {
         return jsonStrings;
     }
 
-    private String getSudokuJsonString() {
+    public String getSudokuJsonString() {
         HttpURLConnection conn = null;
         String json = null;
         try {

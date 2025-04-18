@@ -73,4 +73,11 @@ public class Controller {
     public void cellClicked(int row, int col){
         presenter.cellClicked(row, col);
     }
+    // im Controller
+    public void downloadSudokus() {
+        useCaseInputPort.downloadSudokusFromApiAndStore();   // Use‑Case aufrufen
+        // optional: presenter.refreshBoard(...) o. Ä., falls direkt ein neues
+        // Sudoku angezeigt werden soll
+    }
+
 }

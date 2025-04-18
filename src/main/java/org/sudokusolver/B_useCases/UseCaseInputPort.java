@@ -10,4 +10,5 @@ public interface UseCaseInputPort {
     void solveOneStep();
     void solveOneStepInContext();
     void reducePossibilitiesFromCurrentState();
+    void downloadSudokusFromApiAndStore();
 }

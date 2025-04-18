@@ -45,4 +45,9 @@ public class UseCaseInteractor implements UseCaseInputPort {
         solve.reducePossibilitiesFromCurrentState();
         //solve.printOutPossibilities();
     }
+
+    public void downloadSudokusFromApiAndStore(){
+        String json = download.downloadJsonStrings();
+        saveFile.saveToJsonFileNamedByDate(json);
+    }
 }

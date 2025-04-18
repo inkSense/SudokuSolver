@@ -164,6 +164,16 @@ public class FxView implements Presenter2ViewOutputPort {
         return openList;
     }
 
+    public Button onButtonClickDownload() {
+        Button downloadBtn = new Button("Download Sudokus");
+        downloadBtn.setOnAction(e -> {
+            // Wenn der Aufruf länger dauert ⇒ Task verwenden
+            controller.downloadSudokus();
+        });
+        return downloadBtn;
+    }
+
+
 
 
 }
