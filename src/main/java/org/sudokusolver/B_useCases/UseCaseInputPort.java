@@ -8,7 +8,8 @@ import java.util.List;
 public interface UseCaseInputPort {
     List<Cell> loadSudoku(Path sudokuFile);
     void solveOneStep();
-    void solveOneStepInContext();
+    void solveSudokuOneStepInContext();
+    void solveByReasoningAsFarAsPossible();
     void reducePossibilitiesFromCurrentState();
     void downloadSudokusFromApiAndStore();
 }

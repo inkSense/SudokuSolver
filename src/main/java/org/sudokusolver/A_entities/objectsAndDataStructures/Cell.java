@@ -24,6 +24,10 @@ public class Cell {
         initializePossibleContent();
     }
 
+    public void setContent(int content) {
+        this.content = content;
+    }
+
     public void removeFromPossibleContent(int number) {
         int index = possibleContent.indexOf(number);
         if(index != -1) {

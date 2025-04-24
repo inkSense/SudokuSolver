@@ -33,8 +33,12 @@ public class Controller {
         useCaseInputPort.solveOneStep();
     }
 
-    public void solveOneStepInContext(){
-        useCaseInputPort.solveOneStepInContext();
+    public void solveSudokuOneStepInContext(){
+        useCaseInputPort.solveSudokuOneStepInContext();
+    }
+
+    public void solveByReasoningAsFarAsPossible(){
+        useCaseInputPort.solveByReasoningAsFarAsPossible();
     }
 
     public void reducePossibilitiesFromCurrentState(){
@@ -48,14 +52,13 @@ public class Controller {
             presenter.refreshBoard();
         } else {
             switch (key.toUpperCase()) {
-                case "C":
-                    // Context
-                    solveOneStepInContext();
-                    reducePossibilitiesFromCurrentState();
+                case "A":
+                    solveByReasoningAsFarAsPossible();
                     presenter.refreshBoard();
                     break;
-                case "R":
-                    // Reduce
+                case "C":
+                    // Context
+                    solveSudokuOneStepInContext();
                     reducePossibilitiesFromCurrentState();
                     presenter.refreshBoard();
                     break;
@@ -66,7 +69,7 @@ public class Controller {
                     presenter.refreshBoard();
                     break;
                 default:
-                    log.info("Andere Taste: " + key + ". Funktionstasten: C R S ");
+                    log.info("Andere Taste: " + key + ". Funktionstasten: A C S ");
             }
         }
     }

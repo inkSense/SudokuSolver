@@ -37,8 +37,12 @@ public class UseCaseInteractor implements UseCaseInputPort {
         solve.testForSinglePossibilitiesAndFillIn();
     }
 
-    public void solveOneStepInContext(){
+    public void solveSudokuOneStepInContext(){
         solve.testForSinglePossibilitiesInContextAndFillIn();
+    }
+
+    public void solveByReasoningAsFarAsPossible(){
+        solve.solveByReasoningAsFarAsPossible();
     }
 
     public void reducePossibilitiesFromCurrentState(){

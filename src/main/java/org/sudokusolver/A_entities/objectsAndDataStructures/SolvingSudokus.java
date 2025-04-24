@@ -6,8 +6,6 @@ import java.util.List;
 
 public class SolvingSudokus {
     SudokuBoard sudoku;
-    boolean go1 = true;
-    boolean go2 = true;
     private static final Logger log = LoggerFactory.getLogger(SolvingSudokus.class);
 
     public void setSudoku(SudokuBoard sudoku) {
@@ -44,24 +42,39 @@ public class SolvingSudokus {
         }
     }
 
-    public void testForSinglePossibilitiesAndFillIn(){
-        boolean nothingFound = true;
-        for(Cell cell: sudoku.getCells()){
-            if(cell.possibleContent.size() == 1){
-                nothingFound = false;
-                cell.content = cell.possibleContent.get(0);
-                cell.removeAllPossibilities();
-                log.info("Found " + cell.content + " in " + cell.position.y + "," + cell.position.x);
+
+
+    public void solveByReasoningAsFarAsPossible(){
+        boolean singleFound;
+        boolean contextFound;
+        for(int i = 0; i < 80; i++){
+            singleFound = testForSinglePossibilitiesAndFillIn();
+            reducePossibilitiesFromCurrentState();
+            contextFound = testForSinglePossibilitiesInContextAndFillIn();
+            reducePossibilitiesFromCurrentState();
+            if(!singleFound && !contextFound){
+                log.info("Cant solve anything more with simple reasoning.");
+                return;
             }
         }
-        if(nothingFound){
-            go1 = false;
-            log.info("Found nothing to fill in");
-        }
+        log.error("solveByReasoningAsFarAsPossible() ran far too often.");
     }
 
-    public void testForSinglePossibilitiesInContextAndFillIn(){
-        boolean nothingFound = true;
+    public boolean testForSinglePossibilitiesAndFillIn(){
+        boolean somethingFound = false;
+        for(Cell cell: sudoku.getCells()){
+            if(cell.possibleContent.size() == 1){
+                somethingFound = true;
+                cell.content = cell.possibleContent.get(0);
+                cell.removeAllPossibilities();
+                //log.info("Found " + cell.content + " in " + cell.position.y + "," + cell.position.x);
+            }
+        }
+        return somethingFound;
+    }
+
+    public boolean testForSinglePossibilitiesInContextAndFillIn(){
+        boolean somethingFound = false;
         for(Cell cell: sudoku.getCells()){
                 for(Integer i : cell.possibleContent ){
                     int row = cell.position.y;
@@ -74,17 +87,14 @@ public class SolvingSudokus {
                     ){
                         cell.content = i;
                         cell.removeAllPossibilities();
-                        nothingFound = false;
+                        somethingFound = true;
                         reducePossibilitiesFromCurrentState();
                         break;
                     }
 
             }
         }
-        if(nothingFound){
-            go2 = false;
-            log.info("Found nothing to fill in with Context");
-        }
+        return somethingFound;
     }
 
     private void resolvePossibilitiesInRow(int row, int contentValue){
