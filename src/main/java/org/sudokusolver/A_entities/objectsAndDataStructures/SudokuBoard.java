@@ -3,8 +3,9 @@ package org.sudokusolver.A_entities.objectsAndDataStructures;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.*;
+import java.awt.Point;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 public class SudokuBoard {
@@ -85,8 +86,25 @@ public class SudokuBoard {
         return true;
     }
 
-    SudokuBoard copy(){
-        return new SudokuBoard(getCells(), getDifficulty());
+    public SudokuBoard copy() {
+        List<Cell> cloned = cells.stream()
+                .map(Cell::new)   // nutzt Copy-Konstruktor
+                .collect(Collectors.toList());
+        return new SudokuBoard(cloned, difficulty);
+    }
+
+    /** erste leere Zelle (oder null) */
+    public Point nextEmptyCell() {
+        return cells.stream()
+                .filter(c -> c.content == 0)
+                .map(c -> c.position)
+                .findFirst().orElse(null);
+    }
+
+    /** mögliche Ziffern in einer Zelle (nach aktuellem Zustand) */
+    public List<Integer> validDigitsAt(Point p) {
+        Cell c = getCell(p.x, p.y);
+        return new ArrayList<>(c.possibleContent); // Kopie zurückgeben
     }
 
     static void validateIndex(int index) {

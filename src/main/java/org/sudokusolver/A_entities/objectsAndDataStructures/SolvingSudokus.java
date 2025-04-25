@@ -3,10 +3,13 @@ package org.sudokusolver.A_entities.objectsAndDataStructures;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.List;
+import java.awt.Point;
 
 public class SolvingSudokus {
     SudokuBoard sudoku;
     private static final Logger log = LoggerFactory.getLogger(SolvingSudokus.class);
+
+    private Tree<SudokuBoard> searchTree;
 
     public void setSudoku(SudokuBoard sudoku) {
         this.sudoku = sudoku;
@@ -147,5 +150,54 @@ public class SolvingSudokus {
         }
         return true;
     }
+
+    // einfach eingefügt. Muss los.
+
+    // TODO: Check if right
+
+  // ← Wrapper
+
+    /* ***** öffentliche API ***** */
+
+    /** löst das Sudoku; gibt true zurück, wenn gelöst */
+    public SudokuBoard solve() {
+        searchTree = new Tree<>(sudoku.copy());          // Wurzel
+        boolean solved = backtrack(searchTree.root());
+        if (solved) sudoku = searchTree.root().getValue(); // Ergebnis zurückschreiben
+        return sudoku;
+    }
+
+    /** optional: für Statistiken / Debug */
+    public long examinedLeaves() { return searchTree.leafCount(); }
+
+    /* ***** Backtracking-Kernel ***** */
+
+    private boolean backtrack(TreeNode<SudokuBoard> node) {
+        SudokuBoard board = node.getValue();
+
+        /* 1. deterministische Logik ausschöpfen */
+        SolvingSudokus helper = new SolvingSudokus(); // temporäre “Engine”
+        helper.setSudoku(board);
+        helper.reducePossibilitiesFromCurrentState();
+        helper.solveByReasoningAsFarAsPossible();
+
+        /* 2. Konsistenz prüfen */
+        if (!board.isValid())  return false;  // Widerspruch
+        if (board.isSolved())  return true;   // Ziel erreicht
+
+        /* 3. Verzweigen: erste leere Zelle + Kandidaten */
+        Point p = board.nextEmptyCell();
+        for (int d : board.validDigitsAt(p)) {
+            SudokuBoard copy = board.copy();
+            copy.getCell(p.x, p.y).setContent(d);
+
+            TreeNode<SudokuBoard> child = node.addChild(copy);
+            if (backtrack(child)) return true;         // Erfolg propagieren
+        }
+        return false;                                  // alle Kandidaten scheitern → Backtrack
+    }
+
+
+
 
 }

@@ -12,4 +12,5 @@ public interface UseCaseInputPort {
     void solveByReasoningAsFarAsPossible();
     void reducePossibilitiesFromCurrentState();
     void downloadSudokusFromApiAndStore();
+    List<Cell> tryRecursively();
 }

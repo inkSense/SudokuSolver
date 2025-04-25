@@ -17,8 +17,6 @@ import org.sudokusolver.C_adapters.ViewModel;
 import org.sudokusolver.C_adapters.Presenter;
 import org.sudokusolver.D_frameworksAndDrivers.FxView;
 
-
-
 public class Main  extends Application {
 
 

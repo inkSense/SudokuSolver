@@ -24,6 +24,14 @@ public class Cell {
         initializePossibleContent();
     }
 
+    /** Copy-Konstruktor */
+    public Cell(Cell src) {
+        this.content  = src.content;
+        this.position = new Point(src.position);   // tiefe Kopie
+        this.boxIndex = src.boxIndex;
+        this.possibleContent = new ArrayList<>(src.possibleContent);
+    }
+
     public void setContent(int content) {
         this.content = content;
     }

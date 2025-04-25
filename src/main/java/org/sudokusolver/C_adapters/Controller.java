@@ -56,6 +56,11 @@ public class Controller {
                     solveByReasoningAsFarAsPossible();
                     presenter.refreshBoard();
                     break;
+                case "T":
+                    // Try
+                    tryRecursively();
+                    presenter.refreshBoard();
+                    break;
                 case "C":
                     // Context
                     solveSudokuOneStepInContext();
@@ -73,6 +78,11 @@ public class Controller {
             }
         }
     }
+    void tryRecursively(){
+        List<Cell> solvedCells = useCaseInputPort.tryRecursively();
+        presenter.setCells(solvedCells);
+    }
+
     public void cellClicked(int row, int col){
         presenter.cellClicked(row, col);
     }

@@ -7,6 +7,7 @@ import org.sudokusolver.A_entities.objectsAndDataStructures.SolvingSudokus;
 import org.sudokusolver.A_entities.objectsAndDataStructures.SudokuBoard;
 
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.List;
 
 public class UseCaseInteractor implements UseCaseInputPort {
@@ -54,4 +55,19 @@ public class UseCaseInteractor implements UseCaseInputPort {
         String json = download.downloadJsonStrings();
         saveFile.saveToJsonFileNamedByDate(json);
     }
+
+    public List<Cell> tryRecursively(){
+        SudokuBoard solvedSudoku = solve.solve();
+        List<Cell> solvedCells = solvedSudoku.getCells();
+
+        if (solvedSudoku.isSolved()) {
+            log.info("Sudoku gelöst");
+            log.info("Untersuchte Blätter: {}", solve.examinedLeaves());
+            return solvedSudoku.getCells();
+        } else {
+            log.info("Sudoku ist unlösbar.");
+            return Collections.emptyList();
+        }
+    }
+
 }
