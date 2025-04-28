@@ -2,6 +2,7 @@ package org.sudokusolver.B_useCases;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.sudokusolver.A_entities.objectsAndDataStructures.BacktrackingSolver;
 import org.sudokusolver.A_entities.objectsAndDataStructures.Cell;
 import org.sudokusolver.A_entities.objectsAndDataStructures.SolvingSudokus;
 import org.sudokusolver.A_entities.objectsAndDataStructures.SudokuBoard;
@@ -11,6 +12,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class UseCaseInteractor implements UseCaseInputPort {
+    SudokuBoard sudoku;
     LoadFileUseCase loadFile = new LoadFileUseCase();
     SaveFileUseCase saveFile;
     ParseSudokuFromJsonStringUseCase parse = new ParseSudokuFromJsonStringUseCase();
@@ -30,6 +32,7 @@ public class UseCaseInteractor implements UseCaseInputPort {
         String jsonString = loadFile.loadJsonFile(sudokuFile);
         SudokuBoard sudoku = parse.parse(jsonString);
         solve.setSudoku(sudoku);
+        this.sudoku = sudoku;
         return sudoku.getCells();
 
     }
@@ -57,17 +60,31 @@ public class UseCaseInteractor implements UseCaseInputPort {
     }
 
     public List<Cell> tryRecursively(){
-        SudokuBoard solvedSudoku = solve.solve();
-        List<Cell> solvedCells = solvedSudoku.getCells();
+//        SudokuBoard solvedSudoku = solve.solve();
+//        List<Cell> solvedCells = solvedSudoku.getCells();
+//
+//        if (solvedSudoku.isSolved()) {
+//            log.info("Sudoku gelöst");
+//            log.info("Untersuchte Blätter: {}", solve.examinedLeaves());
+//            return solvedSudoku.getCells();
+//        } else {
+//            log.info("Sudoku ist unlösbar.");
+//            return Collections.emptyList();
+//        }
 
-        if (solvedSudoku.isSolved()) {
-            log.info("Sudoku gelöst");
-            log.info("Untersuchte Blätter: {}", solve.examinedLeaves());
-            return solvedSudoku.getCells();
+
+        // Stimmt das?
+        BacktrackingSolver solver = new BacktrackingSolver();
+
+        if (solver.solve(sudoku)) {
+            log.info("=== Gelöst ===");
+            sudoku.print();
         } else {
-            log.info("Sudoku ist unlösbar.");
-            return Collections.emptyList();
+            log.info("Unlösbar.");
         }
+
+        return sudoku.getCells();
+
     }
 
 }
