@@ -188,11 +188,24 @@ public class SolvingSudokus {
         /* 3. Verzweigen: erste leere Zelle + Kandidaten */
         Point p = board.nextEmptyCell();
         for (int d : board.validDigitsAt(p)) {
+//            SudokuBoard copy = board.copy();
+//            copy.getCell(p.x, p.y).setContent(d);
+//
+//            TreeNode<SudokuBoard> child = node.addChild(copy);
+//            if (backtrack(child)) return true;         // Erfolg propagieren
             SudokuBoard copy = board.copy();
-            copy.getCell(p.x, p.y).setContent(d);
+            Cell target = copy.getCell(p.x, p.y);
+            target.setContent(d);
+            target.removeAllPossibilities();   // Zelle ist jetzt fest
+
+            // Kandidaten im Kind-Board aktualisieren
+            SolvingSudokus tmp = new SolvingSudokus();
+            tmp.setSudoku(copy);
+            tmp.reducePossibilitiesFromCurrentState();
 
             TreeNode<SudokuBoard> child = node.addChild(copy);
-            if (backtrack(child)) return true;         // Erfolg propagieren
+            if (backtrack(child)) return true;
+
         }
         return false;                                  // alle Kandidaten scheitern → Backtrack
     }
