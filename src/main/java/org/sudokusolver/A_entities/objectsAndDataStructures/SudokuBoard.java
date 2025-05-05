@@ -102,7 +102,7 @@ public class SudokuBoard {
     }
 
     /** mögliche Ziffern in einer Zelle (nach aktuellem Zustand) */
-    public List<Integer> validDigitsAt(Point p) {
+    public List<Integer> possiblesOfCellAt(Point p) {
         Cell c = getCell(p.x, p.y);
         return new ArrayList<>(c.getPossibleContent()); // Kopie zurückgeben
     }

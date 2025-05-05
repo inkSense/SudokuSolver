@@ -190,7 +190,7 @@ public class SolvingSudokus {
 
         /* 3. Verzweigen: erste leere Zelle + Kandidaten */
         Point p = board.nextEmptyCell();
-        for (int d : board.validDigitsAt(p)) {
+        for (int d : board.possiblesOfCellAt(p)) {
 //            SudokuBoard copy = board.copy();
 //            copy.getCell(p.x, p.y).setContent(d);
 //

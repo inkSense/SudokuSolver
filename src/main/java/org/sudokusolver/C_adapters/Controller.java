@@ -58,7 +58,8 @@ public class Controller {
                     break;
                 case "T":
                     // Try
-                    tryRecursively();
+                    List<Cell> cells = tryRecursively();
+                    presenter.setCells(cells);
                     presenter.refreshBoard();
                     break;
                 case "C":
@@ -78,8 +79,8 @@ public class Controller {
             }
         }
     }
-    void tryRecursively(){
-        useCaseInputPort.tryRecursively();
+    List<Cell> tryRecursively(){
+        return useCaseInputPort.tryRecursively();
 
     }
 

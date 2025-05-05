@@ -58,7 +58,7 @@ public class UseCaseInteractor implements UseCaseInputPort {
         saveFile.saveToJsonFileNamedByDate(json);
     }
 
-    public void tryRecursively(){
+    public List<Cell> tryRecursively(){
 //        SudokuBoard solvedSudoku = solve.solve();
 //        List<Cell> solvedCells = solvedSudoku.getCells();
 //
@@ -71,14 +71,15 @@ public class UseCaseInteractor implements UseCaseInputPort {
 //            return Collections.emptyList();
 //        }
 
-        // Stimmt das?
         BacktrackingSolver solver = new BacktrackingSolver();
+        SudokuBoard solved = solver.solve(sudoku);
 
-        if (solver.solve(sudoku)) {
+        if ( solved != null) {
             log.info("=== Gelöst ===");
-            sudoku.print();
+            return solved.getCells();
         } else {
             log.info("Unlösbar.");
+            return Collections.emptyList();
         }
     }
 

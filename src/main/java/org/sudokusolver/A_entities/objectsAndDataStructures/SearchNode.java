@@ -56,10 +56,10 @@ public class SearchNode {
         int value      = remaining.get(0);
         List<Integer> rest = remaining.subList(1, remaining.size());
 
-        SudokuBoard copy = board.copy();
-        copy.getCell(decisionPos.x, decisionPos.y).setContent(value);
+        SudokuBoard boardCopy = board.copy();
+        boardCopy.getCell(decisionPos.x, decisionPos.y).setContent(value);
 
-        return new SearchNode(this, decisionPos, rest, value, copy);
+        return new SearchNode(this, decisionPos, rest, value, boardCopy);
     }
 
     /** true, wenn dieser Knoten keine gültigen Kinder mehr hat → Backtrack */
@@ -68,7 +68,7 @@ public class SearchNode {
     }
 
     /* Fabrikmethode für das erste Rate-Kind */
-    public static SearchNode firstGuess(SearchNode parent, Point pos, List<Integer> candidates) {
+    public static SearchNode copySearchNodeToChild(SearchNode parent, Point pos, List<Integer> candidates) {
         return new SearchNode(parent, pos, candidates, -1, parent.board.copy());
     }
 }
