@@ -79,8 +79,8 @@ public class Controller {
         }
     }
     void tryRecursively(){
-        List<Cell> solvedCells = useCaseInputPort.tryRecursively();
-        presenter.setCells(solvedCells);
+        useCaseInputPort.tryRecursively();
+
     }
 
     public void cellClicked(int row, int col){
@@ -89,7 +89,7 @@ public class Controller {
     // im Controller
     public void downloadSudokus() {
         useCaseInputPort.downloadSudokusFromApiAndStore();   // Use‑Case aufrufen
-        // optional: presenter.refreshBoard(...) o. Ä., falls direkt ein neues
+        // optional: presenter.refreshBoard(...) o. Ä., falls direkt ein neues
         // Sudoku angezeigt werden soll
     }
 

@@ -30,24 +30,25 @@ public class Presenter {
     void handleDigit(String digitString){
         int value = Integer.parseInt(digitString);
         log.info("int: " + value);
-        List<Point> positions = getClickedCells();
-        if(positions.isEmpty()){
+        List<Point> clickedCells = getClickedCells();
+        if(clickedCells.isEmpty()){
             log.info("list of Highlighted Cells is empty");
         } else {
             // Liste hat nur ein Element
-            Point position = positions.get(0);
+            Point position = clickedCells.get(0);
 
             for(Cell cell : viewModel.getCellList()){
-                if(cell.position.equals(position)){
-                    if(cell.content == value){
-                        cell.content = 0;
+                if(cell.getPosition().equals(position)){
+                    if(cell.getContent() == value){
+                        cell.setContent(0);
                     } else {
-                        cell.content = value;
+                        cell.setContent(value);
                     }
                     break;
                 }
             }
             // Alle Möglichkeiten erst einmal wieder befüllen
+            // Es kann nämlich sein, dass hier eine andere Zahl != 0 eingetragen wurde, die es vorher noch nicht gab
             for (Cell cell : viewModel.getCellList()) {
                 cell.initializePossibleContent();
             }

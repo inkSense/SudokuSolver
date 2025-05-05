@@ -11,18 +11,19 @@ public class SolvingSudokus {
 
     private Tree<SudokuBoard> searchTree;
 
-    public void setSudoku(SudokuBoard sudoku) {
-        this.sudoku = sudoku;
-    }
+//    public void setSudoku(SudokuBoard sudoku) {
+//        this.sudoku = sudoku;
+//    }
 
-    public void reducePossibilitiesFromCurrentState(){
+    public void reducePossibilitiesFromCurrentState(SudokuBoard sudoku){
+        this.sudoku = sudoku;
         for(Cell cell: sudoku.getCells()){
-            int content = cell.content;
+            int content = cell.getContent();
 
             if(content != 0){
-                int row = cell.position.y;
-                int col = cell.position.x;
-                int box = cell.boxIndex;
+                int row = cell.getPosition().y;
+                int col = cell.getPosition().x;
+                int box = cell.getBoxIndex();
 
                 cell.removeAllPossibilities();
                 resolvePossibilitiesInRow(row, content);
@@ -32,14 +33,15 @@ public class SolvingSudokus {
         }
     }
 
-    public void printOutPossibilities(){
+    public void printOutPossibilities(SudokuBoard sudoku){
+        this.sudoku = sudoku;
         for(Cell cell : sudoku.getCells()){
-            if(!cell.possibleContent.isEmpty()){
+            if(!cell.getPossibleContent().isEmpty()){
                 System.out.println(
                         "Möglichkeiten in der Zelle "
-                                + cell.position.y + ", "
-                                + cell.position.x + ": "
-                                + cell.possibleContent
+                                + cell.getPosition().y + ", "
+                                + cell.getPosition().x + ": "
+                                + cell.getPossibleContent()
                 );
             }
         }
@@ -47,14 +49,15 @@ public class SolvingSudokus {
 
 
 
-    public void solveByReasoningAsFarAsPossible(){
+    public void solveByReasoningAsFarAsPossible(SudokuBoard sudoku){
+        this.sudoku = sudoku;
         boolean singleFound;
         boolean contextFound;
         for(int i = 0; i < 80; i++){
             singleFound = testForSinglePossibilitiesAndFillIn();
-            reducePossibilitiesFromCurrentState();
-            contextFound = testForSinglePossibilitiesInContextAndFillIn();
-            reducePossibilitiesFromCurrentState();
+            reducePossibilitiesFromCurrentState(sudoku);
+            contextFound = testForSinglePossibilitiesInContextAndFillIn(sudoku);
+            reducePossibilitiesFromCurrentState(sudoku);
             if(!singleFound && !contextFound){
                 log.info("Cant solve anything more with simple reasoning.");
                 return;
@@ -66,9 +69,9 @@ public class SolvingSudokus {
     public boolean testForSinglePossibilitiesAndFillIn(){
         boolean somethingFound = false;
         for(Cell cell: sudoku.getCells()){
-            if(cell.possibleContent.size() == 1){
+            if(cell.getPossibleContent().size() == 1){
                 somethingFound = true;
-                cell.content = cell.possibleContent.get(0);
+                cell.setContent(  cell.getPossibleContent().get(0) );
                 cell.removeAllPossibilities();
                 //log.info("Found " + cell.content + " in " + cell.position.y + "," + cell.position.x);
             }
@@ -76,22 +79,23 @@ public class SolvingSudokus {
         return somethingFound;
     }
 
-    public boolean testForSinglePossibilitiesInContextAndFillIn(){
+    public boolean testForSinglePossibilitiesInContextAndFillIn(SudokuBoard sudoku){
+        this.sudoku = sudoku;
         boolean somethingFound = false;
         for(Cell cell: sudoku.getCells()){
-                for(Integer i : cell.possibleContent ){
-                    int row = cell.position.y;
-                    int col = cell.position.x;
-                    int box = cell.boxIndex;
+                for(Integer i : cell.getPossibleContent() ){
+                    int row = cell.getPosition().y;
+                    int col = cell.getPosition().x;
+                    int box = cell.getBoxIndex();
 
                     if( isSinglePossibilityInRow(row, cell, i) ||
                         isSinglePossibilityInColumn(col, cell, i) ||
                         isSinglePossibilityInBox(box, cell, i)
                     ){
-                        cell.content = i;
+                        cell.setContent(i);
                         cell.removeAllPossibilities();
                         somethingFound = true;
-                        reducePossibilitiesFromCurrentState();
+                        reducePossibilitiesFromCurrentState(sudoku);
                         break;
                     }
 
@@ -122,7 +126,7 @@ public class SolvingSudokus {
         List<Cell> rowWithoutItself = sudoku.getRow(row);
         rowWithoutItself.remove(selfCell);
         for(Cell cell : rowWithoutItself){
-            if (cell.possibleContent.contains(possibilityValue) && cell != selfCell) {
+            if (cell.getPossibleContent().contains(possibilityValue) && cell != selfCell) {
                 return false;
             }
         }
@@ -133,7 +137,7 @@ public class SolvingSudokus {
         List<Cell> colWithoutItself = sudoku.getColumn(col);
         colWithoutItself.remove(selfCell);
         for(Cell cell : colWithoutItself){
-            if (cell.possibleContent.contains(possibilityValue) && cell != selfCell) {
+            if (cell.getPossibleContent().contains(possibilityValue) && cell != selfCell) {
                 return false;
             }
         }
@@ -144,7 +148,7 @@ public class SolvingSudokus {
         List<Cell> cells = sudoku.getBlock(boxIndex);
         cells.remove(selfCell);
         for (Cell cell : cells) {
-            if(cell.possibleContent.contains(possibilityValue)){
+            if(cell.getPossibleContent().contains(possibilityValue)){
                 return false;
             }
         }
@@ -177,9 +181,8 @@ public class SolvingSudokus {
 
         /* 1. deterministische Logik ausschöpfen */
         SolvingSudokus helper = new SolvingSudokus(); // temporäre “Engine”
-        helper.setSudoku(board);
-        helper.reducePossibilitiesFromCurrentState();
-        helper.solveByReasoningAsFarAsPossible();
+        helper.reducePossibilitiesFromCurrentState(board);
+        helper.solveByReasoningAsFarAsPossible(board);
 
         /* 2. Konsistenz prüfen */
         if (!board.isValid())  return false;  // Widerspruch
@@ -200,8 +203,7 @@ public class SolvingSudokus {
 
             // Kandidaten im Kind-Board aktualisieren
             SolvingSudokus tmp = new SolvingSudokus();
-            tmp.setSudoku(copy);
-            tmp.reducePossibilitiesFromCurrentState();
+            tmp.reducePossibilitiesFromCurrentState(board);
 
             TreeNode<SudokuBoard> child = node.addChild(copy);
             if (backtrack(child)) return true;

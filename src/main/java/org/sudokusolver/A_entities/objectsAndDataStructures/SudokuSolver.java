@@ -39,9 +39,9 @@ public final class SudokuSolver {
                 Cell cell = board.getCell(col, row);
 
 //                if (!board.isEmpty(row, col)) continue;
-                if(cell.content != 0) continue;
+                if(cell.getContent() != 0) continue;
 //                int cnt = board.candidateCount(row, col);
-                int cnt = cell.possibleContent.size();
+                int cnt = cell.getPossibleContent().size();
                 if (cnt == 0) return null;        // dead end
                 if (cnt < bestCount) {
                     bestCount = cnt;
@@ -60,8 +60,7 @@ public final class SudokuSolver {
     private static Optional<SudokuBoard> solve(Node node) {
         // 1. Fill deterministically as far as possible
         SolvingSudokus solving = new SolvingSudokus();
-        solving.setSudoku(node.sudoku);
-        solving.solveByReasoningAsFarAsPossible();
+        solving.solveByReasoningAsFarAsPossible(node.sudoku);
 
         if (!node.sudoku.isValid())            // contradiction detected
             return Optional.empty();
@@ -75,7 +74,7 @@ public final class SudokuSolver {
 
         Cell cell = node.sudoku.getCell(p.col(), p.row());
         //List<Integer> candidates = node.sudoku.candidates(p.row(), p.col());
-        List<Integer> candidates = cell.possibleContent;
+        List<Integer> candidates = cell.getPossibleContent();
         for (int digit : candidates) {
             SudokuBoard next = node.sudoku.copy();
             Cell nextCell = next.getCell(p.col(), p.row());

@@ -1,5 +1,8 @@
 package org.sudokusolver.A_entities.objectsAndDataStructures;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.awt.Point;
 import java.util.Comparator;
 import java.util.List;
@@ -7,6 +10,7 @@ import java.util.List;
 public class BacktrackingSolver {
 
     private final SolvingSudokus engine = new SolvingSudokus();   // deine „Reasoning“-Klasse
+    private static final Logger log = LoggerFactory.getLogger(BacktrackingSolver.class);
 
     public boolean solve(SudokuBoard board) {
 
@@ -20,18 +24,20 @@ public class BacktrackingSolver {
 
             /* (a)  Ratepunkt bestimmen */
             Point p = findMinimumOfPossibilitiesCell(current.getBoard());
-            List<Integer> cand = current.getBoard().validDigitsAt(p);
-            if (cand.isEmpty()) {               // tot – darf nur vorkommen, wenn isValid() nicht greift
-                current = backtrack(current);   //  ↩
+            List<Integer> candidates = current.getBoard().validDigitsAt(p);
+            if (candidates.isEmpty()) {               // tot – darf nur vorkommen, wenn isValid() nicht greift
+                log.error("Hier sollten wir nie ankommen.");
+
+                current = backtrack(current);
                 if (current == null) return false;
                 continue;
             }
 
             /* (b)  erstes Rate-Kind bauen */
-            current = SearchNode.firstGuess(current, p, cand);
-            current = current.nextChild();      // wähle 1. Wert
-            if (current == null) {              // kein Kind möglich
-                current = backtrack(current);   //  ↩
+            current = SearchNode.firstGuess(current, p, candidates);
+            SearchNode following  = current.nextChild();      // wähle 1. Wert
+            if (following == null) {              // kein Kind möglich
+                current = backtrack(current);
                 if (current == null) return false;
                 continue;
             }
@@ -48,18 +54,17 @@ public class BacktrackingSolver {
 
     /** führt deine Methoden aus; liefert false bei Widerspruch              */
     private boolean propagateDeterministic(SearchNode node) {
-        engine.setSudoku(node.getBoard());
-        engine.reducePossibilitiesFromCurrentState();
-        engine.solveByReasoningAsFarAsPossible();
+        SudokuBoard sudoku = (node.getBoard());
+        engine.solveByReasoningAsFarAsPossible(sudoku);
         return node.getBoard().isValid();
     }
 
     /** Cell mit den wenigsten >1 Kandidaten; 1 → würde sofort gesetzt      */
     private Point findMinimumOfPossibilitiesCell(SudokuBoard board) {
         return board.getCells().stream()
-                .filter(c -> c.content == 0)
-                .min(Comparator.comparingInt(c -> c.possibleContent.size()))
-                .orElseThrow().position;
+                .filter(c -> c.getContent() == 0)
+                .min(Comparator.comparingInt(c -> c.getPossibleContent().size()))
+                .orElseThrow().getPosition();
     }
 
     /** springt so weit nach oben, bis ein Knoten noch Alternativen hat */

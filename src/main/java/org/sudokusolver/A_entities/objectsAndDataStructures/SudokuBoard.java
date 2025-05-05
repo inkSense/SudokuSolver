@@ -25,7 +25,7 @@ public class SudokuBoard {
 
     public Cell getCell(int col, int row){
         for(Cell cell : cells ){
-            if(cell.position.x == col && cell.position.y == row){
+            if(cell.getPosition().x == col && cell.getPosition().y == row){
                 return cell;
             }
         }
@@ -41,7 +41,7 @@ public class SudokuBoard {
         for (int r = 0; r < 9; r++) {
             List<Cell> row = getRow(r);
             for (Cell cell : row) {
-                System.out.print((cell.content == 0 ? "." : cell.content) + " ");
+                System.out.print((cell.getContent() == 0 ? "." : cell.getContent()) + " ");
             }
             System.out.println();
         }
@@ -50,17 +50,17 @@ public class SudokuBoard {
 
     public List<Cell> getRow(int row) {
         validateIndex(row);
-        return cells.stream().filter(c->c.position.y == row).collect(Collectors.toList());
+        return cells.stream().filter(c->c.getPosition().y == row).collect(Collectors.toList());
     }
 
     public List<Cell> getColumn(int col) {
         validateIndex(col);
-        return cells.stream().filter(c->c.position.x == col).collect(Collectors.toList());
+        return cells.stream().filter(c->c.getPosition().x == col).collect(Collectors.toList());
     }
 
     public List<Cell> getBlock(int blockNumber) {
         validateIndex(blockNumber);
-        return cells.stream().filter(c->c.boxIndex == blockNumber).collect(Collectors.toList());
+        return cells.stream().filter(c->c.getBoxIndex() == blockNumber).collect(Collectors.toList());
     }
 
     public boolean isValid() {
@@ -79,7 +79,7 @@ public class SudokuBoard {
 
     public boolean isSolved(){
         for(Cell cell: cells){
-            if(cell.content == 0){
+            if(cell.getContent() == 0){
                 return false;
             }
         }
@@ -96,15 +96,15 @@ public class SudokuBoard {
     /** erste leere Zelle (oder null) */
     public Point nextEmptyCell() {
         return cells.stream()
-                .filter(c -> c.content == 0)
-                .map(c -> c.position)
+                .filter(c -> c.getContent() == 0)
+                .map(Cell::getPosition)
                 .findFirst().orElse(null);
     }
 
     /** mögliche Ziffern in einer Zelle (nach aktuellem Zustand) */
     public List<Integer> validDigitsAt(Point p) {
         Cell c = getCell(p.x, p.y);
-        return new ArrayList<>(c.possibleContent); // Kopie zurückgeben
+        return new ArrayList<>(c.getPossibleContent()); // Kopie zurückgeben
     }
 
     static void validateIndex(int index) {
@@ -113,12 +113,12 @@ public class SudokuBoard {
         }
     }
 
-    /** Liefert false, sobald ein Wert <1 oder >9 vorkommt oder
+    /** Liefert false, sobald ein Wert < 1 oder > 9 vorkommt oder
      *  eine Zahl (1‑9) doppelt vorkommt. 0 (=leer) wird ignoriert. */
     private static boolean unitValid(List<Cell> unit) {
         boolean[] seen = new boolean[10];          // Index 1‑9
         for (Cell c : unit) {
-            int v = c.content;
+            int v = c.getContent();
             if (v == 0)            continue;       // leere Zelle
             if (v < 1 || v > 9)    return false;   // ungültiger Wert
             if (seen[v])           return false;   // doppelte Zahl

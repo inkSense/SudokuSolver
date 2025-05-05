@@ -7,10 +7,10 @@ import java.util.stream.IntStream;
 import java.awt.Point;
 
 public class Cell {
-    public int content;
-    public Point position;
-    public int boxIndex;
-    public List<Integer> possibleContent;
+    private int content;
+    private Point position;
+    private int boxIndex;
+    private List<Integer> possibleContent;
 
     public Cell() {
         this.content = 0;
@@ -32,8 +32,37 @@ public class Cell {
         this.possibleContent = new ArrayList<>(src.possibleContent);
     }
 
+    public int getContent() {
+        return content;
+    }
+
     public void setContent(int content) {
         this.content = content;
+        initializePossibleContent();
+    }
+
+    public Point getPosition() {
+        return position;
+    }
+
+    public void setPosition(Point position) {
+        this.position = position;
+    }
+
+    public int getBoxIndex() {
+        return boxIndex;
+    }
+
+    public void setBoxIndex(int boxIndex) {
+        this.boxIndex = boxIndex;
+    }
+
+    public List<Integer> getPossibleContent() {
+        return possibleContent;
+    }
+
+    public void setPossibleContent(List<Integer> possibleContent) {
+        this.possibleContent = possibleContent;
     }
 
     public void removeFromPossibleContent(int number) {
@@ -49,7 +78,9 @@ public class Cell {
 
     public void initializePossibleContent() {
         List<Integer> possibles = new ArrayList<>();
-        IntStream.rangeClosed(1, 9).forEach(possibles::add);
+        if(content == 0) {
+            IntStream.rangeClosed(1, 9).forEach(possibles::add);
+        }
         possibleContent = possibles;
     }
 

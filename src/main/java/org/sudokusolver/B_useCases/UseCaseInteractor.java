@@ -31,7 +31,6 @@ public class UseCaseInteractor implements UseCaseInputPort {
     public List<Cell> loadSudoku(Path sudokuFile) {
         String jsonString = loadFile.loadJsonFile(sudokuFile);
         SudokuBoard sudoku = parse.parse(jsonString);
-        solve.setSudoku(sudoku);
         this.sudoku = sudoku;
         return sudoku.getCells();
 
@@ -42,15 +41,15 @@ public class UseCaseInteractor implements UseCaseInputPort {
     }
 
     public void solveSudokuOneStepInContext(){
-        solve.testForSinglePossibilitiesInContextAndFillIn();
+        solve.testForSinglePossibilitiesInContextAndFillIn(sudoku);
     }
 
     public void solveByReasoningAsFarAsPossible(){
-        solve.solveByReasoningAsFarAsPossible();
+        solve.solveByReasoningAsFarAsPossible(sudoku);
     }
 
     public void reducePossibilitiesFromCurrentState(){
-        solve.reducePossibilitiesFromCurrentState();
+        solve.reducePossibilitiesFromCurrentState(sudoku);
         //solve.printOutPossibilities();
     }
 
@@ -59,7 +58,7 @@ public class UseCaseInteractor implements UseCaseInputPort {
         saveFile.saveToJsonFileNamedByDate(json);
     }
 
-    public List<Cell> tryRecursively(){
+    public void tryRecursively(){
 //        SudokuBoard solvedSudoku = solve.solve();
 //        List<Cell> solvedCells = solvedSudoku.getCells();
 //
@@ -72,7 +71,6 @@ public class UseCaseInteractor implements UseCaseInputPort {
 //            return Collections.emptyList();
 //        }
 
-
         // Stimmt das?
         BacktrackingSolver solver = new BacktrackingSolver();
 
@@ -82,9 +80,6 @@ public class UseCaseInteractor implements UseCaseInputPort {
         } else {
             log.info("Unlösbar.");
         }
-
-        return sudoku.getCells();
-
     }
 
 }
