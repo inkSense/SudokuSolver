@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import java.awt.Point;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 public class BacktrackingSolver {
 
@@ -54,7 +55,7 @@ public class BacktrackingSolver {
 
     public SudokuBoard solve(SudokuBoard board) {
         /* 1) Wurzel vorbereiten  */
-        SearchNode current = new SearchNode(board);
+        SearchNode current = new SearchNode(null, board);
 
         /* 2) Iterativer Tiefensuch-Loop  */
         while (true) {
@@ -65,16 +66,21 @@ public class BacktrackingSolver {
             }
 
             /* (a)  Ratepunkt bestimmen */
-            Point position = findMinimumOfPossibilitiesCellPosition(current.getBoard());
-            List<Integer> candidates = current.getBoard().possiblesOfCellAt(position);
+            Optional<Point> position = findCellPositionOfFewPossibilities(current.getBoard());
+            if(position.isEmpty()){
+                current.setHasValidChildren(false);
+                current = current.getParent();
+                continue;
+            }
+            List<Integer> candidates = current.getBoard().possiblesOfCellAt(position.get());
             if (candidates.isEmpty()) {
                 log.error("Hier sollten wir nie ankommen.");
             }
 
             /* (b)  erstes Rate-Kind bauen */
 
-            current = SearchNode.copySearchNodeToChild(current, position, candidates);
-
+            //current = SearchNode.copySearchNodeToChild(current, position, candidates);
+            current = current.nextChild();
 
             SearchNode following  = current.nextChild();      // wähle 1. Wert
 
@@ -102,11 +108,12 @@ public class BacktrackingSolver {
 //    }
 
     /** Cell mit den wenigsten >1 Kandidaten; 1 → würde sofort gesetzt      */
-    private Point findMinimumOfPossibilitiesCellPosition(SudokuBoard board) {
+    private Optional<Point> findCellPositionOfFewPossibilities(SudokuBoard board) {
         return board.getCells().stream()
                 .filter(c -> c.getContent() == 0)
+                .filter(c -> !c.getPossibleContent().isEmpty())
                 .min(Comparator.comparingInt(c -> c.getPossibleContent().size()))
-                .orElseThrow().getPosition();
+                .map(Cell::getPosition);
     }
 
     private Cell findMinimumOfPossibilitiesCell(SudokuBoard board) {

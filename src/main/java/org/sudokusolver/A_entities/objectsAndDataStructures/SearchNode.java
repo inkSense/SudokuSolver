@@ -11,11 +11,14 @@ public class SearchNode {
     private final Point decisionPos; // Zelle, an der wir raten
     private final List<Integer> remaining;  // Kandidaten, die noch nicht versucht wurden
     private final int          triedValue;  // -1  ==   noch nichts versucht
+    private boolean hasValidChildren;
+
+
 
     /* Wurzel-Konstruktor */
-    public SearchNode(SudokuBoard rootBoard) {
+    public SearchNode(SearchNode parent, SudokuBoard rootBoard) {
         this.board        = rootBoard;
-        this.parent       = null;
+        this.parent       = parent;
         this.decisionPos  = null;
         this.remaining    = List.of();      // keine Kandidaten
         this.triedValue   = -1;
@@ -29,6 +32,8 @@ public class SearchNode {
         this.triedValue  = value;
         this.board       = board;
     }
+
+
 
     public SudokuBoard getBoard() {
         return board;
@@ -50,6 +55,14 @@ public class SearchNode {
         return triedValue;
     }
 
+    public boolean isHasValidChildren() {
+        return hasValidChildren;
+    }
+
+    public void setHasValidChildren(boolean hasValidChildren) {
+        this.hasValidChildren = hasValidChildren;
+    }
+
     /** baut das nächste Kind – oder null, wenn alle Kandidaten aufgebraucht */
     public SearchNode nextChild() {
         if (remaining.isEmpty()) return null;
@@ -68,7 +81,7 @@ public class SearchNode {
     }
 
     /* Fabrikmethode für das erste Rate-Kind */
-    public static SearchNode copySearchNodeToChild(SearchNode parent, Point pos, List<Integer> candidates) {
-        return new SearchNode(parent, pos, candidates, -1, parent.board.copy());
-    }
+//    public static SearchNode copySearchNodeToChild(SearchNode parent, Point pos, List<Integer> candidates) {
+//        return new SearchNode(parent, pos, candidates, -1, parent.board.copy());
+//    }
 }

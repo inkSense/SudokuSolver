@@ -5,6 +5,7 @@ Aber man müsste entscheiden, was ViewModel eigentlich genau ist.
 Backpropagation Algorithmus
 
 ```text
+Man braucht noch in jedem Knoten ein Feld hasValidChildren und einen entsprechenden Setter.
 Die Wurzel ist ein ungelöstes Sudoku. Dies wird zuerst deterministisch gelösten so weit es geht solveByReasoningAsFarAsPossible() . 
 Dann wird getestet, ob das Sudoku gelöst ist  isSolved() . Wenn ja, return.
 
