@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public class BacktrackingSolver {
 
-    private final SolvingSudokus engine = new SolvingSudokus();   // deine „Reasoning“-Klasse
+    private final DeterministicSolver engine = new DeterministicSolver();   // deine „Reasoning“-Klasse
     private static final Logger log = LoggerFactory.getLogger(BacktrackingSolver.class);
 
 //    public boolean solve(SudokuBoard board) {

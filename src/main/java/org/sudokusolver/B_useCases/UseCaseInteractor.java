@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sudokusolver.A_entities.objectsAndDataStructures.BacktrackingSolver;
 import org.sudokusolver.A_entities.objectsAndDataStructures.Cell;
-import org.sudokusolver.A_entities.objectsAndDataStructures.SolvingSudokus;
+import org.sudokusolver.A_entities.objectsAndDataStructures.DeterministicSolver;
 import org.sudokusolver.A_entities.objectsAndDataStructures.SudokuBoard;
 
 import java.nio.file.Path;
@@ -17,7 +17,7 @@ public class UseCaseInteractor implements UseCaseInputPort {
     SaveFileUseCase saveFile;
     ParseSudokuFromJsonStringUseCase parse = new ParseSudokuFromJsonStringUseCase();
     DownloadSudokuFromApiUseCase download;
-    SolvingSudokus solve = new SolvingSudokus();
+    DeterministicSolver solve = new DeterministicSolver();
     private static final Logger log = LoggerFactory.getLogger(UseCaseInteractor.class);
 
     public UseCaseInteractor(
