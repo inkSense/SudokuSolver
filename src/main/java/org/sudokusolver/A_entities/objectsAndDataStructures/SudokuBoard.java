@@ -33,6 +33,16 @@ public class SudokuBoard {
         return null;
     }
 
+    public Cell getCell(Point position){
+        for(Cell cell : cells){
+            if(cell.getPosition().equals(position)){
+                return cell;
+            }
+        }
+        log.error("No Cell found in getCell()");
+        return null;
+    }
+
     public String getDifficulty() {
         return difficulty;
     }
@@ -101,10 +111,9 @@ public class SudokuBoard {
                 .findFirst().orElse(null);
     }
 
-    /** mögliche Ziffern in einer Zelle (nach aktuellem Zustand) */
-    public List<Integer> possiblesOfCellAt(Point p) {
-        Cell c = getCell(p.x, p.y);
-        return new ArrayList<>(c.getPossibleContent()); // Kopie zurückgeben
+    public List<Integer> getPossiblesOfCellAt(Point position) {
+        Cell cell = getCell(position);
+        return new ArrayList<>(cell.getPossibleContent()); // Kopie zurückgeben
     }
 
     static void validateIndex(int index) {

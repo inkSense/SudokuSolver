@@ -8,80 +8,54 @@ public class SearchNode {
 
     private final SudokuBoard board;        // aktueller Zustand
     private final SearchNode   parent;      // ↑  null = Wurzel
-    private final Point decisionPos; // Zelle, an der wir raten
-    private final List<Integer> remaining;  // Kandidaten, die noch nicht versucht wurden
-    private final int          triedValue;  // -1  ==   noch nichts versucht
-    private boolean hasValidChildren;
+    private record Trial(Point point, Integer value){};
+    private Trial tried;
 
-
-
-    /* Wurzel-Konstruktor */
     public SearchNode(SearchNode parent, SudokuBoard rootBoard) {
         this.board        = rootBoard;
         this.parent       = parent;
-        this.decisionPos  = null;
-        this.remaining    = List.of();      // keine Kandidaten
-        this.triedValue   = -1;
     }
-
-    /* Kind-Knoten nach einem Versuch */
-    private SearchNode(SearchNode parent, Point pos, List<Integer> remaining, int value, SudokuBoard board) {
-        this.parent      = parent;
-        this.decisionPos = pos;
-        this.remaining   = remaining;
-        this.triedValue  = value;
-        this.board       = board;
-    }
-
-
 
     public SudokuBoard getBoard() {
         return board;
+    }
+
+    public List<Integer> getPossiblesOfCellAt(Point position){
+        return board.getPossiblesOfCellAt(position);
     }
 
     public SearchNode getParent() {
         return parent;
     }
 
-    public Point getDecisionPos() {
-        return decisionPos;
-    }
-
-    public List<Integer> getRemaining() {
-        return remaining;
-    }
-
     public int getTriedValue() {
-        return triedValue;
+        return tried.value;
     }
 
-    public boolean isHasValidChildren() {
-        return hasValidChildren;
+    public Trial getTried() {
+        return tried;
     }
 
-    public void setHasValidChildren(boolean hasValidChildren) {
-        this.hasValidChildren = hasValidChildren;
+    public Point getTriedPosition(){
+        return tried.point;
     }
 
-    /** baut das nächste Kind – oder null, wenn alle Kandidaten aufgebraucht */
+    private void setTried(Point position, int value) {
+        this.tried = new Trial(position, value);
+    }
+
+    public void setTriedAndSetTriedValueToCellAt(Point position, int value){
+        getCell(position).setContent(value);
+        setTried(position, value);
+    }
+
+    public Cell getCell(Point position){
+        return board.getCell(position);
+    }
+
     public SearchNode nextChild() {
-        if (remaining.isEmpty()) return null;
-        int value      = remaining.get(0);
-        List<Integer> rest = remaining.subList(1, remaining.size());
-
         SudokuBoard boardCopy = board.copy();
-        boardCopy.getCell(decisionPos.x, decisionPos.y).setContent(value);
-
-        return new SearchNode(this, decisionPos, rest, value, boardCopy);
+        return new SearchNode(this, boardCopy);
     }
 
-    /** true, wenn dieser Knoten keine gültigen Kinder mehr hat → Backtrack */
-    public boolean exhausted() {
-        return remaining.isEmpty();
-    }
-
-    /* Fabrikmethode für das erste Rate-Kind */
-//    public static SearchNode copySearchNodeToChild(SearchNode parent, Point pos, List<Integer> candidates) {
-//        return new SearchNode(parent, pos, candidates, -1, parent.board.copy());
-//    }
 }

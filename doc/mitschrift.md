@@ -25,6 +25,6 @@ Wenn das Sudoku valide ist , wird dem aktuellen Knoten ein Kindknoten hinzugefü
 
 Man braucht noch in jedem Knoten ein Feld hasValidChildren. 
 Das ist dann false, wenn alle möglichen Kinderknoten ausprobiert wurden und jeweils nicht valide waren. 
-Wenn das Feld false ist, bedeutet das, dass das gespeichert record tried auch falsch ist. 
-Im akutellen Elternknoten muss als die Möglichkeit dafür gelöscht werden  deletePossibility(Point point, int value)  .
+Wenn das Feld false ist, bedeutet das, dass das gespeicherte record tried auch falsch ist. 
+Im akutellen Elternknoten muss also die Möglichkeit dafür gelöscht werden  deletePossibility(Point point, int value)  .
 ```
