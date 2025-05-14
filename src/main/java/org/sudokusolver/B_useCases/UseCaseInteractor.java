@@ -37,7 +37,7 @@ public class UseCaseInteractor implements UseCaseInputPort {
     }
 
     public void solveOneStep(){
-        solve.testForSinglePossibilitiesAndFillIn();
+        solve.testForSinglePossibilitiesInCellAndFillIn();
     }
 
     public void solveSudokuOneStepInContext(){

@@ -3,7 +3,6 @@ package org.sudokusolver.A_entities.objectsAndDataStructures;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.List;
-import java.awt.Point;
 
 public class DeterministicSolver {
     SudokuBoard sudoku;
@@ -20,9 +19,9 @@ public class DeterministicSolver {
                 int box = cell.getBoxIndex();
 
                 cell.removeAllPossibilities();
-                resolvePossibilitiesInRow(row, content);
-                resolvePossibilitiesInColumn(col, content);
-                resolvePossibilitiesInBox(box, content);
+                reducePossibilitiesInRow(row, content);
+                reducePossibilitiesInColumn(col, content);
+                reducePossibilitiesInBox(box, content);
             }
         }
     }
@@ -48,7 +47,7 @@ public class DeterministicSolver {
         boolean singleFound;
         boolean contextFound;
         for(int i = 0; i < 80; i++){
-            singleFound = testForSinglePossibilitiesAndFillIn();
+            singleFound = testForSinglePossibilitiesInCellAndFillIn();
             reducePossibilitiesFromCurrentState(sudoku);
             contextFound = testForSinglePossibilitiesInContextAndFillIn(sudoku);
             reducePossibilitiesFromCurrentState(sudoku);
@@ -60,7 +59,7 @@ public class DeterministicSolver {
         log.error("solveByReasoningAsFarAsPossible() ran far too often.");
     }
 
-    public boolean testForSinglePossibilitiesAndFillIn(){
+    public boolean testForSinglePossibilitiesInCellAndFillIn(){
         boolean somethingFound = false;
         for(Cell cell: sudoku.getCells()){
             if(cell.getPossibleContent().size() == 1){
@@ -98,19 +97,19 @@ public class DeterministicSolver {
         return somethingFound;
     }
 
-    private void resolvePossibilitiesInRow(int row, int contentValue){
+    private void reducePossibilitiesInRow(int row, int contentValue){
         for(Cell cell : sudoku.getRow(row)){
             cell.removeFromPossibleContent(contentValue);
         }
     }
 
-    private void resolvePossibilitiesInColumn(int col, int contentValue){
+    private void reducePossibilitiesInColumn(int col, int contentValue){
         for(Cell cell : sudoku.getColumn(col)){
             cell.removeFromPossibleContent(contentValue);
         }
     }
 
-    private void resolvePossibilitiesInBox(int boxIndex, int contentValue){
+    private void reducePossibilitiesInBox(int boxIndex, int contentValue){
         for(Cell cell : sudoku.getBlock(boxIndex)){
             cell.removeFromPossibleContent(contentValue);
         }

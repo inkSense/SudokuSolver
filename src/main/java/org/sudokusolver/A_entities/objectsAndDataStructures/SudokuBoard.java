@@ -48,6 +48,7 @@ public class SudokuBoard {
     }
 
     public void print() {
+        System.out.println();
         for (int r = 0; r < 9; r++) {
             List<Cell> row = getRow(r);
             for (Cell cell : row) {
@@ -55,7 +56,6 @@ public class SudokuBoard {
             }
             System.out.println();
         }
-        System.out.println();
     }
 
     public List<Cell> getRow(int row) {

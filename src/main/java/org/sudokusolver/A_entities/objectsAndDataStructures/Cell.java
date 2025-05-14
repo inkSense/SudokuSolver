@@ -1,6 +1,9 @@
 
 package org.sudokusolver.A_entities.objectsAndDataStructures;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -11,6 +14,7 @@ public class Cell {
     private Point position;
     private int boxIndex;
     private List<Integer> possibleContent;
+    Logger log = LoggerFactory.getLogger(Cell.class);
 
     public Cell() {
         this.content = 0;
@@ -38,7 +42,8 @@ public class Cell {
 
     public void setContent(int content) {
         this.content = content;
-        initializePossibleContent();
+        // ToDo: Bitte testen, ob man das für den Deterministischen Löser ausgeschalten darf:
+        //initializePossibleContent();
     }
 
     public Point getPosition() {

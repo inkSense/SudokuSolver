@@ -36,7 +36,6 @@ public class Presenter {
         } else {
             // Liste hat nur ein Element
             Point position = clickedCells.get(0);
-
             for(Cell cell : viewModel.getCellList()){
                 if(cell.getPosition().equals(position)){
                     if(cell.getContent() == value){
