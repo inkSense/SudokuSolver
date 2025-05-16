@@ -83,4 +83,9 @@ public class UseCaseInteractor implements UseCaseInputPort {
         sudoku.resetPossiblesInAllCells();
         deterministicSolver.reducePossibilitiesFromCurrentState(sudoku);
     }
+
+    @Override
+    public void validateSudoku() {
+        sudoku.validate();
+    }
 }

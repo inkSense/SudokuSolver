@@ -47,7 +47,7 @@ public class BacktrackingSolver {
             int tryValue = candidates.get(0); // Hier wird geraten
             current.setTriedAndSetTriedValueToCellAt(position.get(), tryValue);
             engine.solveByReasoningAsFarAsPossible(current.getBoard());
-
+            current.getBoard().validate();
             if(current.getBoard().isValid()){
                 current = current.nextChild();
             } else {

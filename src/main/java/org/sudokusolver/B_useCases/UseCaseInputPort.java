@@ -14,4 +14,5 @@ public interface UseCaseInputPort {
     void downloadSudokuFromApiAndStore();
     List<Cell> solveRecursively();
     void handleKeyInputWithCellClickedAtPosition(int value, Point clickedCell);
+    void validateSudoku();
 }

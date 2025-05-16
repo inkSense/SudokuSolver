@@ -13,6 +13,7 @@ public class SudokuBoard {
     private static final Logger log = LoggerFactory.getLogger(SudokuBoard.class);
     private final List<Cell> cells;
     private final String difficulty;
+    private boolean valid;
 
     public SudokuBoard(List<Cell> cells, String difficulty) {
         this.cells = cells;
@@ -63,18 +64,23 @@ public class SudokuBoard {
         return cells.stream().filter(c->c.getBoxIndex() == blockNumber).collect(Collectors.toList());
     }
 
-    public boolean isValid() {
-
+    public void validate() {
         // prüfe alle 9 Zeilen, Spalten und Blöcke
+        cells.forEach(c-> c.setValid(true));
         for (int i = 0; i < 9; i++) {
-            if (unitNotValid(getRow(i)) ||   // Zeile
-                    unitNotValid(getColumn(i)) ||   // Spalte
-                    unitNotValid(getBlock(i)))        // 3×3‑Block
+            // Bitwise OR:
+            if (    !unitIsValid(getRow(i)) |       // Zeile
+                    !unitIsValid(getColumn(i)) |    // Spalte
+                    !unitIsValid(getBlock(i)))      // 3×3‑Block
             {
-                return false;              // Widerspruch gefunden
+                valid = false;              // Widerspruch gefunden
             }
         }
-        return true;                       // kein Konflikt
+        valid = true;                       // kein Konflikt
+    }
+
+    public boolean isValid(){
+        return valid;
     }
 
     public boolean isSolved(){
@@ -106,25 +112,37 @@ public class SudokuBoard {
 
     /** Liefert false, sobald ein Wert < 1 oder > 9 vorkommt oder
      *  eine Zahl (1‑9) doppelt vorkommt. 0 (=leer) wird ignoriert. */
-    private static boolean unitNotValid(List<Cell> unit) {
+    private boolean unitIsValid(List<Cell> unit) {
         boolean[] seen = new boolean[10];          // Index 1‑9
         for (Cell cell : unit) {
             int value = cell.getContent();
             if (value == 0)            continue;       // leere Zelle
-            if (value < 1 || value > 9)    return true;   // ungültiger Wert
+            if (value < 1 || value > 9)    return false;   // ungültiger Wert
             if (seen[value]){// doppelte Zahl
-                markCellsWithValueNotValid(unit, value);
-                return true;
+                markCellsWithSameValueNotValid(unit, value);
+                return false;
             }
             seen[value] = true;
         }
-        return false;
+        return true;
     }
 
-    private static void markCellsWithValueNotValid(List<Cell> cells, int value){
+//    private boolean cellIsValid(Cell cell){
+//        int value = cell.getContent();
+//
+//        return
+//    }
+
+    private void markCellsWithSameValueNotValid(List<Cell> cells, int value){
         List<Cell> sameContent = cells.stream().filter(c->c.getContent() == value).toList();
         for(Cell cell : sameContent){
             cell.setValid(false);
+        }
+    }
+
+    private void markCellsValid(List<Cell> cells){
+        for(Cell cell : cells){
+            cell.setValid(true);
         }
     }
 

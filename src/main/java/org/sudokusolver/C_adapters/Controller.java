@@ -28,24 +28,24 @@ public class Controller {
         List<Cell> cells = useCaseInputPort.loadSudoku(sudokuDatei);
         presenter.setCells(cells);
         useCaseInputPort.reducePossibilitiesFromCurrentState();
-        presenter.refreshBoard();
+        validateAndRefresh();
     }
 
     public void solveSudokuOneStep(){
         useCaseInputPort.solveOneStep();
         useCaseInputPort.reducePossibilitiesFromCurrentState();
-        presenter.refreshBoard();
+        validateAndRefresh();
     }
 
     public void solveSudokuOneStepInUnit(){
         useCaseInputPort.solveSudokuOneStepInUnit();
         useCaseInputPort.reducePossibilitiesFromCurrentState();
-        presenter.refreshBoard();
+        validateAndRefresh();
     }
 
     public void solveByReasoningAsFarAsPossible(){
         useCaseInputPort.solveByReasoningAsFarAsPossible();
-        presenter.refreshBoard();
+        validateAndRefresh();
     }
 
     public void handleKeyPressed(String key) {
@@ -80,14 +80,14 @@ public class Controller {
         if(presenter.oneCellClicked()){
             Point clickedCell = presenter.getClickedCells().get(0);
             useCaseInputPort.handleKeyInputWithCellClickedAtPosition(value, clickedCell);
-            presenter.refreshBoard();
+            validateAndRefresh();
         }
     }
 
     void solveRecursively(){
         List<Cell> cells = useCaseInputPort.solveRecursively();
         presenter.setCells(cells);
-        presenter.refreshBoard();
+        validateAndRefresh();
     }
 
     public void cellClicked(int row, int col){
@@ -96,6 +96,11 @@ public class Controller {
 
     public void downloadSudoku() {
         useCaseInputPort.downloadSudokuFromApiAndStore();
+    }
+
+    private void validateAndRefresh(){
+        useCaseInputPort.validateSudoku();
+        presenter.refreshBoard();
     }
 
 }

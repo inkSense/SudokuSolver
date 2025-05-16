@@ -93,6 +93,12 @@ public class FxView implements Presenter2ViewOutputPort {
             } else {
                 cellView.setValue(cell.getContent());
             }
+            if(cell.isValid()){
+                cellView.setBlack();
+            } else {
+                cellView.setRed();
+            }
+
         }
     }
 

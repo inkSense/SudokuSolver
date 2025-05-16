@@ -24,6 +24,8 @@ public class CellView extends StackPane {
         bigLabel.setFont(Font.font(45));
         bigLabel.setAlignment(Pos.CENTER);
 
+
+
         // 2) GridPane (3×3) für mögliche Kandidaten
         smallGrid.setPrefSize(65, 65); // Beispielwerte, je nach Layout
         smallGrid.setAlignment(Pos.CENTER);
@@ -59,10 +61,6 @@ public class CellView extends StackPane {
         bigLabel.setVisible(!show);
     }
 
-    public Point getPosition() {
-        return position;
-    }
-
     public void setValue(Integer value) {
         if (value == null) {
             bigLabel.setText("");
@@ -83,6 +81,14 @@ public class CellView extends StackPane {
                 smallLabels[row][col].setText("");
             }
         }
+    }
+
+    public void setBlack(){
+        bigLabel.setStyle("-fx-text-fill: black;");
+    }
+
+    public void setRed(){
+        bigLabel.setStyle("-fx-text-fill: red;");
     }
 
     public void setHighlight(boolean highlight) {
