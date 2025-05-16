@@ -23,16 +23,6 @@ public class SudokuBoard {
         return cells;
     }
 
-    public Cell getCell(int col, int row){
-        for(Cell cell : cells ){
-            if(cell.getPosition().x == col && cell.getPosition().y == row){
-                return cell;
-            }
-        }
-        log.error("No Cell found in getCell()");
-        return null;
-    }
-
     public Cell getCell(Point position){
         for(Cell cell : cells){
             if(cell.getPosition().equals(position)){
@@ -77,9 +67,9 @@ public class SudokuBoard {
 
         // prüfe alle 9 Zeilen, Spalten und Blöcke
         for (int i = 0; i < 9; i++) {
-            if (!unitValid(getRow(i))      ||   // Zeile
-                    !unitValid(getColumn(i))   ||   // Spalte
-                    !unitValid(getBlock(i)))        // 3×3‑Block
+            if (unitNotValid(getRow(i)) ||   // Zeile
+                    unitNotValid(getColumn(i)) ||   // Spalte
+                    unitNotValid(getBlock(i)))        // 3×3‑Block
             {
                 return false;              // Widerspruch gefunden
             }
@@ -103,14 +93,6 @@ public class SudokuBoard {
         return new SudokuBoard(cloned, difficulty);
     }
 
-    /** erste leere Zelle (oder null) */
-    public Point nextEmptyCell() {
-        return cells.stream()
-                .filter(c -> c.getContent() == 0)
-                .map(Cell::getPosition)
-                .findFirst().orElse(null);
-    }
-
     public List<Integer> getPossiblesOfCellAt(Point position) {
         Cell cell = getCell(position);
         return new ArrayList<>(cell.getPossibleContent()); // Kopie zurückgeben
@@ -124,16 +106,30 @@ public class SudokuBoard {
 
     /** Liefert false, sobald ein Wert < 1 oder > 9 vorkommt oder
      *  eine Zahl (1‑9) doppelt vorkommt. 0 (=leer) wird ignoriert. */
-    private static boolean unitValid(List<Cell> unit) {
+    private static boolean unitNotValid(List<Cell> unit) {
         boolean[] seen = new boolean[10];          // Index 1‑9
-        for (Cell c : unit) {
-            int v = c.getContent();
-            if (v == 0)            continue;       // leere Zelle
-            if (v < 1 || v > 9)    return false;   // ungültiger Wert
-            if (seen[v])           return false;   // doppelte Zahl
-            seen[v] = true;
+        for (Cell cell : unit) {
+            int value = cell.getContent();
+            if (value == 0)            continue;       // leere Zelle
+            if (value < 1 || value > 9)    return true;   // ungültiger Wert
+            if (seen[value]){// doppelte Zahl
+                markCellsWithValueNotValid(unit, value);
+                return true;
+            }
+            seen[value] = true;
         }
-        return true;
+        return false;
+    }
+
+    private static void markCellsWithValueNotValid(List<Cell> cells, int value){
+        List<Cell> sameContent = cells.stream().filter(c->c.getContent() == value).toList();
+        for(Cell cell : sameContent){
+            cell.setValid(false);
+        }
+    }
+
+    public void resetPossiblesInAllCells(){
+        cells.forEach(Cell::initializePossibleContent);
     }
 
 

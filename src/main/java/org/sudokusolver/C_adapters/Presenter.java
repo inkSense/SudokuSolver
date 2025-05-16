@@ -30,6 +30,7 @@ public class Presenter {
     void handleDigit(String digitString){
         int value = Integer.parseInt(digitString);
         log.info("int: " + value);
+
         List<Point> clickedCells = getClickedCells();
         if(clickedCells.isEmpty()){
             log.info("list of Highlighted Cells is empty");
@@ -53,6 +54,12 @@ public class Presenter {
             }
         }
     }
+
+    boolean oneCellClicked(){
+        List<Point> clickedCells = getClickedCells();
+        return clickedCells.size() == 1;
+    }
+
 
     void setCells(List<Cell> cells){
         viewModel.setCellList(cells);

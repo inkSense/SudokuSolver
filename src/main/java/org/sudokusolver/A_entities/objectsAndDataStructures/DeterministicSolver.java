@@ -45,13 +45,13 @@ public class DeterministicSolver {
     public void solveByReasoningAsFarAsPossible(SudokuBoard sudoku){
         this.sudoku = sudoku;
         boolean singleFound;
-        boolean contextFound;
+        boolean unitFound;
         for(int i = 0; i < 80; i++){
             singleFound = testForSinglePossibilitiesInCellAndFillIn();
             reducePossibilitiesFromCurrentState(sudoku);
-            contextFound = testForSinglePossibilitiesInContextAndFillIn(sudoku);
+            unitFound = testForSinglePossibilitiesInUnitAndFillIn(sudoku);
             reducePossibilitiesFromCurrentState(sudoku);
-            if(!singleFound && !contextFound){
+            if(!singleFound && !unitFound){
                 log.info("Cant solve anything more with simple reasoning.");
                 return;
             }
@@ -72,7 +72,7 @@ public class DeterministicSolver {
         return somethingFound;
     }
 
-    public boolean testForSinglePossibilitiesInContextAndFillIn(SudokuBoard sudoku){
+    public boolean testForSinglePossibilitiesInUnitAndFillIn(SudokuBoard sudoku){
         this.sudoku = sudoku;
         boolean somethingFound = false;
         for(Cell cell: sudoku.getCells()){

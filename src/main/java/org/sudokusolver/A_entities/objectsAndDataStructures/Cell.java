@@ -3,7 +3,6 @@ package org.sudokusolver.A_entities.objectsAndDataStructures;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -14,6 +13,7 @@ public class Cell {
     private Point position;
     private int boxIndex;
     private List<Integer> possibleContent;
+    private boolean valid = true;
     Logger log = LoggerFactory.getLogger(Cell.class);
 
     public Cell() {
@@ -31,7 +31,7 @@ public class Cell {
     /** Copy-Konstruktor */
     public Cell(Cell src) {
         this.content  = src.content;
-        this.position = new Point(src.position);   // tiefe Kopie
+        this.position = new Point(src.position); // tiefe Kopie
         this.boxIndex = src.boxIndex;
         this.possibleContent = new ArrayList<>(src.possibleContent);
     }
@@ -50,24 +50,12 @@ public class Cell {
         return position;
     }
 
-    public void setPosition(Point position) {
-        this.position = position;
-    }
-
     public int getBoxIndex() {
         return boxIndex;
     }
 
-    public void setBoxIndex(int boxIndex) {
-        this.boxIndex = boxIndex;
-    }
-
     public List<Integer> getPossibleContent() {
         return possibleContent;
-    }
-
-    public void setPossibleContent(List<Integer> possibleContent) {
-        this.possibleContent = possibleContent;
     }
 
     public void removeFromPossibleContent(int number) {
@@ -87,6 +75,14 @@ public class Cell {
             IntStream.rangeClosed(1, 9).forEach(possibles::add);
         }
         possibleContent = possibles;
+    }
+
+    public boolean isValid() {
+        return valid;
+    }
+
+    public void setValid(boolean valid) {
+        this.valid = valid;
     }
 
     int getBlockIndexFromCell(int row, int col) {

@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public class BacktrackingSolver {
 
-    private final DeterministicSolver engine = new DeterministicSolver();   // deine „Reasoning“-Klasse
+    private final DeterministicSolver engine = new DeterministicSolver();
     private static final Logger log = LoggerFactory.getLogger(BacktrackingSolver.class);
 
     public SudokuBoard solve(SudokuBoard board) {
@@ -18,21 +18,17 @@ public class BacktrackingSolver {
         int i = 0;
         while (true) {
 
-            //current.getBoard().print();
+            i++;
 
-            if(++i % 2 == 0){
-                log.info("Durchlauf " + i );
-            }
-
-
+            current.getBoard().print();
 
             if (current.getBoard().isSolved()) {
+                log.info("Durchläufe: " + i );
                 return current.getBoard();
             }
 
             Optional<Point> position = findCellPositionOfFewPossibilities(current.getBoard());
             if(position.isEmpty()){
-                //log.info("Keine Kandidaten fürs Raten. Enferne Ratemöglichkeit im Vater.");
                 SearchNode parent = current.getParent();
                 if(parent == null) return null; // Wurzelknoten
                 SearchNode grandParent = parent.getParent();
@@ -51,33 +47,21 @@ public class BacktrackingSolver {
             int tryValue = candidates.get(0); // Hier wird geraten
             current.setTriedAndSetTriedValueToCellAt(position.get(), tryValue);
             engine.solveByReasoningAsFarAsPossible(current.getBoard());
-//            log.info("Versuch: " + tryValue + " auf " + position.get());
 
             if(current.getBoard().isValid()){
-//                log.info("Das ist Valide. Nächstes Kind.");
                 current = current.nextChild();
             } else {
-//                log.info("Das ist UNvalide. Enferne Ratemöglichkeit im Vater.");
                 SearchNode parent = current.getParent();
                 if(parent == null) return null; // Wurzelknoten
                 removeGuessOfChildInParent(current, parent);
                 current = parent;
             }
-
-            /* (c) deterministisch weiter */
-            //engine.solveByReasoningAsFarAsPossible(current.getBoard());
         }
     }
 
     private void removeGuessOfChildInParent(SearchNode child, SearchNode parent){
         Cell parentCell = parent.getCell(child.getTriedPosition());
         parentCell.removeFromPossibleContent(child.getTriedValue());
-    }
-
-    private void removeGuess(SearchNode node){
-        Cell cell = node.getCell(node.getTriedPosition());
-        cell.setContent(0);
-        cell.removeFromPossibleContent(node.getTriedValue());
     }
 
     private Optional<Point> findCellPositionOfFewPossibilities(SudokuBoard board) {

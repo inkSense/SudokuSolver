@@ -7,6 +7,7 @@ import org.sudokusolver.A_entities.objectsAndDataStructures.Cell;
 import org.sudokusolver.A_entities.objectsAndDataStructures.DeterministicSolver;
 import org.sudokusolver.A_entities.objectsAndDataStructures.SudokuBoard;
 
+import java.awt.*;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
@@ -17,7 +18,8 @@ public class UseCaseInteractor implements UseCaseInputPort {
     SaveFileUseCase saveFile;
     ParseSudokuFromJsonStringUseCase parse = new ParseSudokuFromJsonStringUseCase();
     DownloadSudokuFromApiUseCase download;
-    DeterministicSolver solve = new DeterministicSolver();
+    DeterministicSolver deterministicSolver = new DeterministicSolver();
+    BacktrackingSolver backtrackingSolver = new BacktrackingSolver();
     private static final Logger log = LoggerFactory.getLogger(UseCaseInteractor.class);
 
     public UseCaseInteractor(
@@ -37,45 +39,32 @@ public class UseCaseInteractor implements UseCaseInputPort {
     }
 
     public void solveOneStep(){
-        solve.testForSinglePossibilitiesInCellAndFillIn();
+        deterministicSolver.testForSinglePossibilitiesInCellAndFillIn();
     }
 
-    public void solveSudokuOneStepInContext(){
-        solve.testForSinglePossibilitiesInContextAndFillIn(sudoku);
+    public void solveSudokuOneStepInUnit(){
+        deterministicSolver.testForSinglePossibilitiesInUnitAndFillIn(sudoku);
     }
 
     public void solveByReasoningAsFarAsPossible(){
-        solve.solveByReasoningAsFarAsPossible(sudoku);
+        deterministicSolver.solveByReasoningAsFarAsPossible(sudoku);
     }
 
     public void reducePossibilitiesFromCurrentState(){
-        solve.reducePossibilitiesFromCurrentState(sudoku);
+        deterministicSolver.reducePossibilitiesFromCurrentState(sudoku);
         //solve.printOutPossibilities();
     }
 
-    public void downloadSudokusFromApiAndStore(){
+    public void downloadSudokuFromApiAndStore(){
         String json = download.downloadJsonStrings();
         saveFile.saveToJsonFileNamedByDate(json);
     }
 
-    public List<Cell> tryRecursively(){
-//        SudokuBoard solvedSudoku = solve.solve();
-//        List<Cell> solvedCells = solvedSudoku.getCells();
-//
-//        if (solvedSudoku.isSolved()) {
-//            log.info("Sudoku gelöst");
-//            log.info("Untersuchte Blätter: {}", solve.examinedLeaves());
-//            return solvedSudoku.getCells();
-//        } else {
-//            log.info("Sudoku ist unlösbar.");
-//            return Collections.emptyList();
-//        }
-
-        BacktrackingSolver solver = new BacktrackingSolver();
-        SudokuBoard solved = solver.solve(sudoku);
-
+    public List<Cell> solveRecursively(){
+        SudokuBoard solved = backtrackingSolver.solve(sudoku);
         if ( solved != null) {
             log.info("=== Gelöst ===");
+            this.sudoku = solved;
             return solved.getCells();
         } else {
             log.info("Unlösbar.");
@@ -83,4 +72,15 @@ public class UseCaseInteractor implements UseCaseInputPort {
         }
     }
 
+    @Override
+    public void handleKeyInputWithCellClickedAtPosition(int value, Point clickedCell) {
+        Cell cell = sudoku.getCell(clickedCell);
+        if(cell.getContent() == value){
+            cell.setContent(0);
+        } else {
+            cell.setContent(value);
+        }
+        sudoku.resetPossiblesInAllCells();
+        deterministicSolver.reducePossibilitiesFromCurrentState(sudoku);
+    }
 }

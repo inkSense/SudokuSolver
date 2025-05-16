@@ -5,6 +5,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sudokusolver.A_entities.objectsAndDataStructures.Cell;
 import org.sudokusolver.B_useCases.UseCaseInputPort;
+
+import java.awt.*;
 import java.nio.file.Path;
 import java.util.List;
 
@@ -25,73 +27,75 @@ public class Controller {
     public void loadSudoku(Path sudokuDatei){
         List<Cell> cells = useCaseInputPort.loadSudoku(sudokuDatei);
         presenter.setCells(cells);
-        reducePossibilitiesFromCurrentState();
+        useCaseInputPort.reducePossibilitiesFromCurrentState();
         presenter.refreshBoard();
     }
 
     public void solveSudokuOneStep(){
         useCaseInputPort.solveOneStep();
+        useCaseInputPort.reducePossibilitiesFromCurrentState();
+        presenter.refreshBoard();
     }
 
-    public void solveSudokuOneStepInContext(){
-        useCaseInputPort.solveSudokuOneStepInContext();
+    public void solveSudokuOneStepInUnit(){
+        useCaseInputPort.solveSudokuOneStepInUnit();
+        useCaseInputPort.reducePossibilitiesFromCurrentState();
+        presenter.refreshBoard();
     }
 
     public void solveByReasoningAsFarAsPossible(){
         useCaseInputPort.solveByReasoningAsFarAsPossible();
-    }
-
-    public void reducePossibilitiesFromCurrentState(){
-        useCaseInputPort.reducePossibilitiesFromCurrentState();
+        presenter.refreshBoard();
     }
 
     public void handleKeyPressed(String key) {
         if(key.matches("[1-9]")){
-            presenter.handleDigit(key);
-            reducePossibilitiesFromCurrentState();
-            presenter.refreshBoard();
+            handleDigit(key);
         } else {
             switch (key.toUpperCase()) {
                 case "A":
                     solveByReasoningAsFarAsPossible();
-                    presenter.refreshBoard();
                     break;
                 case "T":
                     // Try
-                    List<Cell> cells = tryRecursively();
-                    presenter.setCells(cells);
-                    presenter.refreshBoard();
+                    solveRecursively();
                     break;
-                case "C":
-                    // Context
-                    solveSudokuOneStepInContext();
-                    reducePossibilitiesFromCurrentState();
-                    presenter.refreshBoard();
+                case "U":
+                    // Unit
+                    solveSudokuOneStepInUnit();
                     break;
                 case "S":
                     // Solve
                     solveSudokuOneStep();
-                    reducePossibilitiesFromCurrentState();
-                    presenter.refreshBoard();
                     break;
                 default:
-                    log.info("Andere Taste: " + key + ". Funktionstasten: A C S ");
+                    log.info("Andere Taste: " + key + ". Funktionstasten: A T U S ");
             }
         }
     }
-    List<Cell> tryRecursively(){
-        return useCaseInputPort.tryRecursively();
 
+    void handleDigit(String digitString){
+        int value = Integer.parseInt(digitString);
+        log.info("int: " + value);
+        if(presenter.oneCellClicked()){
+            Point clickedCell = presenter.getClickedCells().get(0);
+            useCaseInputPort.handleKeyInputWithCellClickedAtPosition(value, clickedCell);
+            presenter.refreshBoard();
+        }
+    }
+
+    void solveRecursively(){
+        List<Cell> cells = useCaseInputPort.solveRecursively();
+        presenter.setCells(cells);
+        presenter.refreshBoard();
     }
 
     public void cellClicked(int row, int col){
         presenter.cellClicked(row, col);
     }
-    // im Controller
-    public void downloadSudokus() {
-        useCaseInputPort.downloadSudokusFromApiAndStore();   // Use‑Case aufrufen
-        // optional: presenter.refreshBoard(...) o. Ä., falls direkt ein neues
-        // Sudoku angezeigt werden soll
+
+    public void downloadSudoku() {
+        useCaseInputPort.downloadSudokuFromApiAndStore();
     }
 
 }
