@@ -48,24 +48,25 @@ public class FxView implements Presenter2ViewOutputPort {
     void makeCellViews(){
         for(int col = 0; col < 9; col++){
             for(int row = 0; row < 9; row++){
-                CellView cellView = new CellView(new Point(col, row));
-                String style = getStyleFromRowAndCol(row, col);
+                Point position = new Point(row, col);
+                CellView cellView = new CellView(position);
+                String style = getStyleFromRowAndCol(position);
                 cellView.setStyle(style);
-                int finalCol = col;
-                int finalRow = row;
+//                int finalCol = col;
+//                int finalRow = row;
                 cellView.setOnMouseClicked(evt -> {
-                    controller.cellClicked(finalRow, finalCol);
+                    controller.cellClicked(position);
                     //log.info("Col " + finalCol + ", row " + finalRow);
                 });
-                grid.add(cellView, col, row);
+                grid.add(cellView, row, col);
             }
         }
     }
 
 
-    public List<Point> highlightCellBasedOnStatus(int row, int col) {
+    public List<Point> highlightCellBasedOnStatus(Point position) {
         List<Point> highlightedCells = new ArrayList<>();
-        CellView selfCell = getCellByRowColumnIndex(row, col);
+        CellView selfCell = getCellByRowColumnIndex(position);
         boolean alreadyHighlighted = selfCell.isHighlighted();
         // Alles „unhighlighten“
         for (Node node : grid.getChildren()) {
@@ -76,7 +77,7 @@ public class FxView implements Presenter2ViewOutputPort {
         if(!alreadyHighlighted){
             // Wenn sie nicht schon an war, dann markieren.
             selfCell.setHighlight(true);
-            highlightedCells.add(new Point(col, row));
+            highlightedCells.add(position);
         }
         return highlightedCells;
 
@@ -84,7 +85,7 @@ public class FxView implements Presenter2ViewOutputPort {
 
     public void refreshBoard(List<Cell> cellList) {
         for(Cell cell: cellList){
-            CellView cellView = getCellByRowColumnIndex(cell.getPosition().y, cell.getPosition().x);
+            CellView cellView = getCellByRowColumnIndex(cell.getPosition());
             if (cell.getContent() == 0) {
                 cellView.setValue(null);
                 List<Integer> possibleContents = cell.getPossibleContent();
@@ -98,18 +99,17 @@ public class FxView implements Presenter2ViewOutputPort {
             } else {
                 cellView.setRed();
             }
-
         }
     }
 
-    public CellView getCellByRowColumnIndex(int row, int column) {
+    public CellView getCellByRowColumnIndex(Point point) {
         for (Node node : grid.getChildren()) {
             Integer rowIndex = GridPane.getRowIndex(node);
             Integer colIndex = GridPane.getColumnIndex(node);
             // Sind rowIndex/colIndex nicht gesetzt, kann es standardmäßig 0 sein:
             if (rowIndex == null) rowIndex = 0;
             if (colIndex == null) colIndex = 0;
-            if (rowIndex == row && colIndex == column) {
+            if (rowIndex == point.y && colIndex == point.x) {
                 return (CellView) node;
             }
         }
@@ -126,25 +126,25 @@ public class FxView implements Presenter2ViewOutputPort {
         });
     }
 
-    String getStyleFromRowAndCol(int row, int col){
+    String getStyleFromRowAndCol(Point point){
         int top = 1, right = 1, bottom = 1, left = 1;
         String topColor = "lightgray", rightColor = "lightgray",
                 bottomColor = "lightgray", leftColor = "lightgray";
 
         // Dickere Linien an 3x3-Grenzen
-        if (row % 3 == 0) {
+        if (point.y % 3 == 0) {
             top = 3;
             topColor = "black";
         }
-        if (row == 8) {
+        if (point.y == 8) {
             bottom = 3;
             bottomColor = "black";
         }
-        if (col % 3 == 0) {
+        if (point.x % 3 == 0) {
             left = 3;
             leftColor = "black";
         }
-        if (col == 8) {
+        if (point.x == 8) {
             right = 3;
             rightColor = "black";
         }
@@ -164,7 +164,7 @@ public class FxView implements Presenter2ViewOutputPort {
         // Erweiterung ListView
         Button openList = new Button("Load Sudoku File");
         openList.setOnAction(e -> {
-            SudokuListWindow listWindow = new SudokuListWindow(controller);
+            FxSudokuListWindow listWindow = new FxSudokuListWindow(controller);
             listWindow.show();
         });
         return openList;

@@ -19,17 +19,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class SudokuListWindow {
+public class FxSudokuListWindow {
 
     private Stage stage;
     private final ListView<String> listView = new ListView<>();
     private final Button loadButton = new Button("Load");
 
-    private static final Logger log = LoggerFactory.getLogger(SudokuListWindow.class);
+    private static final Logger log = LoggerFactory.getLogger(FxSudokuListWindow.class);
 
     Controller controller;
 
-    public SudokuListWindow(Controller controller) {
+    public FxSudokuListWindow(Controller controller) {
         this.controller = controller;
         List<String> fileNames = getFileNames(FrameworkConf.filePathString);
         listView.getItems().addAll(fileNames);

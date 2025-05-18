@@ -59,6 +59,12 @@ public class BacktrackingSolver {
         }
     }
 
+    private SearchNode backtrack(SearchNode node) {
+        // ToDo: Man kann backtracking schon vereinheitlichen!
+        return null;
+    }
+
+
     private void removeGuessOfChildInParent(SearchNode child, SearchNode parent){
         Cell parentCell = parent.getCell(child.getTriedPosition());
         parentCell.removeFromPossibleContent(child.getTriedValue());

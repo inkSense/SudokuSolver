@@ -90,8 +90,8 @@ public class Controller {
         validateAndRefresh();
     }
 
-    public void cellClicked(int row, int col){
-        presenter.cellClicked(row, col);
+    public void cellClicked(Point position){
+        presenter.cellClicked(position);
     }
 
     public void downloadSudoku() {

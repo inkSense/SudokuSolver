@@ -18,8 +18,8 @@ public class Presenter {
         presenter2ViewOutputPort.setKeyToPressable();
     }
 
-    public void cellClicked(int row, int col){
-        List<Point> clickedCells = presenter2ViewOutputPort.highlightCellBasedOnStatus(row, col);
+    public void cellClicked(Point position){
+        List<Point> clickedCells = presenter2ViewOutputPort.highlightCellBasedOnStatus(position);
         viewModel.setClickedCells(clickedCells);
     }
 

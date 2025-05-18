@@ -127,12 +127,6 @@ public class SudokuBoard {
         return true;
     }
 
-//    private boolean cellIsValid(Cell cell){
-//        int value = cell.getContent();
-//
-//        return
-//    }
-
     private void markCellsWithSameValueNotValid(List<Cell> cells, int value){
         List<Cell> sameContent = cells.stream().filter(c->c.getContent() == value).toList();
         for(Cell cell : sameContent){

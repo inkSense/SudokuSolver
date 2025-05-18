@@ -8,6 +8,6 @@ import java.util.List;
 public interface Presenter2ViewOutputPort {
     void refreshBoard(List<Cell> cellList);
     void setKeyToPressable();
-    List<Point> highlightCellBasedOnStatus(int row, int col);
+    List<Point> highlightCellBasedOnStatus(Point position);
 
 }
