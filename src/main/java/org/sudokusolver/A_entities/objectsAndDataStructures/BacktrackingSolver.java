@@ -2,7 +2,6 @@ package org.sudokusolver.A_entities.objectsAndDataStructures;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.awt.Point;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -27,7 +26,7 @@ public class BacktrackingSolver {
                 return current.getBoard();
             }
 
-            Optional<Point> position = findCellPositionOfFewPossibilities(current.getBoard());
+            Optional<Position> position = findCellPositionOfFewPossibilities(current.getBoard());
             if(position.isEmpty()){
                 SearchNode parent = current.getParent();
                 if(parent == null) return null; // Wurzelknoten
@@ -70,7 +69,7 @@ public class BacktrackingSolver {
         parentCell.removeFromPossibleContent(child.getTriedValue());
     }
 
-    private Optional<Point> findCellPositionOfFewPossibilities(SudokuBoard board) {
+    private Optional<Position> findCellPositionOfFewPossibilities(SudokuBoard board) {
         return board.getCells().stream()
                 .filter(c -> c.getContent() == 0)
                 .filter(c -> !c.getPossibleContent().isEmpty())

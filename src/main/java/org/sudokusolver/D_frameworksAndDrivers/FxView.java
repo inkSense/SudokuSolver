@@ -8,12 +8,12 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.RowConstraints;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.sudokusolver.A_entities.objectsAndDataStructures.Cell;
+
+import org.sudokusolver.A_entities.objectsAndDataStructures.Position;
 import org.sudokusolver.C_adapters.Controller;
 import org.sudokusolver.C_adapters.Presenter2ViewOutputPort;
+import org.sudokusolver.C_adapters.CellDto;
 
-import java.awt.Point;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -24,7 +24,6 @@ public class FxView implements Presenter2ViewOutputPort {
     private final GridPane grid;
     private final Scene scene;
     private final Controller controller;
-
     private static final Logger log = LoggerFactory.getLogger(FxView.class);
 
     public FxView(GridPane grid, Scene scene, Controller controller) {
@@ -36,7 +35,7 @@ public class FxView implements Presenter2ViewOutputPort {
     }
 
     void addConstraints() {
-        // 9 Spalten & 9 Zeilen, jede ~ 66 breit/hoch
+        // 9 Spalten & 9 Zeilen, jede x breit/hoch
         for (int i = 0; i < 9; i++) {
             ColumnConstraints colCon = new ColumnConstraints(66); // 66 oder 65, 70,  ...
             RowConstraints rowCon = new RowConstraints(66);
@@ -48,53 +47,45 @@ public class FxView implements Presenter2ViewOutputPort {
     void makeCellViews(){
         for(int col = 0; col < 9; col++){
             for(int row = 0; row < 9; row++){
-                Point position = new Point(row, col);
-                CellView cellView = new CellView(position);
-                String style = getStyleFromRowAndCol(position);
+                Position position = new Position(row, col);
+                CellView cellView = new CellView();
+                String style = getStyle(position);
                 cellView.setStyle(style);
-//                int finalCol = col;
-//                int finalRow = row;
                 cellView.setOnMouseClicked(evt -> {
                     controller.cellClicked(position);
-                    //log.info("Col " + finalCol + ", row " + finalRow);
                 });
-                grid.add(cellView, row, col);
+                grid.add(cellView, col, row);
             }
         }
     }
 
-
-    public List<Point> highlightCellBasedOnStatus(Point position) {
-        List<Point> highlightedCells = new ArrayList<>();
-        CellView selfCell = getCellByRowColumnIndex(position);
-        boolean alreadyHighlighted = selfCell.isHighlighted();
-        // Alles „unhighlighten“
+    @Override
+    public void unHighlightAllCells() {
         for (Node node : grid.getChildren()) {
             if (node instanceof CellView) {
                 ((CellView) node).setHighlight(false);
             }
         }
-        if(!alreadyHighlighted){
-            // Wenn sie nicht schon an war, dann markieren.
-            selfCell.setHighlight(true);
-            highlightedCells.add(position);
-        }
-        return highlightedCells;
-
     }
 
-    public void refreshBoard(List<Cell> cellList) {
-        for(Cell cell: cellList){
-            CellView cellView = getCellByRowColumnIndex(cell.getPosition());
-            if (cell.getContent() == 0) {
+    @Override
+    public void highlightCell(Position position) {
+        CellView cell = getCellByPosition(position);
+        cell.setHighlight(true);
+    }
+
+    public void refreshBoard(List<CellDto> cellList) {
+        for(CellDto cell: cellList){
+            CellView cellView = getCellByPosition(cell.position());
+            if (cell.content() == 0) {
                 cellView.setValue(null);
-                List<Integer> possibleContents = cell.getPossibleContent();
+                List<Integer> possibleContents = cell.possibles();
                 Set<Integer> possibles = new HashSet<>(possibleContents);
                 cellView.setPossibles(possibles);
             } else {
-                cellView.setValue(cell.getContent());
+                cellView.setValue(cell.content());
             }
-            if(cell.isValid()){
+            if(cell.valid()){
                 cellView.setBlack();
             } else {
                 cellView.setRed();
@@ -102,14 +93,14 @@ public class FxView implements Presenter2ViewOutputPort {
         }
     }
 
-    public CellView getCellByRowColumnIndex(Point point) {
+    public CellView getCellByPosition(Position position) {
         for (Node node : grid.getChildren()) {
             Integer rowIndex = GridPane.getRowIndex(node);
             Integer colIndex = GridPane.getColumnIndex(node);
             // Sind rowIndex/colIndex nicht gesetzt, kann es standardmäßig 0 sein:
             if (rowIndex == null) rowIndex = 0;
             if (colIndex == null) colIndex = 0;
-            if (rowIndex == point.y && colIndex == point.x) {
+            if (rowIndex == position.row() && colIndex == position.col()) {
                 return (CellView) node;
             }
         }
@@ -126,25 +117,25 @@ public class FxView implements Presenter2ViewOutputPort {
         });
     }
 
-    String getStyleFromRowAndCol(Point point){
+    String getStyle(Position position){
         int top = 1, right = 1, bottom = 1, left = 1;
         String topColor = "lightgray", rightColor = "lightgray",
                 bottomColor = "lightgray", leftColor = "lightgray";
 
         // Dickere Linien an 3x3-Grenzen
-        if (point.y % 3 == 0) {
+        if (position.row() % 3 == 0) {
             top = 3;
             topColor = "black";
         }
-        if (point.y == 8) {
+        if (position.row() == 8) {
             bottom = 3;
             bottomColor = "black";
         }
-        if (point.x % 3 == 0) {
+        if (position.col() % 3 == 0) {
             left = 3;
             leftColor = "black";
         }
-        if (point.x == 8) {
+        if (position.col() == 8) {
             right = 3;
             rightColor = "black";
         }
@@ -160,26 +151,29 @@ public class FxView implements Presenter2ViewOutputPort {
         return style;
     }
 
-    public Button onButtonClickOpenList(){
-        // Erweiterung ListView
-        Button openList = new Button("Load Sudoku File");
-        openList.setOnAction(e -> {
-            FxSudokuListWindow listWindow = new FxSudokuListWindow(controller);
+    public Button onButtonClickOpenList(ListWindowMode mode){
+        String buttonText = "";
+        if(mode == ListWindowMode.load){
+            buttonText = "Load Sudoku File";
+        } else if(mode == ListWindowMode.save){
+            buttonText = "Save Sudoku File";
+        } else {
+            log.error("Enum not registered in View");
+        }
+        Button openListButton = new Button(buttonText);
+        openListButton.setOnAction(e -> {
+            FxSudokuListWindow listWindow = new FxSudokuListWindow(controller, mode);
             listWindow.show();
         });
-        return openList;
+        return openListButton;
     }
 
     public Button onButtonClickDownload() {
-        Button downloadBtn = new Button("Download Sudokus");
+        Button downloadBtn = new Button("Download Sudoku");
         downloadBtn.setOnAction(e -> {
             // Wenn der Aufruf länger dauert ⇒ Task verwenden
             controller.downloadSudoku();
         });
         return downloadBtn;
     }
-
-
-
-
 }

@@ -16,6 +16,7 @@ import org.sudokusolver.C_adapters.HttpApiGateway;
 import org.sudokusolver.C_adapters.ViewModel;
 import org.sudokusolver.C_adapters.Presenter;
 import org.sudokusolver.D_frameworksAndDrivers.FxView;
+import org.sudokusolver.D_frameworksAndDrivers.ListWindowMode;
 
 public class Main  extends Application {
 
@@ -51,10 +52,11 @@ public class Main  extends Application {
         Der Presenter hat das Model und das View.
         Das Model hat nichts. */
 
-        Button loadBtn     = fxView.onButtonClickOpenList();
+        Button loadBtn     = fxView.onButtonClickOpenList(ListWindowMode.load);
+        Button saveButton  = fxView.onButtonClickOpenList(ListWindowMode.save);
         Button downloadBtn = fxView.onButtonClickDownload();
 
-        VBox leftBar = new VBox(10, loadBtn, downloadBtn);
+        VBox leftBar = new VBox(10, loadBtn, saveButton, downloadBtn);
         mainPane.setLeft(leftBar);
 
     }

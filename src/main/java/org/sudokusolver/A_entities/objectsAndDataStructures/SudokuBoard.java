@@ -2,8 +2,6 @@ package org.sudokusolver.A_entities.objectsAndDataStructures;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.awt.Point;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
@@ -24,7 +22,7 @@ public class SudokuBoard {
         return cells;
     }
 
-    public Cell getCell(Point position){
+    public Cell getCell(Position position){
         for(Cell cell : cells){
             if(cell.getPosition().equals(position)){
                 return cell;
@@ -51,12 +49,12 @@ public class SudokuBoard {
 
     public List<Cell> getRow(int row) {
         validateIndex(row);
-        return cells.stream().filter(c->c.getPosition().y == row).collect(Collectors.toList());
+        return cells.stream().filter(c->c.getPosition().row() == row).collect(Collectors.toList());
     }
 
     public List<Cell> getColumn(int col) {
         validateIndex(col);
-        return cells.stream().filter(c->c.getPosition().x == col).collect(Collectors.toList());
+        return cells.stream().filter(c->c.getPosition().col() == col).collect(Collectors.toList());
     }
 
     public List<Cell> getBlock(int blockNumber) {
@@ -99,7 +97,7 @@ public class SudokuBoard {
         return new SudokuBoard(cloned, difficulty);
     }
 
-    public List<Integer> getPossiblesOfCellAt(Point position) {
+    public List<Integer> getPossiblesOfCellAt(Position position) {
         Cell cell = getCell(position);
         return new ArrayList<>(cell.getPossibleContent()); // Kopie zurückgeben
     }

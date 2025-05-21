@@ -2,10 +2,10 @@ package org.sudokusolver.C_adapters;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.sudokusolver.A_entities.objectsAndDataStructures.Cell;
-
-import java.awt.*;
 import java.util.List;
+import java.util.Optional;
+
+import org.sudokusolver.A_entities.objectsAndDataStructures.Position;
 
 public class Presenter {
     private final ViewModel viewModel;
@@ -18,29 +18,35 @@ public class Presenter {
         presenter2ViewOutputPort.setKeyToPressable();
     }
 
-    public void cellClicked(Point position){
-        List<Point> clickedCells = presenter2ViewOutputPort.highlightCellBasedOnStatus(position);
-        viewModel.setClickedCells(clickedCells);
+    public void cellClicked(Position position){
+        updateModel(position);
+        presenter2ViewOutputPort.unHighlightAllCells();
+        Position highlighted = viewModel.getHighlighted();
+        if(highlighted != null){
+            presenter2ViewOutputPort.highlightCell(highlighted);
+        }
     }
 
-    List<Point> getClickedCells(){
-        return viewModel.getClickedCells();
+    Optional<Position> getHighlightedCell(){
+        return Optional.ofNullable(viewModel.getHighlighted());
     }
 
-
-    boolean oneCellClicked(){
-        List<Point> clickedCells = getClickedCells();
-        return clickedCells.size() == 1;
-    }
-
-
-    void setCells(List<Cell> cells){
+    void setCells(List<CellDto> cells){
         viewModel.setCellList(cells);
     }
 
     void refreshBoard(){
-
         presenter2ViewOutputPort.refreshBoard(viewModel.getCellList());
+    }
+
+    public void updateModel(Position clickPosition) {
+        Position modelPosition = viewModel.getHighlighted();
+        boolean sameClickedTwice = modelPosition != null && modelPosition.equals(clickPosition);
+        if(sameClickedTwice){
+            viewModel.setHighlighted(null);
+        } else {
+            viewModel.setHighlighted(clickPosition);
+        }
     }
 
 

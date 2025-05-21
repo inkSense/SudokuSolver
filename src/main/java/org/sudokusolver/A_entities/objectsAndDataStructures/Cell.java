@@ -6,11 +6,10 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
-import java.awt.Point;
 
 public class Cell {
     private int content;
-    private Point position;
+    private Position position;
     private int boxIndex;
     private List<Integer> possibleContent;
     private boolean valid = true;
@@ -21,17 +20,17 @@ public class Cell {
         initializePossibleContent();
     }
 
-    public Cell(int content, int row, int col) {
+    public Cell(int content, Position position) {
         this.content = content;
-        this.position = new Point(col, row);
-        this.boxIndex = getBlockIndexFromCell(row, col);
+        this.position = position;
+        this.boxIndex = getBlockIndexFromCell(position);
         initializePossibleContent();
     }
 
     /** Copy-Konstruktor */
     public Cell(Cell src) {
         this.content  = src.content;
-        this.position = new Point(src.position); // tiefe Kopie
+        this.position = src.position;
         this.boxIndex = src.boxIndex;
         this.possibleContent = new ArrayList<>(src.possibleContent);
     }
@@ -42,11 +41,9 @@ public class Cell {
 
     public void setContent(int content) {
         this.content = content;
-        // ToDo: Bitte testen, ob man das für den Deterministischen Löser ausgeschalten darf:
-        //initializePossibleContent();
     }
 
-    public Point getPosition() {
+    public Position getPosition() {
         return position;
     }
 
@@ -56,6 +53,10 @@ public class Cell {
 
     public List<Integer> getPossibleContent() {
         return possibleContent;
+    }
+
+    public void setPossibleContent(List<Integer> possibleContent) {
+        this.possibleContent = possibleContent;
     }
 
     public void removeFromPossibleContent(int number) {
@@ -85,7 +86,9 @@ public class Cell {
         this.valid = valid;
     }
 
-    int getBlockIndexFromCell(int row, int col) {
+    int getBlockIndexFromCell(Position position) {
+        int row = position.row();
+        int col = position.col();
         SudokuBoard.validateIndex(row);
         SudokuBoard.validateIndex(col);
         int blockRow = row / 3;

@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.sudokusolver.A_entities.objectsAndDataStructures.Cell;
+import org.sudokusolver.A_entities.objectsAndDataStructures.Position;
 import org.sudokusolver.A_entities.objectsAndDataStructures.SudokuBoard;
 
 import java.util.ArrayList;
@@ -33,7 +34,7 @@ public class ParseSudokuFromJsonStringUseCase {
             JsonArray rowArray = jsonArray.get(row).getAsJsonArray();
             for (int col = 0; col < 9; col++) {
                 int content = rowArray.get(col).getAsInt();
-                cells.add(new Cell(content, row, col));
+                cells.add(new Cell(content, new Position(row, col)));
             }
         }
         return new SudokuBoard(cells, difficulty);

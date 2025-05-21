@@ -29,21 +29,20 @@ public class FxSudokuListWindow {
 
     Controller controller;
 
-    public FxSudokuListWindow(Controller controller) {
+    public FxSudokuListWindow(Controller controller, ListWindowMode mode) {
         this.controller = controller;
+
         List<String> fileNames = getFileNames(FrameworkConf.filePathString);
         listView.getItems().addAll(fileNames);
         listView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 
-        loadButton.setOnAction(e -> {
-            String selected = listView.getSelectionModel().getSelectedItem();
-            if (selected != null) {
-                Path filePath = Path.of(FrameworkConf.filePathString + "/" + selected);
-                controller.loadSudoku(filePath);
-                log.info("filePath: " + filePath);
-                stage.close();
-            }
-        });
+        if(ListWindowMode.load == mode){
+            log.info("JEtzt LADEN LADEN JA?");
+        } else if(ListWindowMode.save == mode){
+            log.info("Auch ich lade. Aber ich könnte auch anders!!!");
+        }
+        setLoadButtonAction(loadButton);
+
 
         BorderPane root = new BorderPane();
         root.setCenter(listView);
@@ -54,6 +53,19 @@ public class FxSudokuListWindow {
         stage.setScene(scene);
         stage.setTitle("Sudoku-Auswahl");
     }
+
+    private void setLoadButtonAction(Button loadButton){
+        loadButton.setOnAction(e -> {
+            String selected = listView.getSelectionModel().getSelectedItem();
+            if (selected != null) {
+                Path filePath = Path.of(FrameworkConf.filePathString + "/" + selected);
+                controller.loadSudoku(filePath);
+                log.info("filePath: " + filePath);
+                stage.close();
+            }
+        });
+    }
+
 
     public static List<String> getFileNames(String dirPath) {
         try (var paths = Files.list(Paths.get(dirPath))) {

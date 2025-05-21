@@ -1,7 +1,5 @@
 package org.sudokusolver.B_useCases;
 
-import java.util.List;
-
 public class DownloadSudokuFromApiUseCase {
     private final UseCase2HttpGatewayOutputPort useCase2HttpGatewayOutputPort;
 

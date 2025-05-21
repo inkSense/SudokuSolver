@@ -6,8 +6,8 @@ import org.sudokusolver.A_entities.objectsAndDataStructures.BacktrackingSolver;
 import org.sudokusolver.A_entities.objectsAndDataStructures.Cell;
 import org.sudokusolver.A_entities.objectsAndDataStructures.DeterministicSolver;
 import org.sudokusolver.A_entities.objectsAndDataStructures.SudokuBoard;
+import org.sudokusolver.A_entities.objectsAndDataStructures.Position;
 
-import java.awt.*;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
@@ -73,7 +73,7 @@ public class UseCaseInteractor implements UseCaseInputPort {
     }
 
     @Override
-    public void handleKeyInputWithCellClickedAtPosition(int value, Point clickedCell) {
+    public void handleKeyInputWithCellClickedAtPosition(int value, Position clickedCell) {
         Cell cell = sudoku.getCell(clickedCell);
         if(cell.getContent() == value){
             cell.setContent(0);
@@ -85,7 +85,8 @@ public class UseCaseInteractor implements UseCaseInputPort {
     }
 
     @Override
-    public void validateSudoku() {
+    public List<Cell> validateSudoku() {
         sudoku.validate();
+        return sudoku.getCells();
     }
 }

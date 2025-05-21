@@ -4,11 +4,11 @@ package org.sudokusolver.C_adapters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sudokusolver.A_entities.objectsAndDataStructures.Cell;
+import org.sudokusolver.A_entities.objectsAndDataStructures.Position;
 import org.sudokusolver.B_useCases.UseCaseInputPort;
-
-import java.awt.*;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
 
 public class Controller {
 
@@ -26,7 +26,9 @@ public class Controller {
 
     public void loadSudoku(Path sudokuDatei){
         List<Cell> cells = useCaseInputPort.loadSudoku(sudokuDatei);
-        presenter.setCells(cells);
+        List<CellDto> cellDtos = cells.stream().map(CellMapper::toDto).toList();
+
+        presenter.setCells(cellDtos);
         useCaseInputPort.reducePossibilitiesFromCurrentState();
         validateAndRefresh();
     }
@@ -53,23 +55,11 @@ public class Controller {
             handleDigit(key);
         } else {
             switch (key.toUpperCase()) {
-                case "A":
-                    solveByReasoningAsFarAsPossible();
-                    break;
-                case "T":
-                    // Try
-                    solveRecursively();
-                    break;
-                case "U":
-                    // Unit
-                    solveSudokuOneStepInUnit();
-                    break;
-                case "S":
-                    // Solve
-                    solveSudokuOneStep();
-                    break;
-                default:
-                    log.info("Andere Taste: " + key + ". Funktionstasten: A T U S ");
+                case "A" -> solveByReasoningAsFarAsPossible(); // All
+                case "T" -> solveRecursively(); // Try
+                case "U" -> solveSudokuOneStepInUnit(); // Unit
+                case "S" -> solveSudokuOneStep(); // Solve
+                default -> log.info("Andere Taste: " + key + ". Funktionstasten: A T U S ");
             }
         }
     }
@@ -77,20 +67,21 @@ public class Controller {
     void handleDigit(String digitString){
         int value = Integer.parseInt(digitString);
         log.info("int: " + value);
-        if(presenter.oneCellClicked()){
-            Point clickedCell = presenter.getClickedCells().get(0);
-            useCaseInputPort.handleKeyInputWithCellClickedAtPosition(value, clickedCell);
+        Optional<Position> highlighted = presenter.getHighlightedCell();
+        if(highlighted.isPresent()) {
+            useCaseInputPort.handleKeyInputWithCellClickedAtPosition(value, highlighted.get());
             validateAndRefresh();
         }
     }
 
     void solveRecursively(){
         List<Cell> cells = useCaseInputPort.solveRecursively();
-        presenter.setCells(cells);
+        List<CellDto> cellDtos = cells.stream().map(CellMapper::toDto).toList();
+        presenter.setCells(cellDtos);
         validateAndRefresh();
     }
 
-    public void cellClicked(Point position){
+    public void cellClicked(Position position){
         presenter.cellClicked(position);
     }
 
@@ -99,7 +90,9 @@ public class Controller {
     }
 
     private void validateAndRefresh(){
-        useCaseInputPort.validateSudoku();
+        List<Cell> cells = useCaseInputPort.validateSudoku();
+        List<CellDto> cellDtos = cells.stream().map(CellMapper::toDto).toList();
+        presenter.setCells(cellDtos);
         presenter.refreshBoard();
     }
 

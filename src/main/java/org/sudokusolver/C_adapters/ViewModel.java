@@ -2,31 +2,29 @@ package org.sudokusolver.C_adapters;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.sudokusolver.A_entities.objectsAndDataStructures.Cell;
-
-import java.awt.*;
 import java.util.List;
+import org.sudokusolver.A_entities.objectsAndDataStructures.Position;
 
 public class ViewModel {
-    private List<Cell> cellList;
-    private List<Point> clickedCells;
+    private List<CellDto> cellList;
+    private Position highlighted = null;
 
     private static final Logger log = LoggerFactory.getLogger(ViewModel.class);
 
-    public void setCellList(List<Cell> cellList) {
+    public void setCellList(List<CellDto> cellList) {
         this.cellList = cellList;
     }
 
-    public List<Cell> getCellList() {
+    public List<CellDto> getCellList() {
         return cellList;
     }
 
-    public List<Point> getClickedCells() {
-        return clickedCells;
+
+    public Position getHighlighted() {
+        return highlighted;
     }
 
-    public void setClickedCells(List<Point> clickedCells) {
-        this.clickedCells = clickedCells;
+    public void setHighlighted(Position highlighted) {
+        this.highlighted = highlighted;
     }
-
 }

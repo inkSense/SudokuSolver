@@ -14,8 +14,8 @@ public class DeterministicSolver {
             int content = cell.getContent();
 
             if(content != 0){
-                int row = cell.getPosition().y;
-                int col = cell.getPosition().x;
+                int row = cell.getPosition().row();
+                int col = cell.getPosition().col();
                 int box = cell.getBoxIndex();
 
                 cell.removeAllPossibilities();
@@ -32,8 +32,8 @@ public class DeterministicSolver {
             if(!cell.getPossibleContent().isEmpty()){
                 System.out.println(
                         "Möglichkeiten in der Zelle "
-                                + cell.getPosition().y + ", "
-                                + cell.getPosition().x + ": "
+                                + cell.getPosition().row() + ", "
+                                + cell.getPosition().col() + ": "
                                 + cell.getPossibleContent()
                 );
             }
@@ -77,8 +77,8 @@ public class DeterministicSolver {
         boolean somethingFound = false;
         for(Cell cell: sudoku.getCells()){
                 for(Integer i : cell.getPossibleContent() ){
-                    int row = cell.getPosition().y;
-                    int col = cell.getPosition().x;
+                    int row = cell.getPosition().row();
+                    int col = cell.getPosition().col();
                     int box = cell.getBoxIndex();
 
                     if( isSinglePossibilityInRow(row, cell, i) ||

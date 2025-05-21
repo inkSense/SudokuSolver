@@ -6,7 +6,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
 
-import java.awt.*;
 import java.util.Set;
 
 public class CellView extends StackPane {
@@ -14,17 +13,12 @@ public class CellView extends StackPane {
     private final Label bigLabel = new Label();
     private final GridPane smallGrid = new GridPane();
     private final Label[][] smallLabels = new Label[3][3];
-    private boolean highlighted;
-    private final Point position;
 
-    public CellView(Point position) {
-        this.position = position;
+    public CellView() {
 
         // 1) Big Label für festen Wert
         bigLabel.setFont(Font.font(45));
         bigLabel.setAlignment(Pos.CENTER);
-
-
 
         // 2) GridPane (3×3) für mögliche Kandidaten
         smallGrid.setPrefSize(65, 65); // Beispielwerte, je nach Layout
@@ -92,7 +86,6 @@ public class CellView extends StackPane {
     }
 
     public void setHighlight(boolean highlight) {
-        highlighted = highlight;
         if (highlight) {
             setStyle(getStyle() + "; -fx-background-color: #ADD8E6;");
         } else {
@@ -100,11 +93,5 @@ public class CellView extends StackPane {
             setStyle(getStyle().replaceAll("-fx-background-color:\\s?#[0-9A-Fa-f]+;", ""));
         }
     }
-
-
-    public boolean isHighlighted() {
-        return highlighted;
-    }
-
 }
 

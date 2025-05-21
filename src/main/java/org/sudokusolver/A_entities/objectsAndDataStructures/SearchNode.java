@@ -1,14 +1,12 @@
 package org.sudokusolver.A_entities.objectsAndDataStructures;
 
-
-import java.awt.Point;
 import java.util.List;
 
 public class SearchNode {
 
     private final SudokuBoard board;        // aktueller Zustand
     private final SearchNode   parent;      // ↑  null = Wurzel
-    private record Trial(Point point, Integer value){};
+    private record Trial(Position point, Integer value){};
     private Trial tried;
 
     public SearchNode(SearchNode parent, SudokuBoard rootBoard) {
@@ -20,7 +18,7 @@ public class SearchNode {
         return board;
     }
 
-    public List<Integer> getPossiblesOfCellAt(Point position){
+    public List<Integer> getPossiblesOfCellAt(Position position){
         return board.getPossiblesOfCellAt(position);
     }
 
@@ -36,20 +34,20 @@ public class SearchNode {
         return tried;
     }
 
-    public Point getTriedPosition(){
+    public Position getTriedPosition(){
         return tried.point;
     }
 
-    private void setTried(Point position, int value) {
+    private void setTried(Position position, int value) {
         this.tried = new Trial(position, value);
     }
 
-    public void setTriedAndSetTriedValueToCellAt(Point position, int value){
+    public void setTriedAndSetTriedValueToCellAt(Position position, int value){
         getCell(position).setContent(value);
         setTried(position, value);
     }
 
-    public Cell getCell(Point position){
+    public Cell getCell(Position position){
         return board.getCell(position);
     }
 
