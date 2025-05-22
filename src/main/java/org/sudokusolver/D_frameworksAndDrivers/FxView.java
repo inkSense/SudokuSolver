@@ -6,6 +6,7 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.RowConstraints;
+import javafx.scene.layout.VBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -93,7 +94,22 @@ public class FxView implements Presenter2ViewOutputPort {
         }
     }
 
-    public CellView getCellByPosition(Position position) {
+    public VBox makeButtonsAndPutItToVerticalBox() {
+        Button loadButton = onButtonClickOpenFileList(ListWindowMode.load);
+        Button saveButton = onButtonClickOpenFileList(ListWindowMode.save);
+        Button downloadButton = onButtonClickDownload();
+        Button solveButton = onButtonClickSolveSudoku();
+        return new VBox(10, loadButton, saveButton, downloadButton, solveButton);
+    }
+
+    public void setKeyboardToPressable(){
+        scene.setOnKeyPressed(event -> {
+            String character = event.getText();
+            controller.handleKeyPressed(character);
+        });
+    }
+
+    private CellView getCellByPosition(Position position) {
         for (Node node : grid.getChildren()) {
             Integer rowIndex = GridPane.getRowIndex(node);
             Integer colIndex = GridPane.getColumnIndex(node);
@@ -108,16 +124,7 @@ public class FxView implements Presenter2ViewOutputPort {
         return null;
     }
 
-
-
-    public void setKeyToPressable(){
-        scene.setOnKeyPressed(event -> {
-            String character = event.getText();
-            controller.handleKeyPressed(character);
-        });
-    }
-
-    String getStyle(Position position){
+    private String getStyle(Position position){
         int top = 1, right = 1, bottom = 1, left = 1;
         String topColor = "lightgray", rightColor = "lightgray",
                 bottomColor = "lightgray", leftColor = "lightgray";
@@ -151,7 +158,7 @@ public class FxView implements Presenter2ViewOutputPort {
         return style;
     }
 
-    public Button onButtonClickOpenList(ListWindowMode mode){
+    private Button onButtonClickOpenFileList(ListWindowMode mode){
         String buttonText = "";
         if(mode == ListWindowMode.load){
             buttonText = "Load Sudoku File";
@@ -168,12 +175,19 @@ public class FxView implements Presenter2ViewOutputPort {
         return openListButton;
     }
 
-    public Button onButtonClickDownload() {
+    private Button onButtonClickDownload() {
         Button downloadBtn = new Button("Download Sudoku");
         downloadBtn.setOnAction(e -> {
-            // Wenn der Aufruf länger dauert ⇒ Task verwenden
             controller.downloadSudoku();
         });
         return downloadBtn;
+    }
+
+    private Button onButtonClickSolveSudoku(){
+        Button solve = new Button("Solve Sudoku!");
+        solve.setOnAction(e -> {
+            controller.solveByReasoningAndRecursively();
+        });
+        return solve;
     }
 }

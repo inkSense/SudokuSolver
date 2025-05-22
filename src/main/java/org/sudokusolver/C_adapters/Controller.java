@@ -56,7 +56,7 @@ public class Controller {
         } else {
             switch (key.toUpperCase()) {
                 case "A" -> solveByReasoningAsFarAsPossible(); // All
-                case "T" -> solveRecursively(); // Try
+                case "T" -> solveByReasoningAndRecursively(); // Try
                 case "U" -> solveSudokuOneStepInUnit(); // Unit
                 case "S" -> solveSudokuOneStep(); // Solve
                 default -> log.info("Andere Taste: " + key + ". Funktionstasten: A T U S ");
@@ -74,7 +74,7 @@ public class Controller {
         }
     }
 
-    void solveRecursively(){
+    public void solveByReasoningAndRecursively(){
         List<Cell> cells = useCaseInputPort.solveRecursively();
         List<CellDto> cellDtos = cells.stream().map(CellMapper::toDto).toList();
         presenter.setCells(cellDtos);

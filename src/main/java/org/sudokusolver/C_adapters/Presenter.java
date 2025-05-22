@@ -15,7 +15,7 @@ public class Presenter {
     public Presenter(ViewModel viewModel, Presenter2ViewOutputPort presenter2ViewOutputPort) {
         this.viewModel = viewModel;
         this.presenter2ViewOutputPort = presenter2ViewOutputPort;
-        presenter2ViewOutputPort.setKeyToPressable();
+        presenter2ViewOutputPort.setKeyboardToPressable();
     }
 
     public void cellClicked(Position position){

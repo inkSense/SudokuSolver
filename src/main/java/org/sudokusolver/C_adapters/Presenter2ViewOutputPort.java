@@ -5,7 +5,7 @@ import java.util.List;
 
 public interface Presenter2ViewOutputPort {
     void refreshBoard(List<CellDto> cellList);
-    void setKeyToPressable();
+    void setKeyboardToPressable();
     void unHighlightAllCells();
     void highlightCell(Position position);
 

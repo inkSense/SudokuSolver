@@ -24,7 +24,7 @@ public class FxSudokuListWindow {
     private Stage stage;
     private final ListView<String> listView = new ListView<>();
     private final Button loadButton = new Button("Load");
-
+    private final Button saveButton = new Button("Save");
     private static final Logger log = LoggerFactory.getLogger(FxSudokuListWindow.class);
 
     Controller controller;
@@ -35,18 +35,19 @@ public class FxSudokuListWindow {
         List<String> fileNames = getFileNames(FrameworkConf.filePathString);
         listView.getItems().addAll(fileNames);
         listView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-
-        if(ListWindowMode.load == mode){
-            log.info("JEtzt LADEN LADEN JA?");
-        } else if(ListWindowMode.save == mode){
-            log.info("Auch ich lade. Aber ich könnte auch anders!!!");
-        }
-        setLoadButtonAction(loadButton);
-
-
         BorderPane root = new BorderPane();
         root.setCenter(listView);
-        root.setBottom(loadButton);
+
+        if(ListWindowMode.load == mode){
+            setLoadButtonAction(loadButton);
+            root.setBottom(loadButton);
+        } else if(ListWindowMode.save == mode){
+            setSaveButtonAction(saveButton);
+            root.setBottom(saveButton);
+        } else {
+            log.error("Enum not registered in FxSudokuListWindow");
+        }
+
 
         Scene scene = new Scene(root, 300, 200);
         stage = new Stage();
@@ -63,6 +64,20 @@ public class FxSudokuListWindow {
                 log.info("filePath: " + filePath);
                 stage.close();
             }
+        });
+    }
+
+    private void setSaveButtonAction(Button saveButton){
+        saveButton.setOnAction(e -> {
+            String selected = listView.getSelectionModel().getSelectedItem();
+            if (selected != null) {
+                Path filePath = Path.of(FrameworkConf.filePathString + "/" + selected);
+                //controller.loadSudoku(filePath);
+                //log.info("filePath: " + filePath);
+                log.info("Ich trotz Auswahl mache gar nichts.");
+                stage.close();
+            }
+            log.info("MACHE GAR NICHTS!");
         });
     }
 
