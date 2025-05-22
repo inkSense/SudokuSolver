@@ -18,6 +18,7 @@ public class UseCaseInteractor implements UseCaseInputPort {
     SaveFileUseCase saveFile;
     ParseSudokuFromJsonStringUseCase parse = new ParseSudokuFromJsonStringUseCase();
     DownloadSudokuFromApiUseCase download;
+    FillInManuallyUseCase fillIn = new FillInManuallyUseCase();
     DeterministicSolver deterministicSolver = new DeterministicSolver();
     BacktrackingSolver backtrackingSolver = new BacktrackingSolver();
     private static final Logger log = LoggerFactory.getLogger(UseCaseInteractor.class);
@@ -38,6 +39,11 @@ public class UseCaseInteractor implements UseCaseInputPort {
 
     }
 
+    public void downloadSudokuFromApiAndStore(){
+        String json = download.downloadJsonStrings();
+        saveFile.saveToJsonFileNamedByDate(json);
+    }
+
     public void solveOneStep(){
         deterministicSolver.testForSinglePossibilitiesInCellAndFillIn();
     }
@@ -52,12 +58,6 @@ public class UseCaseInteractor implements UseCaseInputPort {
 
     public void reducePossibilitiesFromCurrentState(){
         deterministicSolver.reducePossibilitiesFromCurrentState(sudoku);
-        //solve.printOutPossibilities();
-    }
-
-    public void downloadSudokuFromApiAndStore(){
-        String json = download.downloadJsonStrings();
-        saveFile.saveToJsonFileNamedByDate(json);
     }
 
     public List<Cell> solveRecursively(){
@@ -75,11 +75,7 @@ public class UseCaseInteractor implements UseCaseInputPort {
     @Override
     public void handleKeyInputWithCellClickedAtPosition(int value, Position clickedCell) {
         Cell cell = sudoku.getCell(clickedCell);
-        if(cell.getContent() == value){
-            cell.setContent(0);
-        } else {
-            cell.setContent(value);
-        }
+        fillIn.handleCellInput(value, cell);
         sudoku.resetPossiblesInAllCells();
         deterministicSolver.reducePossibilitiesFromCurrentState(sudoku);
     }

@@ -6,14 +6,12 @@ import com.google.gson.JsonParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sudokusolver.B_useCases.UseCase2HttpGatewayOutputPort;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
+
 
 public class HttpApiGateway implements UseCase2HttpGatewayOutputPort {
     /**
@@ -21,15 +19,6 @@ public class HttpApiGateway implements UseCase2HttpGatewayOutputPort {
      */
 
     private static final Logger log = LoggerFactory.getLogger(HttpApiGateway.class);
-
-    public List<String> getSudokuJsonStrings() {
-        List<String> jsonStrings = new ArrayList<>();
-        for (int i = 0; i < AdapterConf.numberOfGridsToDownload; i++) {
-            String json = getSudokuJsonString();
-            jsonStrings.add(json);
-        }
-        return jsonStrings;
-    }
 
     public String getSudokuJsonString() {
         HttpURLConnection conn = null;

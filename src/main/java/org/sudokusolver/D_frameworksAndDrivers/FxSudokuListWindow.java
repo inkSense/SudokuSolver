@@ -26,8 +26,7 @@ public class FxSudokuListWindow {
     private final Button loadButton = new Button("Load");
     private final Button saveButton = new Button("Save");
     private static final Logger log = LoggerFactory.getLogger(FxSudokuListWindow.class);
-
-    Controller controller;
+    private final Controller controller;
 
     public FxSudokuListWindow(Controller controller, ListWindowMode mode) {
         this.controller = controller;
@@ -55,6 +54,22 @@ public class FxSudokuListWindow {
         stage.setTitle("Sudoku-Auswahl");
     }
 
+    void show() {
+        stage.show();
+    }
+
+    private static List<String> getFileNames(String dirPath) {
+        try (var paths = Files.list(Paths.get(dirPath))) {
+            return paths
+                    .filter(Files::isRegularFile)
+                    .map(path -> path.getFileName().toString())
+                    .collect(Collectors.toList());
+        } catch(IOException e){
+            log.error("Wrong in getFileNames()");
+            return new ArrayList<>();
+        }
+    }
+
     private void setLoadButtonAction(Button loadButton){
         loadButton.setOnAction(e -> {
             String selected = listView.getSelectionModel().getSelectedItem();
@@ -80,23 +95,5 @@ public class FxSudokuListWindow {
             log.info("MACHE GAR NICHTS!");
         });
     }
-
-
-    public static List<String> getFileNames(String dirPath) {
-        try (var paths = Files.list(Paths.get(dirPath))) {
-            return paths
-                    .filter(Files::isRegularFile)
-                    .map(path -> path.getFileName().toString())
-                    .collect(Collectors.toList());
-        } catch(IOException e){
-            log.error("Wrong in getFileNames()");
-            return new ArrayList<>();
-        }
-    }
-
-    public void show() {
-        stage.show();
-    }
-
 
 }

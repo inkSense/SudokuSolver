@@ -1,6 +1,5 @@
 package org.sudokusolver.C_adapters;
 
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sudokusolver.A_entities.objects.Cell;
@@ -12,8 +11,8 @@ import java.util.Optional;
 
 public class Controller {
 
-    UseCaseInputPort useCaseInputPort;
-    Presenter presenter;
+    private final UseCaseInputPort useCaseInputPort;
+    private Presenter presenter;
     private static final Logger log = LoggerFactory.getLogger(Controller.class);
 
     public Controller(UseCaseInputPort useCaseInputPort) {
@@ -33,23 +32,6 @@ public class Controller {
         validateAndRefresh();
     }
 
-    public void solveSudokuOneStep(){
-        useCaseInputPort.solveOneStep();
-        useCaseInputPort.reducePossibilitiesFromCurrentState();
-        validateAndRefresh();
-    }
-
-    public void solveSudokuOneStepInUnit(){
-        useCaseInputPort.solveSudokuOneStepInUnit();
-        useCaseInputPort.reducePossibilitiesFromCurrentState();
-        validateAndRefresh();
-    }
-
-    public void solveByReasoningAsFarAsPossible(){
-        useCaseInputPort.solveByReasoningAsFarAsPossible();
-        validateAndRefresh();
-    }
-
     public void handleKeyPressed(String key) {
         if(key.matches("[1-9]")){
             handleDigit(key);
@@ -64,14 +46,12 @@ public class Controller {
         }
     }
 
-    void handleDigit(String digitString){
-        int value = Integer.parseInt(digitString);
-        log.info("int: " + value);
-        Optional<Position> highlighted = presenter.getHighlightedCell();
-        if(highlighted.isPresent()) {
-            useCaseInputPort.handleKeyInputWithCellClickedAtPosition(value, highlighted.get());
-            validateAndRefresh();
-        }
+    public void cellClicked(Position position){
+        presenter.cellClicked(position);
+    }
+
+    public void downloadSudoku() {
+        useCaseInputPort.downloadSudokuFromApiAndStore();
     }
 
     public void solveByReasoningAndRecursively(){
@@ -81,12 +61,31 @@ public class Controller {
         validateAndRefresh();
     }
 
-    public void cellClicked(Position position){
-        presenter.cellClicked(position);
+    private void solveSudokuOneStep(){
+        useCaseInputPort.solveOneStep();
+        useCaseInputPort.reducePossibilitiesFromCurrentState();
+        validateAndRefresh();
     }
 
-    public void downloadSudoku() {
-        useCaseInputPort.downloadSudokuFromApiAndStore();
+    private void solveSudokuOneStepInUnit(){
+        useCaseInputPort.solveSudokuOneStepInUnit();
+        useCaseInputPort.reducePossibilitiesFromCurrentState();
+        validateAndRefresh();
+    }
+
+    private void solveByReasoningAsFarAsPossible(){
+        useCaseInputPort.solveByReasoningAsFarAsPossible();
+        validateAndRefresh();
+    }
+
+    private void handleDigit(String digitString){
+        int value = Integer.parseInt(digitString);
+        log.info("int: " + value);
+        Optional<Position> highlighted = presenter.getHighlightedCell();
+        if(highlighted.isPresent()) {
+            useCaseInputPort.handleKeyInputWithCellClickedAtPosition(value, highlighted.get());
+            validateAndRefresh();
+        }
     }
 
     private void validateAndRefresh(){

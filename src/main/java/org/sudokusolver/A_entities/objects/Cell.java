@@ -72,14 +72,6 @@ public class Cell {
         possibleContent.clear();
     }
 
-    public void initializePossibleContent() {
-        List<Integer> possibles = new ArrayList<>();
-        if(content == 0) {
-            IntStream.rangeClosed(1, 9).forEach(possibles::add);
-        }
-        possibleContent = possibles;
-    }
-
     public boolean isValid() {
         return valid;
     }
@@ -88,7 +80,22 @@ public class Cell {
         this.valid = valid;
     }
 
-    int getBlockIndexFromCell(Position position) {
+    @Override
+    public String toString() {
+        return "Cell{" +
+                "content=" + content +
+                '}';
+    }
+
+    void initializePossibleContent() {
+        List<Integer> possibles = new ArrayList<>();
+        if(content == 0) {
+            IntStream.rangeClosed(1, 9).forEach(possibles::add);
+        }
+        possibleContent = possibles;
+    }
+
+    private int getBlockIndexFromCell(Position position) {
         int row = position.row();
         int col = position.col();
         SudokuBoard.validateIndex(row);
@@ -96,12 +103,5 @@ public class Cell {
         int blockRow = row / 3;
         int blockCol = col / 3;
         return blockRow * 3 + blockCol;
-    }
-
-    @Override
-    public String toString() {
-        return "Cell{" +
-                "content=" + content +
-                '}';
     }
 }

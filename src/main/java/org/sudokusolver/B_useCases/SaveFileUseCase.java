@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SaveFileUseCase {
-    Path path = Path.of(ApplicationConf.dataPathString);
+    Path path = Path.of(ApplicationConf.dataFolderPath);
     UseCase2FilesystemOutputPort useCase2FilesystemOutputPort;
 
     public SaveFileUseCase(UseCase2FilesystemOutputPort useCase2FilesystemOutputPort) {
@@ -15,17 +15,20 @@ public class SaveFileUseCase {
 
     }
 
-    void save(List<String> content) {
-        useCase2FilesystemOutputPort.save(content, path);
-    }
-
     void saveToJsonFileNamedByDate(String content){
         String dateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyMMdd HHmmss"));
-        Path path = Path.of(ApplicationConf.dataPathString);
-        String dateTimePathString = path + "/sudoku " +  dateTime  + ".json" ;
+        String dateTimePathString = this.path + "/sudoku " +  dateTime  + ".json" ;
         Path dateTimePath = Path.of(dateTimePathString);
         List<String> stringList = new ArrayList<>();
         stringList.add(content);
         useCase2FilesystemOutputPort.save(stringList, dateTimePath);
+    }
+
+    void saveToJsonFile(String content, String fileName){
+        String pathString = this.path + "/" + fileName + ".json";
+        path = Path.of(pathString);
+        List<String> stringList = new ArrayList<>();
+        stringList.add(content);
+        useCase2FilesystemOutputPort.save(stringList, path);
     }
 }

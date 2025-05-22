@@ -16,46 +16,48 @@ public class SearchNode {
         this.parent       = parent;
     }
 
-    public SudokuBoard getBoard() {
+    SudokuBoard getBoard() {
         return board;
     }
 
-    public List<Integer> getPossiblesOfCellAt(Position position){
+    List<Integer> getPossiblesOfCellAt(Position position){
         return board.getPossiblesOfCellAt(position);
     }
 
-    public SearchNode getParent() {
+    SearchNode getParent() {
         return parent;
     }
 
-    public int getTriedValue() {
+    int getTriedValue() {
         return tried.value;
     }
 
-    public Trial getTried() {
+    Trial getTried() {
         return tried;
     }
 
-    public Position getTriedPosition(){
+    Position getTriedPosition(){
         return tried.point;
+    }
+
+    void setTriedAndSetTriedValueToCellAt(Position position, int value){
+        getCell(position).setContent(value);
+        setTried(position, value);
+    }
+
+    Cell getCell(Position position){
+        return board.getCell(position);
+    }
+
+    SearchNode nextChild() {
+        SudokuBoard boardCopy = board.copy();
+        return new SearchNode(this, boardCopy);
     }
 
     private void setTried(Position position, int value) {
         this.tried = new Trial(position, value);
     }
 
-    public void setTriedAndSetTriedValueToCellAt(Position position, int value){
-        getCell(position).setContent(value);
-        setTried(position, value);
-    }
 
-    public Cell getCell(Position position){
-        return board.getCell(position);
-    }
-
-    public SearchNode nextChild() {
-        SudokuBoard boardCopy = board.copy();
-        return new SearchNode(this, boardCopy);
-    }
 
 }

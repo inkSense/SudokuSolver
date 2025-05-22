@@ -30,8 +30,8 @@ public class FxView implements Presenter2ViewOutputPort {
 
         // grid
         this.grid = new GridPane();
-        addConstraints();
-        makeCellViews();
+        addConstraintsToGrid();
+        makeCellViewsAndPutThemIntoGrid();
 
         // pane
         BorderPane mainPane = new BorderPane();
@@ -40,38 +40,13 @@ public class FxView implements Presenter2ViewOutputPort {
 
         // scene
         this.scene = new Scene(mainPane, 800, 600);
-        setKeyboardToPressable();
+        setSceneToPressableForKeyboard();
 
         // stage
         stage.setScene(this.scene);
         stage.setTitle("Sudoku Solver");
         stage.show();
 
-    }
-
-    void addConstraints() {
-        // 9 Spalten & 9 Zeilen, jede x breit/hoch
-        for (int i = 0; i < 9; i++) {
-            ColumnConstraints colCon = new ColumnConstraints(66); // 66 oder 65, 70,  ...
-            RowConstraints rowCon = new RowConstraints(66);
-            grid.getColumnConstraints().add(colCon);
-            grid.getRowConstraints().add(rowCon);
-        }
-    }
-
-    void makeCellViews(){
-        for(int col = 0; col < 9; col++){
-            for(int row = 0; row < 9; row++){
-                Position position = new Position(row, col);
-                CellView cellView = new CellView();
-                String style = getStyle(position);
-                cellView.setStyle(style);
-                cellView.setOnMouseClicked(evt -> {
-                    controller.cellClicked(position);
-                });
-                grid.add(cellView, col, row);
-            }
-        }
     }
 
     @Override
@@ -85,13 +60,14 @@ public class FxView implements Presenter2ViewOutputPort {
 
     @Override
     public void highlightCell(Position position) {
-        CellView cell = getCellByPosition(position);
+        CellView cell = getCellViewByPosition(position);
         cell.setHighlight(true);
     }
 
+    @Override
     public void refreshBoard(List<CellDto> cellList) {
         for(CellDto cell: cellList){
-            CellView cellView = getCellByPosition(cell.position());
+            CellView cellView = getCellViewByPosition(cell.position());
             if (cell.content() == 0) {
                 cellView.setValue(null);
                 List<Integer> possibleContents = cell.possibles();
@@ -108,6 +84,31 @@ public class FxView implements Presenter2ViewOutputPort {
         }
     }
 
+    private void addConstraintsToGrid() {
+        // 9 Spalten & 9 Zeilen, jede x breit/hoch
+        for (int i = 0; i < 9; i++) {
+            ColumnConstraints colCon = new ColumnConstraints(66); // 66 oder 65, 70,  ...
+            RowConstraints rowCon = new RowConstraints(66);
+            grid.getColumnConstraints().add(colCon);
+            grid.getRowConstraints().add(rowCon);
+        }
+    }
+
+    private void makeCellViewsAndPutThemIntoGrid(){
+        for(int col = 0; col < 9; col++){
+            for(int row = 0; row < 9; row++){
+                Position position = new Position(row, col);
+                CellView cellView = new CellView();
+                String style = getStyle(position);
+                cellView.setStyle(style);
+                cellView.setOnMouseClicked(evt -> {
+                    controller.cellClicked(position);
+                });
+                grid.add(cellView, col, row); // so!
+            }
+        }
+    }
+
     private VBox makeButtonsAndPutItToVerticalBox() {
         Button loadButton = onButtonClickOpenFileList(ListWindowMode.load);
         Button saveButton = onButtonClickOpenFileList(ListWindowMode.save);
@@ -116,14 +117,14 @@ public class FxView implements Presenter2ViewOutputPort {
         return new VBox(15, loadButton, saveButton, downloadButton, solveButton);
     }
 
-    private void setKeyboardToPressable(){
+    private void setSceneToPressableForKeyboard(){
         scene.setOnKeyPressed(event -> {
             String character = event.getText();
             controller.handleKeyPressed(character);
         });
     }
 
-    private CellView getCellByPosition(Position position) {
+    private CellView getCellViewByPosition(Position position) {
         for (Node node : grid.getChildren()) {
             Integer rowIndex = GridPane.getRowIndex(node);
             Integer colIndex = GridPane.getColumnIndex(node);
@@ -137,6 +138,7 @@ public class FxView implements Presenter2ViewOutputPort {
         log.error("Something went wrong in getNodeByRowColumnIndex()");
         return null;
     }
+
 
     private String getStyle(Position position){
         int top = 1, right = 1, bottom = 1, left = 1;

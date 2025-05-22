@@ -1,9 +1,6 @@
 package org.sudokusolver;
 
 import javafx.application.Application;
-import javafx.scene.Scene;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,10 +20,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage){
-//        BorderPane mainPane = new BorderPane();
-//        GridPane gridPane = new GridPane();
-//        Scene scene = new Scene(mainPane, 800, 600);
-
+        // wiring
         var httpGateway = new HttpApiGateway();
         var filesystemGateway = new FilesystemGateway();
         var interactor = new UseCaseInteractor(httpGateway, filesystemGateway);
@@ -43,11 +37,6 @@ public class Main extends Application {
         Der Presenter hat das Model und das View.
         Das Model hat nichts. */
 
-//        primaryStage.setScene(scene);
-//        stage.setTitle("Sudoku Solver");
-//        stage.show();
-//        mainPane.setCenter(gridPane);
-//        mainPane.setLeft(fxView.getButtonsInVBox());
     }
 
     public static void main(String[] args) {

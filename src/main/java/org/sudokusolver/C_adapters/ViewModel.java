@@ -11,20 +11,19 @@ public class ViewModel {
 
     private static final Logger log = LoggerFactory.getLogger(ViewModel.class);
 
-    public void setCellList(List<CellDto> cellList) {
+    void setCellList(List<CellDto> cellList) {
         this.cellList = cellList;
     }
 
-    public List<CellDto> getCellList() {
+    List<CellDto> getCellList() {
         return cellList;
     }
 
-
-    public Position getHighlighted() {
+    Position getHighlighted() {
         return highlighted;
     }
 
-    public void setHighlighted(Position highlighted) {
+    void setHighlighted(Position highlighted) {
         this.highlighted = highlighted;
     }
 }

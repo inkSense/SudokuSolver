@@ -20,6 +20,8 @@ public class SudokuBoard {
         this.difficulty = difficulty;
     }
 
+
+
     public List<Cell> getCells() {
         return cells;
     }
@@ -38,30 +40,8 @@ public class SudokuBoard {
         return difficulty;
     }
 
-    public void print() {
-        System.out.println();
-        for (int r = 0; r < 9; r++) {
-            List<Cell> row = getRow(r);
-            for (Cell cell : row) {
-                System.out.print((cell.getContent() == 0 ? "." : cell.getContent()) + " ");
-            }
-            System.out.println();
-        }
-    }
-
-    public List<Cell> getRow(int row) {
-        validateIndex(row);
-        return cells.stream().filter(c->c.getPosition().row() == row).collect(Collectors.toList());
-    }
-
-    public List<Cell> getColumn(int col) {
-        validateIndex(col);
-        return cells.stream().filter(c->c.getPosition().col() == col).collect(Collectors.toList());
-    }
-
-    public List<Cell> getBlock(int blockNumber) {
-        validateIndex(blockNumber);
-        return cells.stream().filter(c->c.getBoxIndex() == blockNumber).collect(Collectors.toList());
+    public void resetPossiblesInAllCells(){
+        cells.forEach(Cell::initializePossibleContent);
     }
 
     public void validate() {
@@ -79,11 +59,49 @@ public class SudokuBoard {
         valid = true;                       // kein Konflikt
     }
 
-    public boolean isValid(){
+    public void print() {
+        System.out.println();
+        for (int r = 0; r < 9; r++) {
+            List<Cell> row = getRow(r);
+            for (Cell cell : row) {
+                System.out.print((cell.getContent() == 0 ? "." : cell.getContent()) + " ");
+            }
+            System.out.println();
+        }
+    }
+
+    SudokuBoard copy() {
+        List<Cell> cloned = cells.stream()
+                .map(Cell::new)   // nutzt Copy-Konstruktor
+                .collect(Collectors.toList());
+        return new SudokuBoard(cloned, difficulty);
+    }
+
+    List<Integer> getPossiblesOfCellAt(Position position) {
+        Cell cell = getCell(position);
+        return new ArrayList<>(cell.getPossibleContent()); // Kopie zurückgeben
+    }
+
+    List<Cell> getRow(int row) {
+        validateIndex(row);
+        return cells.stream().filter(c->c.getPosition().row() == row).collect(Collectors.toList());
+    }
+
+    List<Cell> getColumn(int col) {
+        validateIndex(col);
+        return cells.stream().filter(c->c.getPosition().col() == col).collect(Collectors.toList());
+    }
+
+    List<Cell> getBlock(int blockNumber) {
+        validateIndex(blockNumber);
+        return cells.stream().filter(c->c.getBoxIndex() == blockNumber).collect(Collectors.toList());
+    }
+
+    boolean isValid(){
         return valid;
     }
 
-    public boolean isSolved(){
+    boolean isSolved(){
         for(Cell cell: cells){
             if(cell.getContent() == 0){
                 return false;
@@ -92,17 +110,6 @@ public class SudokuBoard {
         return true;
     }
 
-    public SudokuBoard copy() {
-        List<Cell> cloned = cells.stream()
-                .map(Cell::new)   // nutzt Copy-Konstruktor
-                .collect(Collectors.toList());
-        return new SudokuBoard(cloned, difficulty);
-    }
-
-    public List<Integer> getPossiblesOfCellAt(Position position) {
-        Cell cell = getCell(position);
-        return new ArrayList<>(cell.getPossibleContent()); // Kopie zurückgeben
-    }
 
     static void validateIndex(int index) {
         if (index < 0 || index > 8) {
@@ -138,10 +145,6 @@ public class SudokuBoard {
         for(Cell cell : cells){
             cell.setValid(true);
         }
-    }
-
-    public void resetPossiblesInAllCells(){
-        cells.forEach(Cell::initializePossibleContent);
     }
 
 

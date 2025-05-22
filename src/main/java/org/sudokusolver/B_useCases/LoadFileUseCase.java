@@ -13,7 +13,7 @@ public class LoadFileUseCase {
 
     public List<String> loadJsonStrings() {
         // Läd Dateien mit mehreren Sudoku-Strings
-        Path filePath = Paths.get(ApplicationConf.dataPathString);
+        Path filePath = Paths.get(ApplicationConf.dataFolderPath);
         if (!Files.exists(filePath)) {
             log.error("File doesn't exist: " + filePath);
             return Collections.emptyList();

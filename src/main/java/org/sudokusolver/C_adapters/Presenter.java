@@ -17,7 +17,11 @@ public class Presenter {
         this.presenter2ViewOutputPort = presenter2ViewOutputPort;
     }
 
-    public void cellClicked(Position position){
+    void setCells(List<CellDto> cells){
+        viewModel.setCellList(cells);
+    }
+
+    void cellClicked(Position position){
         updateModel(position);
         presenter2ViewOutputPort.unHighlightAllCells();
         Position highlighted = viewModel.getHighlighted();
@@ -30,15 +34,11 @@ public class Presenter {
         return Optional.ofNullable(viewModel.getHighlighted());
     }
 
-    void setCells(List<CellDto> cells){
-        viewModel.setCellList(cells);
-    }
-
     void refreshBoard(){
         presenter2ViewOutputPort.refreshBoard(viewModel.getCellList());
     }
 
-    public void updateModel(Position clickPosition) {
+    private void updateModel(Position clickPosition) {
         Position modelPosition = viewModel.getHighlighted();
         boolean sameClickedTwice = modelPosition != null && modelPosition.equals(clickPosition);
         if(sameClickedTwice){
