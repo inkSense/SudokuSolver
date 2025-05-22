@@ -2,11 +2,11 @@ package org.sudokusolver.B_useCases;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.sudokusolver.A_entities.objectsAndDataStructures.BacktrackingSolver;
-import org.sudokusolver.A_entities.objectsAndDataStructures.Cell;
-import org.sudokusolver.A_entities.objectsAndDataStructures.DeterministicSolver;
-import org.sudokusolver.A_entities.objectsAndDataStructures.SudokuBoard;
-import org.sudokusolver.A_entities.objectsAndDataStructures.Position;
+import org.sudokusolver.A_entities.objects.BacktrackingSolver;
+import org.sudokusolver.A_entities.objects.Cell;
+import org.sudokusolver.A_entities.objects.DeterministicSolver;
+import org.sudokusolver.A_entities.objects.SudokuBoard;
+import org.sudokusolver.A_entities.dataStructures.Position;
 
 import java.nio.file.Path;
 import java.util.Collections;

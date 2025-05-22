@@ -23,7 +23,6 @@ public class HttpApiGateway implements UseCase2HttpGatewayOutputPort {
     private static final Logger log = LoggerFactory.getLogger(HttpApiGateway.class);
 
     public List<String> getSudokuJsonStrings() {
-
         List<String> jsonStrings = new ArrayList<>();
         for (int i = 0; i < AdapterConf.numberOfGridsToDownload; i++) {
             String json = getSudokuJsonString();
@@ -63,7 +62,7 @@ public class HttpApiGateway implements UseCase2HttpGatewayOutputPort {
             while ((line = in.readLine()) != null) {
                 response.append(line);
             }
-            // Whitespace entfernen durch kompaktes Re-Serialisieren
+            // Whitespace entfernen durch Re-Serialisieren
             JsonElement jsonElement = JsonParser.parseString(response.toString());
             // kompakter JSON-String
             return new Gson().toJson(jsonElement);

@@ -1,7 +1,9 @@
-package org.sudokusolver.A_entities.objectsAndDataStructures;
+package org.sudokusolver.A_entities.objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.sudokusolver.A_entities.dataStructures.Position;
+
 import java.util.List;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
@@ -116,7 +118,7 @@ public class SudokuBoard {
             int value = cell.getContent();
             if (value == 0)            continue;       // leere Zelle
             if (value < 1 || value > 9)    return false;   // ungültiger Wert
-            if (seen[value]){// doppelte Zahl
+            if (seen[value]){   // doppelte Zahl
                 markCellsWithSameValueNotValid(unit, value);
                 return false;
             }

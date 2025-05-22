@@ -1,8 +1,6 @@
 package org.sudokusolver.C_adapters;
 
-import org.sudokusolver.A_entities.objectsAndDataStructures.Cell;
-
-import java.util.List;
+import org.sudokusolver.A_entities.objects.Cell;
 
 
 public final class CellMapper {

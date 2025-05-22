@@ -1,4 +1,4 @@
-package org.sudokusolver.A_entities.objectsAndDataStructures;
+package org.sudokusolver.A_entities.objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

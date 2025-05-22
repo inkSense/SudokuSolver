@@ -3,9 +3,9 @@ package org.sudokusolver.B_useCases;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import org.sudokusolver.A_entities.objectsAndDataStructures.Cell;
-import org.sudokusolver.A_entities.objectsAndDataStructures.Position;
-import org.sudokusolver.A_entities.objectsAndDataStructures.SudokuBoard;
+import org.sudokusolver.A_entities.objects.Cell;
+import org.sudokusolver.A_entities.dataStructures.Position;
+import org.sudokusolver.A_entities.objects.SudokuBoard;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,7 +1,7 @@
 package org.sudokusolver.B_useCases;
 
-import org.sudokusolver.A_entities.objectsAndDataStructures.Cell;
-import org.sudokusolver.A_entities.objectsAndDataStructures.Position;
+import org.sudokusolver.A_entities.objects.Cell;
+import org.sudokusolver.A_entities.dataStructures.Position;
 import java.nio.file.Path;
 import java.util.List;
 

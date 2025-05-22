@@ -3,7 +3,7 @@ package org.sudokusolver.C_adapters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.List;
-import org.sudokusolver.A_entities.objectsAndDataStructures.Position;
+import org.sudokusolver.A_entities.dataStructures.Position;
 
 public class ViewModel {
     private List<CellDto> cellList;

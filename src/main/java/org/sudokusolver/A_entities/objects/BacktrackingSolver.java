@@ -1,7 +1,9 @@
-package org.sudokusolver.A_entities.objectsAndDataStructures;
+package org.sudokusolver.A_entities.objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.sudokusolver.A_entities.dataStructures.Position;
+
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;

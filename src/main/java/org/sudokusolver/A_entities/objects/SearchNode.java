@@ -1,4 +1,6 @@
-package org.sudokusolver.A_entities.objectsAndDataStructures;
+package org.sudokusolver.A_entities.objects;
+
+import org.sudokusolver.A_entities.dataStructures.Position;
 
 import java.util.List;
 

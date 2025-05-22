@@ -3,8 +3,8 @@ package org.sudokusolver.C_adapters;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.sudokusolver.A_entities.objectsAndDataStructures.Cell;
-import org.sudokusolver.A_entities.objectsAndDataStructures.Position;
+import org.sudokusolver.A_entities.objects.Cell;
+import org.sudokusolver.A_entities.dataStructures.Position;
 import org.sudokusolver.B_useCases.UseCaseInputPort;
 import java.nio.file.Path;
 import java.util.List;

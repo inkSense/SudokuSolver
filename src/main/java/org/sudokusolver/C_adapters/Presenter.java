@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.Optional;
 
-import org.sudokusolver.A_entities.objectsAndDataStructures.Position;
+import org.sudokusolver.A_entities.dataStructures.Position;
 
 public class Presenter {
     private final ViewModel viewModel;
@@ -15,7 +15,6 @@ public class Presenter {
     public Presenter(ViewModel viewModel, Presenter2ViewOutputPort presenter2ViewOutputPort) {
         this.viewModel = viewModel;
         this.presenter2ViewOutputPort = presenter2ViewOutputPort;
-        presenter2ViewOutputPort.setKeyboardToPressable();
     }
 
     public void cellClicked(Position position){

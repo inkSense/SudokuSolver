@@ -3,14 +3,12 @@ package org.sudokusolver.D_frameworksAndDrivers;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.RowConstraints;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
+import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.sudokusolver.A_entities.objectsAndDataStructures.Position;
+import org.sudokusolver.A_entities.dataStructures.Position;
 import org.sudokusolver.C_adapters.Controller;
 import org.sudokusolver.C_adapters.Presenter2ViewOutputPort;
 import org.sudokusolver.C_adapters.CellDto;
@@ -27,12 +25,28 @@ public class FxView implements Presenter2ViewOutputPort {
     private final Controller controller;
     private static final Logger log = LoggerFactory.getLogger(FxView.class);
 
-    public FxView(GridPane grid, Scene scene, Controller controller) {
-        this.grid = grid;
-        this.scene = scene;
+    public FxView(Stage stage, Controller controller) {
         this.controller = controller;
+
+        // grid
+        this.grid = new GridPane();
         addConstraints();
         makeCellViews();
+
+        // pane
+        BorderPane mainPane = new BorderPane();
+        mainPane.setCenter(this.grid);
+        mainPane.setLeft(makeButtonsAndPutItToVerticalBox());
+
+        // scene
+        this.scene = new Scene(mainPane, 800, 600);
+        setKeyboardToPressable();
+
+        // stage
+        stage.setScene(this.scene);
+        stage.setTitle("Sudoku Solver");
+        stage.show();
+
     }
 
     void addConstraints() {
@@ -94,15 +108,15 @@ public class FxView implements Presenter2ViewOutputPort {
         }
     }
 
-    public VBox makeButtonsAndPutItToVerticalBox() {
+    private VBox makeButtonsAndPutItToVerticalBox() {
         Button loadButton = onButtonClickOpenFileList(ListWindowMode.load);
         Button saveButton = onButtonClickOpenFileList(ListWindowMode.save);
         Button downloadButton = onButtonClickDownload();
         Button solveButton = onButtonClickSolveSudoku();
-        return new VBox(10, loadButton, saveButton, downloadButton, solveButton);
+        return new VBox(15, loadButton, saveButton, downloadButton, solveButton);
     }
 
-    public void setKeyboardToPressable(){
+    private void setKeyboardToPressable(){
         scene.setOnKeyPressed(event -> {
             String character = event.getText();
             controller.handleKeyPressed(character);
