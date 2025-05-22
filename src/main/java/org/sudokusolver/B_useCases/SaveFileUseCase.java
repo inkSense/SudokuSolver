@@ -25,10 +25,9 @@ public class SaveFileUseCase {
     }
 
     void saveToJsonFile(String content, String fileName){
-        String pathString = this.path + "/" + fileName + ".json";
-        path = Path.of(pathString);
+        Path savePath = this.path.resolve(fileName);
         List<String> stringList = new ArrayList<>();
         stringList.add(content);
-        useCase2FilesystemOutputPort.save(stringList, path);
+        useCase2FilesystemOutputPort.save(stringList, savePath);
     }
 }

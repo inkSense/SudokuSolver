@@ -39,7 +39,7 @@ public class FxView implements Presenter2ViewOutputPort {
         mainPane.setLeft(makeButtonsAndPutItToVerticalBox());
 
         // scene
-        this.scene = new Scene(mainPane, 800, 600);
+        this.scene = new Scene(mainPane, FrameworkConf.sceneX, FrameworkConf.sceneY);
         setSceneToPressableForKeyboard();
 
         // stage
@@ -87,8 +87,8 @@ public class FxView implements Presenter2ViewOutputPort {
     private void addConstraintsToGrid() {
         // 9 Spalten & 9 Zeilen, jede x breit/hoch
         for (int i = 0; i < 9; i++) {
-            ColumnConstraints colCon = new ColumnConstraints(66); // 66 oder 65, 70,  ...
-            RowConstraints rowCon = new RowConstraints(66);
+            ColumnConstraints colCon = new ColumnConstraints(FrameworkConf.gridConstraints);
+            RowConstraints rowCon = new RowConstraints(FrameworkConf.gridConstraints);
             grid.getColumnConstraints().add(colCon);
             grid.getRowConstraints().add(rowCon);
         }
@@ -185,7 +185,10 @@ public class FxView implements Presenter2ViewOutputPort {
         }
         Button openListButton = new Button(buttonText);
         openListButton.setOnAction(e -> {
-            FxSudokuListWindow listWindow = new FxSudokuListWindow(controller, mode);
+            String defaultName = (mode == ListWindowMode.save)
+                    ? controller.getLastLoadedFileName()
+                    : null;
+            FxSudokuListWindow listWindow = new FxSudokuListWindow(controller, mode, defaultName);
             listWindow.show();
         });
         return openListButton;
@@ -193,17 +196,13 @@ public class FxView implements Presenter2ViewOutputPort {
 
     private Button onButtonClickDownload() {
         Button downloadBtn = new Button("Download Sudoku");
-        downloadBtn.setOnAction(e -> {
-            controller.downloadSudoku();
-        });
+        downloadBtn.setOnAction(e -> controller.downloadSudoku());
         return downloadBtn;
     }
 
     private Button onButtonClickSolveSudoku(){
         Button solve = new Button("Solve Sudoku!");
-        solve.setOnAction(e -> {
-            controller.solveByReasoningAndRecursively();
-        });
+        solve.setOnAction(e -> controller.solveByReasoningAndRecursively());
         return solve;
     }
 }

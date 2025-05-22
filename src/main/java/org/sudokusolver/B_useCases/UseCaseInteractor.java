@@ -8,15 +8,19 @@ import org.sudokusolver.A_entities.objects.DeterministicSolver;
 import org.sudokusolver.A_entities.objects.SudokuBoard;
 import org.sudokusolver.A_entities.dataStructures.Position;
 
+import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class UseCaseInteractor implements UseCaseInputPort {
     SudokuBoard sudoku;
     LoadFileUseCase loadFile = new LoadFileUseCase();
     SaveFileUseCase saveFile;
-    ParseSudokuFromJsonStringUseCase parse = new ParseSudokuFromJsonStringUseCase();
+    SerializeDeserializeSudokuJsonStringUseCase serializeDeserialize = new SerializeDeserializeSudokuJsonStringUseCase();
     DownloadSudokuFromApiUseCase download;
     FillInManuallyUseCase fillIn = new FillInManuallyUseCase();
     DeterministicSolver deterministicSolver = new DeterministicSolver();
@@ -31,12 +35,26 @@ public class UseCaseInteractor implements UseCaseInputPort {
         this.saveFile = new SaveFileUseCase(useCase2FilesystemOutputPort);
     }
 
-    public List<Cell> loadSudoku(Path sudokuFile) {
-        String jsonString = loadFile.loadJsonFile(sudokuFile);
-        SudokuBoard sudoku = parse.parse(jsonString);
+    public List<Cell> loadSudoku(String sudokuFileName) {
+        String jsonString = loadFile.loadJsonFile(sudokuFileName);
+        SudokuBoard sudoku = serializeDeserialize.parse(jsonString);
         this.sudoku = sudoku;
         return sudoku.getCells();
 
+    }
+
+    @Override
+    public Path getLastLoadedFile() {
+        return loadFile.getLastLoadedFile();
+    }
+
+    public List<String> getAllDataFileNames(){
+        return loadFile.getAllDataFileNames();
+    }
+
+    public void saveSudoku(String fileName) {
+        String content = serializeDeserialize.serialize(sudoku);
+        saveFile.saveToJsonFile(content, fileName);
     }
 
     public void downloadSudokuFromApiAndStore(){

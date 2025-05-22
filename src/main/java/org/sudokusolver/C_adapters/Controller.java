@@ -5,9 +5,14 @@ import org.slf4j.LoggerFactory;
 import org.sudokusolver.A_entities.objects.Cell;
 import org.sudokusolver.A_entities.dataStructures.Position;
 import org.sudokusolver.B_useCases.UseCaseInputPort;
+
+import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class Controller {
 
@@ -23,13 +28,26 @@ public class Controller {
         this.presenter = presenter;
     }
 
-    public void loadSudoku(Path sudokuDatei){
+    public void loadSudoku(String sudokuDatei){
         List<Cell> cells = useCaseInputPort.loadSudoku(sudokuDatei);
         List<CellDto> cellDtos = cells.stream().map(CellMapper::toDto).toList();
 
         presenter.setCells(cellDtos);
         useCaseInputPort.reducePossibilitiesFromCurrentState();
         validateAndRefresh();
+    }
+
+    public List<String> getAllDataFileNames(){
+        return useCaseInputPort.getAllDataFileNames();
+    }
+
+    public String getLastLoadedFileName() {
+        Path path = useCaseInputPort.getLastLoadedFile();
+        return path != null ? path.getFileName().toString() : null;
+    }
+
+    public void saveSudoku(String fileName) {
+        useCaseInputPort.saveSudoku(fileName);
     }
 
     public void handleKeyPressed(String key) {

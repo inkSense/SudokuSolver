@@ -35,6 +35,7 @@ public class Cell {
         this.position = src.position;
         this.boxIndex = src.boxIndex;
         this.possibleContent = new ArrayList<>(src.possibleContent);
+        this.valid = src.valid; // Braucht man das?
     }
 
     public int getContent() {

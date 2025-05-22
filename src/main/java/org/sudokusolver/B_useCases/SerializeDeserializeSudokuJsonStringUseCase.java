@@ -10,7 +10,7 @@ import org.sudokusolver.A_entities.objects.SudokuBoard;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ParseSudokuFromJsonStringUseCase {
+public class SerializeDeserializeSudokuJsonStringUseCase {
     public List<SudokuBoard> parse(List<String> jsonStrings){
         List<SudokuBoard> sudokus = new ArrayList<>();
         for(String string : jsonStrings){
@@ -46,5 +46,35 @@ public class ParseSudokuFromJsonStringUseCase {
                 .getAsJsonArray("grids");
         JsonObject firstGrid = grids.get(0).getAsJsonObject();
         return firstGrid.get("difficulty").getAsString();
+    }
+
+    public String serialize(SudokuBoard board) {
+        JsonObject root      = new JsonObject();
+        JsonObject newboard  = new JsonObject();
+        JsonArray  grids     = new JsonArray();
+        JsonObject gridEntry = new JsonObject();
+
+        /* 1) 9×9-Matrix aufbauen ----------------------------------------- */
+        JsonArray value = new JsonArray();
+        for (int row = 0; row < 9; row++) {
+            JsonArray rowArr = new JsonArray();
+            for (int col = 0; col < 9; col++) {
+                int v = board.getCell(new Position(row, col)).getContent();
+                rowArr.add(v);                    // 0 = leer, 1-9 sonst
+            }
+            value.add(rowArr);
+        }
+
+        /* 2) Grid-Eintrag zusammenbauen ----------------------------------- */
+        gridEntry.add("value", value);
+        gridEntry.addProperty("difficulty", board.getDifficulty());
+        grids.add(gridEntry);
+
+        /* 3) Objekt-Hierarchie fertigstellen ------------------------------ */
+        newboard.add("grids", grids);
+        root.add("newboard", newboard);
+
+        /* 4) Als kompakten String (oder .toString()) zurückgeben ---------- */
+        return root.toString();             // für Pretty-Print: new GsonBuilder().setPrettyPrinting().create().toJson(root);
     }
 }

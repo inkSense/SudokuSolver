@@ -8,7 +8,7 @@ public class SearchNode {
 
     private final SudokuBoard board;        // aktueller Zustand
     private final SearchNode   parent;      // ↑  null = Wurzel
-    private record Trial(Position point, Integer value){};
+    private record Trial(Position point, Integer value){}
     private Trial tried;
 
     public SearchNode(SearchNode parent, SudokuBoard rootBoard) {

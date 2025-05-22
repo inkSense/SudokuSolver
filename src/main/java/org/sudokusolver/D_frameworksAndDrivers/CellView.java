@@ -14,11 +14,9 @@ public class CellView extends StackPane {
     private final Label[][] smallLabels = new Label[3][3];
 
     public CellView() {
-        int bigLabelFontSize = 45;
-        int smallLabelFontSize = 15; // 1/3 von bigLabel
 
         // Big Label für festen Wert
-        bigLabel.setFont(Font.font(bigLabelFontSize));
+        bigLabel.setFont(Font.font(FrameworkConf.bigLabelFontSize));
         bigLabel.setAlignment(Pos.CENTER);
 
         // GridPane (3×3) für mögliche Kandidaten
@@ -26,7 +24,7 @@ public class CellView extends StackPane {
         smallGrid.setAlignment(Pos.CENTER);
         smallGrid.setHgap(12);
 
-        createLabelsForSmallGrid(smallLabelFontSize);
+        createLabelsForSmallGrid(FrameworkConf.smallLabelFontSize);
 
         // Ins StackPane legen
         // smallGrid und bigLabel überlagern also das GridPane

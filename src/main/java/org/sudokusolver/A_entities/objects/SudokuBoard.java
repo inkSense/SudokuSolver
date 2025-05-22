@@ -20,8 +20,6 @@ public class SudokuBoard {
         this.difficulty = difficulty;
     }
 
-
-
     public List<Cell> getCells() {
         return cells;
     }
@@ -109,7 +107,6 @@ public class SudokuBoard {
         }
         return true;
     }
-
 
     static void validateIndex(int index) {
         if (index < 0 || index > 8) {
