@@ -11,14 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SerializeDeserializeSudokuJsonStringUseCase {
-    public List<SudokuBoard> parse(List<String> jsonStrings){
-        List<SudokuBoard> sudokus = new ArrayList<>();
-        for(String string : jsonStrings){
-            sudokus.add(parse(string));
-        }
-        return sudokus;
-    }
-
 
     public SudokuBoard parse(String jsonString){
         JsonObject root = JsonParser.parseString(jsonString).getAsJsonObject();
@@ -27,9 +19,13 @@ public class SerializeDeserializeSudokuJsonStringUseCase {
                 .getAsJsonArray("grids")
                 .get(0).getAsJsonObject();
         JsonArray jsonArray = firstGrid.getAsJsonArray("value");
+        List<Cell> cells = buildCellList(jsonArray);
         String difficulty = firstGrid.get("difficulty").getAsString();
-        List<Cell> cells = new ArrayList<>();
+        return new SudokuBoard(cells, difficulty);
+    }
 
+    private List<Cell> buildCellList(JsonArray jsonArray){
+        List<Cell> cells = new ArrayList<>();
         for (int row = 0; row < 9; row++) {
             JsonArray rowArray = jsonArray.get(row).getAsJsonArray();
             for (int col = 0; col < 9; col++) {
@@ -37,7 +33,7 @@ public class SerializeDeserializeSudokuJsonStringUseCase {
                 cells.add(new Cell(content, new Position(row, col)));
             }
         }
-        return new SudokuBoard(cells, difficulty);
+        return cells;
     }
 
     public String parseDifficulty(String jsonString){
@@ -49,12 +45,26 @@ public class SerializeDeserializeSudokuJsonStringUseCase {
     }
 
     public String serialize(SudokuBoard board) {
-        JsonObject root      = new JsonObject();
-        JsonObject newboard  = new JsonObject();
-        JsonArray  grids     = new JsonArray();
+        JsonObject root = new JsonObject();
+        JsonObject newboard = new JsonObject();
+        JsonArray  grids = new JsonArray();
         JsonObject gridEntry = new JsonObject();
 
-        /* 1) 9×9-Matrix aufbauen ----------------------------------------- */
+        JsonArray value = buildJsonArray(board);
+
+        //Grid-Eintrag zusammenbauen
+        gridEntry.add("value", value);
+        gridEntry.addProperty("difficulty", board.getDifficulty());
+        grids.add(gridEntry);
+
+        // Objekt-Hierarchie fertigstellen
+        newboard.add("grids", grids);
+        root.add("newboard", newboard);
+
+        return root.toString();             // Pretty-Print: new GsonBuilder().setPrettyPrinting().create().toJson(root);
+    }
+
+    private JsonArray buildJsonArray(SudokuBoard board){
         JsonArray value = new JsonArray();
         for (int row = 0; row < 9; row++) {
             JsonArray rowArr = new JsonArray();
@@ -64,17 +74,6 @@ public class SerializeDeserializeSudokuJsonStringUseCase {
             }
             value.add(rowArr);
         }
-
-        /* 2) Grid-Eintrag zusammenbauen ----------------------------------- */
-        gridEntry.add("value", value);
-        gridEntry.addProperty("difficulty", board.getDifficulty());
-        grids.add(gridEntry);
-
-        /* 3) Objekt-Hierarchie fertigstellen ------------------------------ */
-        newboard.add("grids", grids);
-        root.add("newboard", newboard);
-
-        /* 4) Als kompakten String (oder .toString()) zurückgeben ---------- */
-        return root.toString();             // für Pretty-Print: new GsonBuilder().setPrettyPrinting().create().toJson(root);
+        return value;
     }
 }

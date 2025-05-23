@@ -1,33 +1,26 @@
 package org.sudokusolver.B_useCases;
 
-import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 public class SaveFileUseCase {
-    Path path = Path.of(ApplicationConf.dataFolderPath);
     UseCase2FilesystemOutputPort useCase2FilesystemOutputPort;
+    private static final Logger log = LoggerFactory.getLogger(SaveFileUseCase.class);
 
     public SaveFileUseCase(UseCase2FilesystemOutputPort useCase2FilesystemOutputPort) {
         this.useCase2FilesystemOutputPort = useCase2FilesystemOutputPort;
-
     }
 
     void saveToJsonFileNamedByDate(String content){
         String dateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyMMdd HHmmss"));
-        String dateTimePathString = this.path + "/sudoku " +  dateTime  + ".json" ;
-        Path dateTimePath = Path.of(dateTimePathString);
-        List<String> stringList = new ArrayList<>();
-        stringList.add(content);
-        useCase2FilesystemOutputPort.save(stringList, dateTimePath);
+        String fileString = "sudoku " +  dateTime  + ".json";
+        saveToJsonFile(content, fileString);
     }
 
     void saveToJsonFile(String content, String fileName){
-        Path savePath = this.path.resolve(fileName);
-        List<String> stringList = new ArrayList<>();
-        stringList.add(content);
-        useCase2FilesystemOutputPort.save(stringList, savePath);
+        useCase2FilesystemOutputPort.save(content, fileName);
     }
 }

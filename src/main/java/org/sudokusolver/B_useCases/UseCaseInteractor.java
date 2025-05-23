@@ -7,18 +7,14 @@ import org.sudokusolver.A_entities.objects.Cell;
 import org.sudokusolver.A_entities.objects.DeterministicSolver;
 import org.sudokusolver.A_entities.objects.SudokuBoard;
 import org.sudokusolver.A_entities.dataStructures.Position;
-
-import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 public class UseCaseInteractor implements UseCaseInputPort {
     SudokuBoard sudoku;
-    LoadFileUseCase loadFile = new LoadFileUseCase();
+    LoadFileUseCase loadFile;
     SaveFileUseCase saveFile;
     SerializeDeserializeSudokuJsonStringUseCase serializeDeserialize = new SerializeDeserializeSudokuJsonStringUseCase();
     DownloadSudokuFromApiUseCase download;
@@ -33,6 +29,7 @@ public class UseCaseInteractor implements UseCaseInputPort {
             ) {
         this.download = new DownloadSudokuFromApiUseCase(useCase2HttpGatewayOutputPort);
         this.saveFile = new SaveFileUseCase(useCase2FilesystemOutputPort);
+        this.loadFile = new LoadFileUseCase(useCase2FilesystemOutputPort);
     }
 
     public List<Cell> loadSudoku(String sudokuFileName) {
