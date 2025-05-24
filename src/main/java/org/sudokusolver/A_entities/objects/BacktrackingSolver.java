@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import org.sudokusolver.A_entities.dataStructures.Position;
 
 import java.util.Comparator;
-import java.util.List;
 import java.util.Optional;
 
 public class BacktrackingSolver {
@@ -14,61 +13,64 @@ public class BacktrackingSolver {
     private static final Logger log = LoggerFactory.getLogger(BacktrackingSolver.class);
 
     public SudokuBoard solve(SudokuBoard board) {
-        SearchNode rootNode = new SearchNode(null, board);
-        SearchNode current = rootNode.nextChild(); // erstes Kind
-        int i = 0;
+        SearchNode current = new SearchNode(null, board);
+        int loops = 0;
         while (true) {
-
-            i++;
+            loops++;
 
             current.getBoard().print();
-            //engine.solveByReasoningAsFarAsPossible(current.getBoard());
 
             if (current.getBoard().isSolved()) {
-                log.info("Durchläufe: " + i );
+                log.info("Durchläufe: {}", loops);
                 return current.getBoard();
             }
 
-            Optional<Position> position = findCellPositionOfFewPossibilities(current.getBoard());
-            if(position.isEmpty()){
-                SearchNode parent = current.getParent();
-                if(parent == null) return null; // Wurzelknoten
-                SearchNode grandParent = parent.getParent();
-                if(grandParent == null) return null; // Wurzelknoten
-                if(current.getTried() == null) {
-                    removeGuessOfChildInParent(parent, grandParent);
-                    current = grandParent;
-                } else {
-                    removeGuessOfChildInParent(current, parent);
-                    current = parent;
-                }
+            if (!makeGuessIfPossible(current)) {
+                current = backtrack(current);
+                if (current == null) return null; // Wurzelknoten
                 continue;
             }
-            // Es gibt mögliche Kindpositionen.
-            List<Integer> candidates = current.getPossiblesOfCellAt(position.get());
-            int tryValue = candidates.get(0); // Hier wird geraten
-            current.setTriedAndSetTriedValueToCellAt(position.get(), tryValue);
-            engine.solveByReasoningAsFarAsPossible(current.getBoard());
 
-            current.getBoard().validate();
+            propagate(current);
 
-            if(current.getBoard().isValid()){
-                if(current.getBoard().isSolved()) return current.getBoard();
+            if (current.getBoard().isValid()) {
+                if (current.getBoard().isSolved()) {
+                    log.info("Durchläufe: {}", loops);
+                    return current.getBoard();
+                }
                 current = current.nextChild();
             } else {
-                SearchNode parent = current.getParent();
-                if(parent == null) return null; // Wurzelknoten
-                removeGuessOfChildInParent(current, parent);
-                current = parent;
+                current = backtrack(current);
+                if (current == null) return null;
             }
         }
     }
 
-    private SearchNode backtrack(SearchNode node) {
-        // ToDo: Man kann backtracking schon vereinheitlichen!
-        return null;
+    private void propagate(SearchNode node) {
+        engine.solveByReasoningAsFarAsPossible(node.getBoard());
+        node.getBoard().validate();
     }
 
+    private SearchNode backtrack(SearchNode node) {
+        SearchNode parent = node.getParent();
+        if (parent == null) return null;              // Wurzel
+        SearchNode grandParent = parent.getParent();
+        if (node.getTried() == null && grandParent != null) {
+            removeGuessOfChildInParent(parent, grandParent);
+            return grandParent;
+        } else {
+            removeGuessOfChildInParent(node, parent);
+            return parent;
+        }
+    }
+    private boolean makeGuessIfPossible(SearchNode node) {
+        Optional<Position> posOpt = findCellPositionOfFewPossibilities(node.getBoard());
+        if (posOpt.isEmpty()) return false;
+        Position pos   = posOpt.get();
+        int value      = node.getPossiblesOfCellAt(pos).get(0);
+        node.setTriedAndSetTriedValueToCellAt(pos, value);
+        return true;
+    }
 
     private void removeGuessOfChildInParent(SearchNode child, SearchNode parent){
         Cell parentCell = parent.getCell(child.getTriedPosition());
@@ -82,6 +84,4 @@ public class BacktrackingSolver {
                 .min(Comparator.comparingInt(c -> c.getPossibleContent().size()))
                 .map(Cell::getPosition);
     }
-
 }
-
