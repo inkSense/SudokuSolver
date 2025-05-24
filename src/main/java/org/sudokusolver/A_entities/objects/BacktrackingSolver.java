@@ -22,6 +22,7 @@ public class BacktrackingSolver {
             i++;
 
             current.getBoard().print();
+            //engine.solveByReasoningAsFarAsPossible(current.getBoard());
 
             if (current.getBoard().isSolved()) {
                 log.info("Durchläufe: " + i );
@@ -48,8 +49,11 @@ public class BacktrackingSolver {
             int tryValue = candidates.get(0); // Hier wird geraten
             current.setTriedAndSetTriedValueToCellAt(position.get(), tryValue);
             engine.solveByReasoningAsFarAsPossible(current.getBoard());
+
             current.getBoard().validate();
+
             if(current.getBoard().isValid()){
+                if(current.getBoard().isSolved()) return current.getBoard();
                 current = current.nextChild();
             } else {
                 SearchNode parent = current.getParent();

@@ -44,18 +44,20 @@ public class SudokuBoard {
 
     public void validate() {
         // prüfe alle 9 Zeilen, Spalten und Blöcke
-        cells.forEach(c-> c.setValid(true));
+        valid = true;
+        cells.forEach(c -> c.setValid(true));
+
         for (int i = 0; i < 9; i++) {
             // Bitwise OR:
-            if (    !unitIsValid(getRow(i)) |       // Zeile
-                    !unitIsValid(getColumn(i)) |    // Spalte
-                    !unitIsValid(getBlock(i)))      // 3×3‑Block
+            if ( !unitIsValid(getRow(i))            // Zeile
+                    | !unitIsValid(getColumn(i))    // Spalte
+                    | !unitIsValid(getBlock(i)) )   // 3×3‑Block
             {
-                valid = false;              // Widerspruch gefunden
+                valid = false;
             }
         }
-        valid = true;                       // kein Konflikt
     }
+
 
     public void print() {
         System.out.println();
@@ -100,6 +102,7 @@ public class SudokuBoard {
     }
 
     boolean isSolved(){
+        if(!valid) return false;
         for(Cell cell: cells){
             if(cell.getContent() == 0){
                 return false;
