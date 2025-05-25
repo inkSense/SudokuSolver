@@ -52,7 +52,7 @@ public class DeterministicSolver {
             unitFound = testForSinglePossibilitiesInUnitAndFillIn(sudoku);
             reducePossibilitiesFromCurrentState(sudoku);
             if(!singleFound && !unitFound){
-                log.info("Cant solve anything more with simple reasoning.");
+                //log.info("Cant solve anything more with simple reasoning.");
                 return;
             }
         }

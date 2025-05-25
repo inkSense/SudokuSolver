@@ -15,23 +15,19 @@ public class BacktrackingSolver {
     public SudokuBoard solve(SudokuBoard board) {
         SearchNode current = new SearchNode(null, board);
         int loops = 0;
-        while (true) {
+
+        while (current != null) {
             loops++;
-
-            current.getBoard().print();
-
-            if (current.getBoard().isSolved()) {
-                log.info("Durchläufe: {}", loops);
-                return current.getBoard();
-            }
+            //current.getBoard().print();
 
             if (!makeGuessIfPossible(current)) {
                 current = backtrack(current);
-                if (current == null) return null; // Wurzelknoten
                 continue;
             }
 
-            propagate(current);
+            // clear
+            engine.solveByReasoningAsFarAsPossible(current.getBoard());
+            current.getBoard().validate();
 
             if (current.getBoard().isValid()) {
                 if (current.getBoard().isSolved()) {
@@ -41,28 +37,21 @@ public class BacktrackingSolver {
                 current = current.nextChild();
             } else {
                 current = backtrack(current);
-                if (current == null) return null;
             }
         }
-    }
-
-    private void propagate(SearchNode node) {
-        engine.solveByReasoningAsFarAsPossible(node.getBoard());
-        node.getBoard().validate();
+        return null; // Wurzelknoten
     }
 
     private SearchNode backtrack(SearchNode node) {
-        SearchNode parent = node.getParent();
-        if (parent == null) return null;              // Wurzel
-        SearchNode grandParent = parent.getParent();
-        if (node.getTried() == null && grandParent != null) {
-            removeGuessOfChildInParent(parent, grandParent);
-            return grandParent;
-        } else {
-            removeGuessOfChildInParent(node, parent);
-            return parent;
-        }
+        // Den Versuch entweder im Vater oder im Großvater streichen
+        SearchNode child  = (node.getTried() == null) ? node.getParent() : node;
+        if (child == null) return null; // Wurzelknoten
+        SearchNode parent = child.getParent();
+        if (parent == null) return null; // Wurzelknoten
+        removeGuessOfChildInParent(child, parent);
+        return parent;
     }
+
     private boolean makeGuessIfPossible(SearchNode node) {
         Optional<Position> posOpt = findCellPositionOfFewPossibilities(node.getBoard());
         if (posOpt.isEmpty()) return false;
