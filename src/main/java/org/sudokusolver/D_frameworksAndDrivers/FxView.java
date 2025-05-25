@@ -163,7 +163,7 @@ public class FxView implements Presenter2ViewOutputPort {
             rightColor = "black";
         }
 
-        // Nun vier Werte im richtigen Format zusammenbauen:
+        // Vier Werte im richtigen Format zusammenbauen:
         String style = String.format(
                 "-fx-border-width: %dpx %dpx %dpx %dpx; "
                         + "-fx-border-color: %s %s %s %s; "

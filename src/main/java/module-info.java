@@ -9,6 +9,8 @@ module org.sudokusolver {
     opens org.sudokusolver.C_adapters to javafx.fxml, javafx.graphics;
     opens org.sudokusolver.D_frameworksAndDrivers to javafx.fxml, javafx.graphics;
 
+    exports org.sudokusolver.A_entities.objects;
+    exports org.sudokusolver.A_entities.dataStructures;
     exports org.sudokusolver.B_useCases;
     exports org.sudokusolver.C_adapters;
     exports org.sudokusolver.D_frameworksAndDrivers;
