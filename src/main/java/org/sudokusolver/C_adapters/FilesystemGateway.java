@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 public class FilesystemGateway implements UseCase2FilesystemOutputPort {
     private static final Logger log = LoggerFactory.getLogger(FilesystemGateway.class);
     Path folderPath = Path.of(AdapterConf.dataFolderPath);
-    private Path lastLoadedFile; // ToDo: Das sollte vielleicht ein String sein.
+    private String lastLoadedFileName = "";
 
     public String loadJsonFile(String sudokuFileName){
         Path filePath = folderPath.resolve(sudokuFileName);
@@ -25,7 +25,7 @@ public class FilesystemGateway implements UseCase2FilesystemOutputPort {
         }
         try {
             String fileString = Files.readString(filePath);
-            lastLoadedFile = filePath;
+            lastLoadedFileName = sudokuFileName;
             return fileString;
         } catch (Exception e) {
             throw new RuntimeException("Error reading file " + filePath, e);
@@ -44,8 +44,8 @@ public class FilesystemGateway implements UseCase2FilesystemOutputPort {
         }
     }
 
-    public Path getLastLoadedFile(){
-        return lastLoadedFile;
+    public String getLastLoadedFileName(){
+        return lastLoadedFileName;
     }
 
     public void save(String contentString, String fileName){

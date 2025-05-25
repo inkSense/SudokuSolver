@@ -6,14 +6,11 @@ module org.sudokusolver {
     requires com.google.gson;
     requires java.desktop;
 
-
+    opens org.sudokusolver.C_adapters to javafx.fxml, javafx.graphics;
     opens org.sudokusolver.D_frameworksAndDrivers to javafx.fxml, javafx.graphics;
 
-    // --- Exportierte Module ---
-    exports org.sudokusolver;
-    exports org.sudokusolver.A_entities.objects;
+    exports org.sudokusolver.B_useCases;
     exports org.sudokusolver.C_adapters;
-    opens org.sudokusolver.C_adapters to javafx.fxml, javafx.graphics;
     exports org.sudokusolver.D_frameworksAndDrivers;
-    exports org.sudokusolver.A_entities.dataStructures;
+
 }

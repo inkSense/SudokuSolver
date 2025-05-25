@@ -36,7 +36,7 @@ public class Main extends Application {
         Der Controller hat den Presenter und den UseCaseInteractor.
         Der Presenter hat das Model und das View.
         Das Model hat nichts. */
-
+        log.info("wiring complete");
     }
 
     public static void main(String[] args) {

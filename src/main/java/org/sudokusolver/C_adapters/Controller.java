@@ -5,14 +5,8 @@ import org.slf4j.LoggerFactory;
 import org.sudokusolver.A_entities.objects.Cell;
 import org.sudokusolver.A_entities.dataStructures.Position;
 import org.sudokusolver.B_useCases.UseCaseInputPort;
-
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class Controller {
 
@@ -42,8 +36,7 @@ public class Controller {
     }
 
     public String getLastLoadedFileName() {
-        Path path = useCaseInputPort.getLastLoadedFile();
-        return path != null ? path.getFileName().toString() : null;
+        return useCaseInputPort.getLastLoadedFileName();
     }
 
     public void saveSudoku(String fileName) {

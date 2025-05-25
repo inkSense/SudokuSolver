@@ -2,13 +2,13 @@ package org.sudokusolver.B_useCases;
 
 import org.sudokusolver.A_entities.objects.Cell;
 import org.sudokusolver.A_entities.dataStructures.Position;
-import java.nio.file.Path;
+
 import java.util.List;
 
 public interface UseCaseInputPort {
     List<Cell> loadSudoku(String sudokuFileName);
     List<String> getAllDataFileNames();
-    Path getLastLoadedFile();
+    String getLastLoadedFileName();
     void saveSudoku(String fileName);
     void downloadSudokuFromApiAndStore();
     void reducePossibilitiesFromCurrentState();

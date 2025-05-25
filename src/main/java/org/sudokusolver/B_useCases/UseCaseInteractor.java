@@ -7,7 +7,7 @@ import org.sudokusolver.A_entities.objects.Cell;
 import org.sudokusolver.A_entities.objects.DeterministicSolver;
 import org.sudokusolver.A_entities.objects.SudokuBoard;
 import org.sudokusolver.A_entities.dataStructures.Position;
-import java.nio.file.Path;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -41,8 +41,8 @@ public class UseCaseInteractor implements UseCaseInputPort {
     }
 
     @Override
-    public Path getLastLoadedFile() {
-        return loadFile.getLastLoadedFile();
+    public String getLastLoadedFileName() {
+        return loadFile.getLastLoadedFileName();
     }
 
     public List<String> getAllDataFileNames(){
